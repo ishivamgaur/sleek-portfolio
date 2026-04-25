@@ -13,15 +13,17 @@ export default function Projects() {
   if (projects.length === 0) return null;
 
   return (
-    <section className="py-12 space-y-6">
+    <section className="px-4 py-8 space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
+        className="mb-10"
       >
-        <h2 className="text-3xl font-bold tracking-tight mb-8">Featured Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h2 className="text-2xl font-bold tracking-tight">Featured Projects</h2>
+        <p className="text-muted-foreground mt-1 text-[15px]">A showcase of my recent work and side projects.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((project, idx) => (
             <motion.div
               key={project.id}

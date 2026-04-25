@@ -3,9 +3,8 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
 import { Button } from "@/components/ui/button";
-
+import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function ThemeToggle() {
@@ -29,11 +28,36 @@ export function ThemeToggle() {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          className="rounded-full hover:bg-transparent dark:hover:bg-transparent cursor-pointer h-7 w-7 md:h-8 md:w-8"
+          className="rounded-full hover:bg-transparent dark:hover:bg-transparent cursor-pointer h-7 w-7 md:h-8 md:w-8 relative overflow-hidden"
         />
       }>
-        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <div className="relative h-[1.2rem] w-[1.2rem] flex items-center justify-center">
+          <AnimatePresence initial={false}>
+            {theme === "light" ? (
+              <motion.div
+                key="sun"
+                initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 0.5, opacity: 0, rotate: 45 }}
+                transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="moon"
+                initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 0.5, opacity: 0, rotate: 45 }}
+                transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <Moon className="h-[1.2rem] w-[1.2rem]" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         <span className="sr-only">Toggle theme</span>
       </TooltipTrigger>
       <TooltipContent className="flex items-center gap-2">

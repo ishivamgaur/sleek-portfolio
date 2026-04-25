@@ -31,7 +31,7 @@ export default function Navbar() {
       isScrolled ? "py-1.5 md:py-2" : "py-2 md:py-4"
     )}>
       <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
-        <nav className="flex items-center space-x-2 md:space-x-3 text-xs md:text-sm font-bold tracking-wide">
+        <nav className="flex items-center space-x-2 md:space-x-3 text-[11px] md:text-xs font-medium tracking-wide">
           {navItems.map((item) => (
             <Link
               key={item.path}

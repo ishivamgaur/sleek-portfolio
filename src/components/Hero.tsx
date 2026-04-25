@@ -86,7 +86,7 @@ export default function Hero() {
             </Avatar>
           </div>
           
-          <div className="pt-10 md:pt-20 flex items-center gap-3">
+          <div className="pt-16 md:pt-20 flex items-center gap-3">
             <Tooltip>
               <TooltipTrigger 
                 render={<a href="https://github.com/ishivamgaur" target="_blank" rel="noopener noreferrer" />}
@@ -145,7 +145,7 @@ export default function Hero() {
           </div>
 
           <p className="text-[15px] text-foreground leading-snug">
-            Don&apos;t be an NPC.
+            Be an engineer, not just a coder.
           </p>
 
           <div className="flex flex-col gap-y-2 text-[15px] text-muted-foreground mt-2">
