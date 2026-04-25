@@ -202,12 +202,12 @@ export default function Hero() {
               <div className="absolute top-8 inset-x-4 flex items-center justify-between z-20 text-white">
                 <div className="flex items-center gap-2">
                   <Avatar className="w-8 h-8 border border-white/20">
-                    <AvatarImage src={currentStory?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentStory?.title}`} />
+                    <AvatarImage src={currentStory?.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentStory?.company}`} />
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold">{currentStory?.title}</p>
-                    <p className="text-[10px] opacity-70">{currentStory?.date}</p>
+                    <p className="text-sm font-bold">{currentStory?.company}</p>
+                    <p className="text-[10px] opacity-70">{currentStory?.role}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -232,7 +232,7 @@ export default function Hero() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {currentStory?.imageUrl ? (
-                  <img src={currentStory.imageUrl} alt={currentStory.title} className="w-full h-full object-contain" />
+                  <img src={currentStory.imageUrl} alt={currentStory.company} className="w-full h-full object-contain" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center">
                     <p className="text-2xl font-bold text-white leading-tight">{currentStory?.content}</p>

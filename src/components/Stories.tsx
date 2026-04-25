@@ -59,13 +59,13 @@ export default function Stories() {
             <div className="p-[3px] rounded-full bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 transition-transform hover:scale-105 active:scale-95">
               <div className="p-[2px] bg-background rounded-full">
                 <Avatar className="w-16 h-16 border-0">
-                  <AvatarImage src={story.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.title}`} />
-                  <AvatarFallback>{story.title.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarImage src={story.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.company}`} />
+                  <AvatarFallback>{story.company.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
               </div>
             </div>
-            <span className="text-xs font-medium truncate w-full text-center text-muted-foreground">
-              {story.title}
+            <span className="text-xs font-medium truncate w-full text-center text-muted-foreground px-1">
+              {story.company}
             </span>
           </div>
         ))}
@@ -98,12 +98,12 @@ export default function Stories() {
               <div className="absolute top-8 inset-x-4 flex items-center justify-between z-20 text-white">
                 <div className="flex items-center gap-2">
                   <Avatar className="w-8 h-8 border border-white/20">
-                    <AvatarImage src={stories[activeStoryIdx].imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${stories[activeStoryIdx].title}`} />
+                    <AvatarImage src={stories[activeStoryIdx].imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${stories[activeStoryIdx].company}`} />
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold">{stories[activeStoryIdx].title}</p>
-                    <p className="text-[10px] opacity-70">{stories[activeStoryIdx].date}</p>
+                    <p className="text-sm font-bold">{stories[activeStoryIdx].company}</p>
+                    <p className="text-[10px] opacity-70">{stories[activeStoryIdx].role}</p>
                   </div>
                 </div>
                 <button onClick={() => setActiveStoryIdx(null)} className="p-1 hover:bg-white/10 rounded-full">
@@ -116,12 +116,12 @@ export default function Stories() {
                 {stories[activeStoryIdx].imageUrl ? (
                   <img 
                     src={stories[activeStoryIdx].imageUrl} 
-                    alt={stories[activeStoryIdx].title} 
+                    alt={stories[activeStoryIdx].company} 
                     className="w-full h-full object-contain"
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center">
-                    <p className="text-2xl font-bold text-white leading-tight">
+                    <p className="text-2xl font-bold text-white leading-tight px-4">
                       {stories[activeStoryIdx].content}
                     </p>
                   </div>
