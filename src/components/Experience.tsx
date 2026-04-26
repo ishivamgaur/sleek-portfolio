@@ -27,7 +27,9 @@ export default function Experience() {
         className="mb-10"
       >
         <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">My professional journey and milestones.</p>
+        <p className="text-muted-foreground mt-1 text-[15px]">
+          My professional journey and milestones.
+        </p>
       </motion.div>
 
       <div className="space-y-12">
@@ -37,7 +39,7 @@ export default function Experience() {
       </div>
 
       {stories.length > 2 && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           className="mt-12 flex justify-center"
@@ -55,9 +57,12 @@ export default function Experience() {
 }
 
 function formatDate(dateStr: string) {
-  if (!dateStr || dateStr === 'Current') return dateStr;
+  if (!dateStr || dateStr === "Current") return dateStr;
   try {
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      year: "2-digit",
+    });
   } catch (e) {
     return dateStr;
   }

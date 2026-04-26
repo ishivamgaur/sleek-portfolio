@@ -51,16 +51,23 @@ export default function Stories() {
     <section className="py-8">
       <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
         {stories.map((story, idx) => (
-          <div 
-            key={story.id} 
+          <div
+            key={story.id}
             className="flex flex-col items-center gap-1 cursor-pointer min-w-[80px]"
             onClick={() => setActiveStoryIdx(idx)}
           >
             <div className="p-[3px] rounded-full bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 transition-transform hover:scale-105 active:scale-95">
               <div className="p-[2px] bg-background rounded-full">
                 <Avatar className="w-16 h-16 border-0">
-                  <AvatarImage src={story.imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.company}`} />
-                  <AvatarFallback>{story.company.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarImage
+                    src={
+                      story.imageUrl ||
+                      `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.company}`
+                    }
+                  />
+                  <AvatarFallback>
+                    {story.company.substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </div>
             </div>
@@ -83,11 +90,19 @@ export default function Stories() {
               {/* Progress Bar */}
               <div className="absolute top-4 inset-x-4 flex gap-1 z-20">
                 {stories.map((_, idx) => (
-                  <div key={idx} className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
-                    <div 
+                  <div
+                    key={idx}
+                    className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden"
+                  >
+                    <div
                       className="h-full bg-white transition-all duration-50 linear"
-                      style={{ 
-                        width: idx < activeStoryIdx ? '100%' : idx === activeStoryIdx ? `${progress}%` : '0%' 
+                      style={{
+                        width:
+                          idx < activeStoryIdx
+                            ? "100%"
+                            : idx === activeStoryIdx
+                              ? `${progress}%`
+                              : "0%",
                       }}
                     />
                   </div>
@@ -98,15 +113,27 @@ export default function Stories() {
               <div className="absolute top-8 inset-x-4 flex items-center justify-between z-20 text-white">
                 <div className="flex items-center gap-2">
                   <Avatar className="w-8 h-8 border border-white/20">
-                    <AvatarImage src={stories[activeStoryIdx].imageUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${stories[activeStoryIdx].company}`} />
+                    <AvatarImage
+                      src={
+                        stories[activeStoryIdx].imageUrl ||
+                        `https://api.dicebear.com/7.x/avataaars/svg?seed=${stories[activeStoryIdx].company}`
+                      }
+                    />
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold">{stories[activeStoryIdx].company}</p>
-                    <p className="text-[10px] opacity-70">{stories[activeStoryIdx].role}</p>
+                    <p className="text-sm font-bold">
+                      {stories[activeStoryIdx].company}
+                    </p>
+                    <p className="text-[10px] opacity-70">
+                      {stories[activeStoryIdx].role}
+                    </p>
                   </div>
                 </div>
-                <button onClick={() => setActiveStoryIdx(null)} className="p-1 hover:bg-white/10 rounded-full">
+                <button
+                  onClick={() => setActiveStoryIdx(null)}
+                  className="p-1 hover:bg-white/10 rounded-full"
+                >
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -114,9 +141,9 @@ export default function Stories() {
               {/* Content */}
               <div className="flex-1 relative bg-black flex items-center justify-center">
                 {stories[activeStoryIdx].imageUrl ? (
-                  <img 
-                    src={stories[activeStoryIdx].imageUrl} 
-                    alt={stories[activeStoryIdx].company} 
+                  <img
+                    src={stories[activeStoryIdx].imageUrl}
+                    alt={stories[activeStoryIdx].company}
                     className="w-full h-full object-contain"
                   />
                 ) : (
@@ -126,7 +153,7 @@ export default function Stories() {
                     </p>
                   </div>
                 )}
-                
+
                 {/* Overlay Content if image exists */}
                 {stories[activeStoryIdx].imageUrl && (
                   <div className="absolute bottom-12 inset-x-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
@@ -138,14 +165,14 @@ export default function Stories() {
               </div>
 
               {/* Navigation Controls */}
-              <button 
+              <button
                 onClick={handlePrev}
                 className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
                 disabled={activeStoryIdx === 0}
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
-              <button 
+              <button
                 onClick={handleNext}
                 className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
               >

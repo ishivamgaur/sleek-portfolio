@@ -26,10 +26,12 @@ export default function Navbar() {
   ];
 
   return (
-    <header className={cn(
-      "fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 transition-all duration-300",
-      isScrolled ? "py-1.5 md:py-2" : "py-2 md:py-4"
-    )}>
+    <header
+      className={cn(
+        "fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 transition-all duration-300",
+        isScrolled ? "py-1.5 md:py-2" : "py-2 md:py-4",
+      )}
+    >
       <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
         <nav className="flex items-center space-x-2 md:space-x-3 text-[11px] md:text-xs font-medium tracking-wide">
           {navItems.map((item) => (
@@ -39,7 +41,9 @@ export default function Navbar() {
               className={cn(
                 "transition-colors px-2 md:px-4 py-1 rounded-md backdrop-blur-md shadow-sm border border-border/50",
                 "bg-white/60 dark:bg-black/50 hover:bg-white/80 dark:hover:bg-black/70",
-                pathname === item.path ? "text-foreground" : "text-foreground/70"
+                pathname === item.path
+                  ? "text-foreground"
+                  : "text-foreground/70",
               )}
             >
               {item.name}

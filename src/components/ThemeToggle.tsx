@@ -5,32 +5,38 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'x') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "x") {
         e.preventDefault();
         setTheme(theme === "light" ? "dark" : "light");
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [theme, setTheme]);
 
   return (
     <Tooltip>
-      <TooltipTrigger render={
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          className="rounded-full hover:bg-transparent dark:hover:bg-transparent cursor-pointer h-7 w-7 md:h-8 md:w-8 relative overflow-hidden"
-        />
-      }>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className="rounded-full hover:bg-transparent dark:hover:bg-transparent cursor-pointer h-7 w-7 md:h-8 md:w-8 relative overflow-hidden"
+          />
+        }
+      >
         <div className="relative h-[1.2rem] w-[1.2rem] flex items-center justify-center">
           <AnimatePresence initial={false}>
             {theme === "light" ? (
@@ -39,7 +45,12 @@ export function ThemeToggle() {
                 initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ scale: 0.5, opacity: 0, rotate: 45 }}
-                transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+                transition={{
+                  duration: 0.2,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                }}
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <Sun className="h-[1.2rem] w-[1.2rem]" />
@@ -50,7 +61,12 @@ export function ThemeToggle() {
                 initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ scale: 0.5, opacity: 0, rotate: 45 }}
-                transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 20 }}
+                transition={{
+                  duration: 0.2,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                }}
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <Moon className="h-[1.2rem] w-[1.2rem]" />
