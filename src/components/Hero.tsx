@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Play,
   Pause,
+  Code,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,9 @@ import {
 } from "@/components/ui/tooltip";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import SpotifyNowPlaying from "./SpotifyNowPlaying";
+import useSWR from "swr";
+import { fetcher } from "@/lib/api";
 
 import Image from "next/image";
 
@@ -31,6 +35,20 @@ export default function Hero() {
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [bannerError, setBannerError] = useState(false);
+
+  // Use SWR for highly optimized, cached data fetching
+  const { data: githubData } = useSWR("/github", fetcher, {
+    revalidateOnFocus: false, // GitHub stats don't change by the second
+    dedupingInterval: 60000, // Cache for at least 1 minute
+  });
+
+  const calculateDays = (dateString?: string) => {
+    if (!dateString) return 0;
+    const start = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
 
   const hasStories = stories.length > 0;
   const currentStory = activeStoryIdx !== null ? stories[activeStoryIdx] : null;
@@ -224,12 +242,22 @@ export default function Hero() {
                 <Gift className="w-[18px] h-[18px]" />
                 <span>Born August 24, 2005</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CalendarDays className="w-[18px] h-[18px]" />
-                <span>Joined June 2024</span>
-              </div>
+              {githubData?.createdAt ? (
+                <div className="flex items-center gap-1.5">
+                  <Code className="w-[18px] h-[18px]" />
+                  <span>
+                    Coding for {calculateDays(githubData.createdAt)} days
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 animate-pulse">
+                  <Code className="w-[18px] h-[18px] opacity-50" />
+                  <div className="h-4 w-32 bg-muted rounded" />
+                </div>
+              )}
             </div>
           </div>
+          <SpotifyNowPlaying />
         </div>
       </div>
 

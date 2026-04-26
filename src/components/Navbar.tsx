@@ -5,7 +5,6 @@ import { ThemeToggle } from "./ThemeToggle";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Home } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,31 +25,27 @@ export default function Navbar() {
   ];
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl z-50 transition-all duration-300",
-        isScrolled ? "py-1.5 md:py-2" : "py-2 md:py-4",
-      )}
-    >
-      <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
-        <nav className="flex items-center space-x-2 md:space-x-3 text-[11px] md:text-xs font-medium tracking-wide">
+    <header className="fixed top-0 left-0 w-full z-50">
+      {/* Permanent frosted glass background layer */}
+      <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-md" />
+
+      {/* Navbar Content */}
+      <div className="relative max-w-3xl mx-auto px-4 py-2 md:py-3 flex items-center justify-between w-full">
+        <nav className="flex items-center gap-x-6 text-[11px] md:text-xs font-medium tracking-wide">
           {navItems.map((item) => (
             <Link
               key={item.path}
               href={item.path}
               className={cn(
-                "transition-colors px-2 md:px-4 py-1 rounded-md backdrop-blur-md shadow-sm border border-border/50",
-                "bg-white/60 dark:bg-black/50 hover:bg-white/80 dark:hover:bg-black/70",
-                pathname === item.path
-                  ? "text-foreground"
-                  : "text-foreground/70",
+                "transition-all duration-300 py-1 rounded-md text-foreground/80 hover:text-foreground",
+                pathname === item.path && "text-foreground font-semibold",
               )}
             >
               {item.name}
             </Link>
           ))}
         </nav>
-        <div className="rounded-md bg-white/60 dark:bg-black/50 backdrop-blur-md shadow-sm border border-border/50 flex items-center justify-center h-7 w-7 md:w-8 md:h-8">
+        <div className="flex items-center justify-center h-8 w-8 transition-all duration-300 rounded-md">
           <ThemeToggle />
         </div>
       </div>

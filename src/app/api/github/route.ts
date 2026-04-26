@@ -12,14 +12,14 @@ export async function GET() {
 
     const userResponse = await fetch(
       `https://api.github.com/users/${username}`,
-      { headers },
+      { headers, next: { revalidate: 3600 } }, // Cache on server for 1 hour
     );
     const userData = await userResponse.json();
 
     // Fetch repositories to calculate total stars
     const reposResponse = await fetch(
       `https://api.github.com/users/${username}/repos?per_page=100`,
-      { headers },
+      { headers, next: { revalidate: 3600 } }, // Cache on server for 1 hour
     );
     const reposData = await reposResponse.json();
 
@@ -35,6 +35,7 @@ export async function GET() {
       publicRepos: userData.public_repos,
       stars: stars,
       profileUrl: userData.html_url,
+      createdAt: userData.created_at,
     });
   } catch (error) {
     return NextResponse.json(
