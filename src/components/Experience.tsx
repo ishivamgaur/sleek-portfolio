@@ -10,13 +10,20 @@ import { ArrowUpRight } from "lucide-react";
 import { ExperienceItem } from "./ExperienceItem";
 
 export default function Experience() {
-  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>("/api/experiences", fetchExperiences);
+  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>(
+    "/api/experiences",
+    fetchExperiences,
+  );
 
   if (isLoading) return null; // or a shimmer
   if (experiences.length === 0) return null;
 
+  const sortedExperiences = [...experiences].sort((a, b) => {
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
+
   // Show only top 2 on home page
-  const displayedExperiences = experiences.slice(0, 2);
+  const displayedExperiences = sortedExperiences.slice(0, 2);
 
   return (
     <section className="px-4 pb-8">
@@ -35,11 +42,15 @@ export default function Experience() {
 
       <div className="space-y-12">
         {displayedExperiences.map((exp, idx) => (
-          <ExperienceItem key={exp._id || String(idx)} story={exp as any} index={idx} />
+          <ExperienceItem
+            key={exp._id || String(idx)}
+            story={exp as any}
+            index={idx}
+          />
         ))}
       </div>
 
-      {experiences.length > 2 && (
+      {sortedExperiences.length > 2 && (
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

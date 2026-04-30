@@ -21,7 +21,7 @@ export async function GET() {
     console.error("Settings GET error:", error);
     return NextResponse.json(
       { error: "Failed to fetch settings" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -44,7 +44,7 @@ export async function PUT(req: NextRequest) {
     const settings = await SiteSettings.findOneAndUpdate(
       { key: "main" },
       { $set: update },
-      { new: true, upsert: true }
+      { new: true, upsert: true },
     );
 
     return NextResponse.json({
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest) {
     console.error("Settings PUT error:", error);
     return NextResponse.json(
       { error: "Failed to update settings" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

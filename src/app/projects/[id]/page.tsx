@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -58,12 +59,16 @@ export default function ProjectDetailsPage({
         Back to projects
       </Link>
 
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-none">
-            {project.title}
-          </h1>
-          <p className="text-[16px] text-muted-foreground leading-relaxed max-w-[90%]">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="space-y-6"
+      >
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold tracking-tight">{project.title}</h2>
+          <p className="text-muted-foreground mt-1 text-[15px]">
             {project.description}
           </p>
         </div>
@@ -104,7 +109,7 @@ export default function ProjectDetailsPage({
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden bg-muted/30 border border-border/40 relative shadow-2xl">
         {project.videoUrl ? (

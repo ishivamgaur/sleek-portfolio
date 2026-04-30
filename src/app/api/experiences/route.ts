@@ -3,6 +3,8 @@ import dbConnect from "@/lib/db";
 import Experience from "@/models/Experience";
 import { isAuthenticated } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 // GET — public, fetch all experiences
 export async function GET() {
   try {
@@ -13,7 +15,7 @@ export async function GET() {
     console.error("Experiences GET error:", error);
     return NextResponse.json(
       { error: "Failed to fetch experiences" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -33,8 +35,13 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Experiences POST error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create experience" },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to create experience",
+      },
+      { status: 500 },
     );
   }
 }

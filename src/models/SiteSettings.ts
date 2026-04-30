@@ -17,7 +17,7 @@ const SiteSettingsSchema = new mongoose.Schema(
       default: "https://github.com/ishivamgaur.png?size=200",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.models.SiteSettings ||

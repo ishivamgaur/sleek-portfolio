@@ -28,7 +28,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import FileUpload from "@/components/FileUpload";
-import { checkAuth, login, logout, fetchSettings, updateSettings, createStory, createExperience } from "@/services/api";
+import {
+  checkAuth,
+  login,
+  logout,
+  fetchSettings,
+  updateSettings,
+  createStory,
+  createExperience,
+} from "@/services/api";
 
 export default function AdminPage() {
   const dispatch = useDispatch();
@@ -125,7 +133,13 @@ export default function AdminPage() {
 
   const handleAddExperience = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!expData.role || !expData.company || !expData.content || !expData.startDate) return;
+    if (
+      !expData.role ||
+      !expData.company ||
+      !expData.content ||
+      !expData.startDate
+    )
+      return;
 
     try {
       await createExperience({
@@ -136,7 +150,10 @@ export default function AdminPage() {
         startDate: expData.startDate,
         location: expData.location || "Noida",
         type: expData.type,
-        tech: expData.tech.split(",").map((t) => t.trim()).filter(Boolean),
+        tech: expData.tech
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
       });
       alert("Experience added successfully!");
       setExpData({
@@ -314,104 +331,110 @@ export default function AdminPage() {
         <div className="flex flex-col gap-8">
           <Card className="border-border/50 shadow-sm">
             <CardHeader>
-            <CardTitle className="text-xl">Add New Project</CardTitle>
-            <CardDescription>
-              Fill in the details to add a new project.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddProject} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Project Title</Label>
-                <Input
-                  type="text"
-                  value={projectData.title}
-                  onChange={(e) =>
-                    setProjectData({ ...projectData, title: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea
-                  value={projectData.description}
-                  onChange={(e) =>
-                    setProjectData({
-                      ...projectData,
-                      description: e.target.value,
-                    })
-                  }
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardTitle className="text-xl">Add New Project</CardTitle>
+              <CardDescription>
+                Fill in the details to add a new project.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleAddProject} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Link</Label>
-                  <Input
-                    type="url"
-                    value={projectData.link}
-                    onChange={(e) =>
-                      setProjectData({ ...projectData, link: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tags</Label>
+                  <Label>Project Title</Label>
                   <Input
                     type="text"
-                    value={projectData.tags}
+                    value={projectData.title}
                     onChange={(e) =>
-                      setProjectData({ ...projectData, tags: e.target.value })
+                      setProjectData({ ...projectData, title: e.target.value })
                     }
-                    placeholder="React, Next.js"
-                  />
-                </div>
-              </div>
-              <Button type="submit" className="w-full font-bold">
-                Add Project
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/50 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-xl">Add New Story</CardTitle>
-            <CardDescription>
-              Upload a photo or video to your story.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddStory} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Story Media (Required)</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    value={storyData.imageUrl}
-                    onChange={(e) =>
-                      setStoryData({ ...storyData, imageUrl: e.target.value })
-                    }
-                    placeholder="Paste URL or upload"
                     required
                   />
-                  <FileUpload
-                    accept="image/*,video/*"
-                    label="Upload"
-                    uploadType="story"
-                    onUploadComplete={(url) =>
-                      setStoryData({ ...storyData, imageUrl: url, mediaType: url.includes("/video/upload/") ? "video" : "photo" })
+                </div>
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Textarea
+                    value={projectData.description}
+                    onChange={(e) =>
+                      setProjectData({
+                        ...projectData,
+                        description: e.target.value,
+                      })
                     }
+                    required
                   />
                 </div>
-              </div>
-              <Button type="submit" className="w-full font-bold">
-                Add Story
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Link</Label>
+                    <Input
+                      type="url"
+                      value={projectData.link}
+                      onChange={(e) =>
+                        setProjectData({ ...projectData, link: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Tags</Label>
+                    <Input
+                      type="text"
+                      value={projectData.tags}
+                      onChange={(e) =>
+                        setProjectData({ ...projectData, tags: e.target.value })
+                      }
+                      placeholder="React, Next.js"
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full font-bold">
+                  Add Project
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl">Add New Story</CardTitle>
+              <CardDescription>
+                Upload a photo or video to your story.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleAddStory} className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Story Media (Required)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={storyData.imageUrl}
+                      onChange={(e) =>
+                        setStoryData({ ...storyData, imageUrl: e.target.value })
+                      }
+                      placeholder="Paste URL or upload"
+                      required
+                    />
+                    <FileUpload
+                      accept="image/*,video/*"
+                      label="Upload"
+                      uploadType="story"
+                      onUploadComplete={(url) =>
+                        setStoryData({
+                          ...storyData,
+                          imageUrl: url,
+                          mediaType: url.includes("/video/upload/")
+                            ? "video"
+                            : "photo",
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full font-bold">
+                  Add Story
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
 
         <Card className="border-border/50 shadow-sm">

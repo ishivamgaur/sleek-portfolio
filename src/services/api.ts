@@ -40,7 +40,7 @@ export async function fetchSettings(): Promise<SiteSettings> {
 }
 
 export async function updateSettings(
-  settings: Partial<SiteSettings>
+  settings: Partial<SiteSettings>,
 ): Promise<SiteSettings> {
   const res = await fetch("/api/settings", {
     method: "PUT",
@@ -66,7 +66,9 @@ export async function fetchStories(): Promise<StoryData[]> {
   return res.json();
 }
 
-export async function createStory(story: Omit<StoryData, "_id">): Promise<StoryData> {
+export async function createStory(
+  story: Omit<StoryData, "_id">,
+): Promise<StoryData> {
   const res = await fetch("/api/stories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -97,7 +99,9 @@ export async function fetchExperiences(): Promise<ExperienceData[]> {
   return res.json();
 }
 
-export async function createExperience(exp: Omit<ExperienceData, "_id">): Promise<ExperienceData> {
+export async function createExperience(
+  exp: Omit<ExperienceData, "_id">,
+): Promise<ExperienceData> {
   const res = await fetch("/api/experiences", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

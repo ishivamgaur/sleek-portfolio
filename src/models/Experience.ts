@@ -11,7 +11,7 @@ const ExperienceSchema = new mongoose.Schema(
     startDate: { type: String },
     tech: [{ type: String }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 delete mongoose.models.Experience;
