@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     if (!cloudName || !uploadPreset) {
       return NextResponse.json(
         { error: "Cloudinary not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -34,21 +34,24 @@ export async function POST(req: NextRequest) {
     const cloudinaryForm = new FormData();
     cloudinaryForm.append("file", file);
     cloudinaryForm.append("upload_preset", uploadPreset);
-    cloudinaryForm.append("folder", folderMap[uploadType] || "portfolio/general");
+    cloudinaryForm.append(
+      "folder",
+      folderMap[uploadType] || "portfolio/general",
+    );
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
       {
         method: "POST",
         body: cloudinaryForm,
-      }
+      },
     );
 
     if (!res.ok) {
       const err = await res.json();
       return NextResponse.json(
         { error: err.error?.message || "Upload failed" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -62,7 +65,7 @@ export async function POST(req: NextRequest) {
     const optimizedUrl = buildOptimizedUrl(
       data.secure_url,
       uploadType,
-      resourceType
+      resourceType,
     );
 
     return NextResponse.json({
@@ -74,7 +77,7 @@ export async function POST(req: NextRequest) {
     console.error("Upload error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -90,7 +93,7 @@ export async function POST(req: NextRequest) {
 function buildOptimizedUrl(
   secureUrl: string,
   uploadType: string,
-  resourceType: string
+  resourceType: string,
 ): string {
   if (resourceType === "video") {
     // For videos, just apply quality optimization
@@ -100,13 +103,22 @@ function buildOptimizedUrl(
   switch (uploadType) {
     case "banner":
       // 1500x500, 3:1 landscape, smart crop, auto quality + format
-      return insertTransform(secureUrl, "c_fill,w_1500,h_500,g_auto,q_auto,f_auto");
+      return insertTransform(
+        secureUrl,
+        "c_fill,w_1500,h_500,g_auto,q_auto,f_auto",
+      );
     case "profile":
       // 400x400 square, face-aware crop, auto quality + format
-      return insertTransform(secureUrl, "c_fill,w_400,h_400,g_face,q_auto,f_auto");
+      return insertTransform(
+        secureUrl,
+        "c_fill,w_400,h_400,g_face,q_auto,f_auto",
+      );
     case "story":
       // 1080x1920 portrait (9:16), smart crop, auto quality + format
-      return insertTransform(secureUrl, "c_fill,w_1080,h_1920,g_auto,q_auto,f_auto");
+      return insertTransform(
+        secureUrl,
+        "c_fill,w_1080,h_1920,g_auto,q_auto,f_auto",
+      );
     default:
       // General: just compress and auto-format
       return insertTransform(secureUrl, "q_auto,f_auto");

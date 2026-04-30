@@ -36,8 +36,12 @@ export default function Hero() {
     revalidateOnFocus: false,
     dedupingInterval: 60000,
   });
-  const defaultBanner = useSelector((state: RootState) => state.portfolio.bannerImage);
-  const defaultProfile = useSelector((state: RootState) => state.portfolio.profileImage);
+  const defaultBanner = useSelector(
+    (state: RootState) => state.portfolio.bannerImage,
+  );
+  const defaultProfile = useSelector(
+    (state: RootState) => state.portfolio.profileImage,
+  );
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -45,14 +49,20 @@ export default function Hero() {
   const [bannerLoading, setBannerLoading] = useState(true);
 
   // Fetch persisted images from DB via SWR (cached, deduped)
-  const { data: siteSettings, error: settingsError } = useSWR("settings", fetchSettings, {
-    revalidateOnFocus: false,
-    dedupingInterval: 60000,
-  });
+  const { data: siteSettings, error: settingsError } = useSWR(
+    "settings",
+    fetchSettings,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+    },
+  );
 
   const settingsReady = !!siteSettings || !!settingsError;
-  const bannerImage = siteSettings?.bannerImage || (settingsError ? defaultBanner : null);
-  const profileImage = siteSettings?.profileImage || (settingsError ? defaultProfile : null);
+  const bannerImage =
+    siteSettings?.bannerImage || (settingsError ? defaultBanner : null);
+  const profileImage =
+    siteSettings?.profileImage || (settingsError ? defaultProfile : null);
 
   // Use SWR for highly optimized, cached data fetching
   const { data: githubData } = useSWR("/github", fetcher, {
@@ -77,9 +87,12 @@ export default function Hero() {
   useEffect(() => {
     // Check localStorage for seen state
     const seenKey = "stories_seen";
-    const seenIds = JSON.parse(localStorage.getItem(seenKey) || "[]") as string[];
+    const seenIds = JSON.parse(
+      localStorage.getItem(seenKey) || "[]",
+    ) as string[];
     const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
-    const allSeen = allStoryIds.length > 0 && allStoryIds.every((id) => seenIds.includes(id));
+    const allSeen =
+      allStoryIds.length > 0 && allStoryIds.every((id) => seenIds.includes(id));
     setStoriesSeen(allSeen);
   }, [stories]);
 
@@ -138,7 +151,7 @@ export default function Hero() {
     <section className="relative w-full overflow-hidden pb-4">
       {/* Banner */}
       <div
-        className={`h-48 md:h-64 w-full relative transition-colors duration-500 ${bannerError ? "bg-gradient-to-b from-slate-800 to-black" : (!settingsReady || bannerLoading) ? "bg-muted animate-pulse" : "bg-muted/30"}`}
+        className={`h-48 md:h-64 w-full relative transition-colors duration-500 ${bannerError ? "bg-gradient-to-b from-slate-800 to-black" : !settingsReady || bannerLoading ? "bg-muted animate-pulse" : "bg-muted/30"}`}
       >
         {!bannerError && bannerImage && (
           <Image
@@ -157,7 +170,13 @@ export default function Hero() {
       </div>
 
       {/* Profile Section */}
-      <div className="px-4 pb-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="px-4 pb-4"
+      >
         {/* Avatar & Action Button Row */}
         <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-4 relative z-10">
           <div
@@ -331,7 +350,7 @@ export default function Hero() {
           </div>
           <SpotifyNowPlaying />
         </div>
-      </div>
+      </motion.div>
 
       {/* Story Viewer Modal */}
       <AnimatePresence>
@@ -341,7 +360,10 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer"
-            onClick={() => { markStoriesSeen(); setActiveStoryIdx(null); }}
+            onClick={() => {
+              markStoriesSeen();
+              setActiveStoryIdx(null);
+            }}
           >
             <div
               className="relative w-full max-w-lg h-full md:h-[95vh] md:max-h-[900px] bg-muted md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
@@ -372,9 +394,7 @@ export default function Hero() {
               <div className="absolute top-8 inset-x-4 flex items-center justify-between z-20 text-white">
                 <div className="flex items-center gap-2">
                   <Avatar className="w-8 h-8 border border-white/20">
-                    <AvatarImage
-                      src={profileImage || "/profile-pic.jpg"}
-                    />
+                    <AvatarImage src={profileImage || "/profile-pic.jpg"} />
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
@@ -431,8 +451,7 @@ export default function Hero() {
                     />
                   )
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center">
-                  </div>
+                  <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center"></div>
                 )}
               </div>
 

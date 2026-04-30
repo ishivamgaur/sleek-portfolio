@@ -1,12 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import useSWR from "swr";
+import { fetchExperiences, ExperienceData } from "@/services/api";
 import { ExperienceItem } from "@/components/ExperienceItem";
 
 export default function ExperiencePage() {
-  const stories = useSelector((state: RootState) => state.portfolio.stories);
+  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>(
+    "/api/experiences",
+    fetchExperiences,
+  );
+
+  const sortedExperiences = [...experiences].sort((a, b) => {
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
 
   return (
     <div className="px-4 pt-24 pb-12 w-full">
@@ -26,14 +33,22 @@ export default function ExperiencePage() {
         </p>
       </motion.div>
 
-      {stories.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <div className="size-8 border-4 border-muted border-t-foreground rounded-full animate-spin" />
+        </div>
+      ) : sortedExperiences.length === 0 ? (
         <p className="text-muted-foreground text-center py-12">
           No experience entries found.
         </p>
       ) : (
         <div className="space-y-16">
-          {stories.map((story, idx) => (
-            <ExperienceItem key={story.id} story={story} index={idx} />
+          {sortedExperiences.map((exp, idx) => (
+            <ExperienceItem
+              key={exp._id || String(idx)}
+              story={exp as any}
+              index={idx}
+            />
           ))}
         </div>
       )}

@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 const COOKIE_NAME = "admin_session";
 const SECRET = new TextEncoder().encode(
-  process.env.ADMIN_SESSION_SECRET || "fallback-secret-change-me"
+  process.env.ADMIN_SESSION_SECRET || "fallback-secret-change-me",
 );
 
 /** Create a signed JWT valid for 24 hours */

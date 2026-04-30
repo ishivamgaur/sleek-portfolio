@@ -4,6 +4,8 @@ import Story from "@/models/Story";
 import { isAuthenticated } from "@/lib/auth";
 
 // GET — public, fetch all stories
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     await dbConnect();
@@ -13,7 +15,7 @@ export async function GET() {
     console.error("Stories GET error:", error);
     return NextResponse.json(
       { error: "Failed to fetch stories" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -33,8 +35,11 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Stories POST error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create story" },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to create story",
+      },
+      { status: 500 },
     );
   }
 }

@@ -69,6 +69,12 @@ const portfolioSlice = createSlice({
   },
 });
 
-export const { addProject, removeProject, addStory, removeStory, updateBannerImage, updateProfileImage } =
-  portfolioSlice.actions;
+export const {
+  addProject,
+  removeProject,
+  addStory,
+  removeStory,
+  updateBannerImage,
+  updateProfileImage,
+} = portfolioSlice.actions;
 export default portfolioSlice.reducer;

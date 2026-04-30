@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ProjectCard, Project } from "@/components/ProjectCard";
 
@@ -47,15 +48,19 @@ export default function AllProjectsPage() {
   return (
     <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
       {/* Header section */}
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight leading-none">
-          Projects
-        </h1>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mb-10"
+      >
+        <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
           A comprehensive archive of everything I've built, open-sourced, or
           experimented with.
         </p>
-      </div>
+      </motion.div>
 
       {/* Full Grid of all projects */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40 flex-1">

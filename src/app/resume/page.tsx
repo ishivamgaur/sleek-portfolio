@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -9,12 +12,18 @@ import {
 export default function ResumePage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-24 pb-12 min-h-screen flex flex-col">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
-        <p className="text-muted-foreground mt-2">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mb-10"
+      >
+        <h2 className="text-2xl font-bold tracking-tight">Resume</h2>
+        <p className="text-muted-foreground mt-1 text-[15px]">
           My professional background and qualifications.
         </p>
-      </div>
+      </motion.div>
 
       <Card className="flex-1 min-h-[600px] flex flex-col overflow-hidden bg-muted/30 border-border/50">
         <CardContent className="flex-1 p-0 flex flex-col">
