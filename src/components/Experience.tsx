@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import useSWR from "swr";
+import { fetchExperiences, ExperienceData } from "@/services/api";
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -10,12 +10,13 @@ import { ArrowUpRight } from "lucide-react";
 import { ExperienceItem } from "./ExperienceItem";
 
 export default function Experience() {
-  const stories = useSelector((state: RootState) => state.portfolio.stories);
+  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>("/api/experiences", fetchExperiences);
 
-  if (stories.length === 0) return null;
+  if (isLoading) return null; // or a shimmer
+  if (experiences.length === 0) return null;
 
   // Show only top 2 on home page
-  const displayedStories = stories.slice(0, 2);
+  const displayedExperiences = experiences.slice(0, 2);
 
   return (
     <section className="px-4 pb-8">
@@ -33,12 +34,12 @@ export default function Experience() {
       </motion.div>
 
       <div className="space-y-12">
-        {displayedStories.map((story, idx) => (
-          <ExperienceItem key={story.id} story={story} index={idx} />
+        {displayedExperiences.map((exp, idx) => (
+          <ExperienceItem key={exp._id || String(idx)} story={exp as any} index={idx} />
         ))}
       </div>
 
-      {stories.length > 2 && (
+      {experiences.length > 2 && (
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

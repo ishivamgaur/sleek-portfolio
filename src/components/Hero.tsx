@@ -26,15 +26,33 @@ import { RootState } from "@/store";
 import SpotifyNowPlaying from "./SpotifyNowPlaying";
 import useSWR from "swr";
 import { fetcher } from "@/lib/api";
+import { fetchSettings, fetchStories } from "@/services/api";
 
 import Image from "next/image";
 
 export default function Hero() {
-  const stories = useSelector((state: RootState) => state.portfolio.stories);
+  // Fetch stories from MongoDB
+  const { data: stories = [] } = useSWR("stories", fetchStories, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000,
+  });
+  const defaultBanner = useSelector((state: RootState) => state.portfolio.bannerImage);
+  const defaultProfile = useSelector((state: RootState) => state.portfolio.profileImage);
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [bannerError, setBannerError] = useState(false);
+  const [bannerLoading, setBannerLoading] = useState(true);
+
+  // Fetch persisted images from DB via SWR (cached, deduped)
+  const { data: siteSettings, error: settingsError } = useSWR("settings", fetchSettings, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000,
+  });
+
+  const settingsReady = !!siteSettings || !!settingsError;
+  const bannerImage = siteSettings?.bannerImage || (settingsError ? defaultBanner : null);
+  const profileImage = siteSettings?.profileImage || (settingsError ? defaultProfile : null);
 
   // Use SWR for highly optimized, cached data fetching
   const { data: githubData } = useSWR("/github", fetcher, {
@@ -52,6 +70,28 @@ export default function Hero() {
 
   const hasStories = stories.length > 0;
   const currentStory = activeStoryIdx !== null ? stories[activeStoryIdx] : null;
+
+  // Track "seen" state in localStorage — gradient fades after viewing
+  const [storiesSeen, setStoriesSeen] = useState(true); // default true to avoid flash
+
+  useEffect(() => {
+    // Check localStorage for seen state
+    const seenKey = "stories_seen";
+    const seenIds = JSON.parse(localStorage.getItem(seenKey) || "[]") as string[];
+    const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
+    const allSeen = allStoryIds.length > 0 && allStoryIds.every((id) => seenIds.includes(id));
+    setStoriesSeen(allSeen);
+  }, [stories]);
+
+  const markStoriesSeen = () => {
+    const seenKey = "stories_seen";
+    const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
+    localStorage.setItem(seenKey, JSON.stringify(allStoryIds));
+    setStoriesSeen(true);
+  };
+
+  // Show gradient only when stories exist AND not yet seen
+  const showGradient = hasStories && !storiesSeen;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -81,6 +121,8 @@ export default function Hero() {
       if (activeStoryIdx < stories.length - 1) {
         setActiveStoryIdx(activeStoryIdx + 1);
       } else if (isAuto) {
+        // Viewed all stories — mark as seen
+        markStoriesSeen();
         setActiveStoryIdx(null);
       }
     }
@@ -96,16 +138,20 @@ export default function Hero() {
     <section className="relative w-full overflow-hidden pb-4">
       {/* Banner */}
       <div
-        className={`h-48 md:h-64 w-full relative transition-colors duration-500 ${bannerError ? "bg-gradient-to-b from-slate-800 to-black" : "bg-muted/30"}`}
+        className={`h-48 md:h-64 w-full relative transition-colors duration-500 ${bannerError ? "bg-gradient-to-b from-slate-800 to-black" : (!settingsReady || bannerLoading) ? "bg-muted animate-pulse" : "bg-muted/30"}`}
       >
-        {!bannerError && (
+        {!bannerError && bannerImage && (
           <Image
-            src="/banner.jpg"
+            src={bannerImage}
             alt="Banner"
             fill
             priority
-            className="object-cover"
-            onError={() => setBannerError(true)}
+            className={`object-cover transition-opacity duration-500 ${bannerLoading ? "opacity-0" : "opacity-100"}`}
+            onLoad={() => setBannerLoading(false)}
+            onError={() => {
+              setBannerError(true);
+              setBannerLoading(false);
+            }}
           />
         )}
       </div>
@@ -115,16 +161,42 @@ export default function Hero() {
         {/* Avatar & Action Button Row */}
         <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-4 relative z-10">
           <div
-            className={`rounded-full transition-transform active:scale-95 ${hasStories ? "p-[3px] bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 cursor-pointer" : ""}`}
-            onClick={() => hasStories && setActiveStoryIdx(0)}
+            className={`rounded-full transition-all duration-500 active:scale-95 p-[3px] ${
+              !settingsReady
+                ? "bg-muted animate-pulse"
+                : showGradient
+                  ? "bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 cursor-pointer"
+                  : hasStories
+                    ? "bg-muted-foreground/30 cursor-pointer"
+                    : "bg-transparent"
+            }`}
+            onClick={() => {
+              if (hasStories) {
+                setActiveStoryIdx(0);
+              }
+            }}
           >
-            <Avatar className="w-20 h-20 md:w-28 md:h-28 border-4 border-background shadow-sm bg-background">
-              <AvatarImage
-                src="https://github.com/ishivamgaur.png"
-                alt="Shivam Gaur"
-                className="object-cover bg-background"
-              />
-              <AvatarFallback>SG</AvatarFallback>
+            <Avatar className="w-24 h-24 md:w-28 md:h-28 border-4 border-background shadow-sm bg-background relative">
+              {!settingsReady ? (
+                <div className="w-full h-full rounded-full bg-muted animate-pulse" />
+              ) : profileImage ? (
+                <AvatarImage
+                  src={profileImage}
+                  alt="Shivam Gaur"
+                  className="object-cover bg-background"
+                />
+              ) : null}
+              {settingsReady && (
+                <AvatarFallback className="w-full h-full relative bg-muted">
+                  <Image
+                    src="/profile-pic.jpg"
+                    alt="Shivam Gaur"
+                    fill
+                    className="object-cover rounded-full"
+                    sizes="(max-width: 768px) 80px, 112px"
+                  />
+                </AvatarFallback>
+              )}
             </Avatar>
           </div>
 
@@ -269,7 +341,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer"
-            onClick={() => setActiveStoryIdx(null)}
+            onClick={() => { markStoriesSeen(); setActiveStoryIdx(null); }}
           >
             <div
               className="relative w-full max-w-lg h-full md:h-[95vh] md:max-h-[900px] bg-muted md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
@@ -301,18 +373,12 @@ export default function Hero() {
                 <div className="flex items-center gap-2">
                   <Avatar className="w-8 h-8 border border-white/20">
                     <AvatarImage
-                      src={
-                        currentStory?.imageUrl ||
-                        `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentStory?.company}`
-                      }
+                      src={profileImage || "/profile-pic.jpg"}
                     />
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold">{currentStory?.company}</p>
-                    <p className="text-[10px] opacity-70">
-                      {currentStory?.role}
-                    </p>
+                    <p className="text-sm font-bold">Shivam Gaur</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -333,6 +399,7 @@ export default function Hero() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      markStoriesSeen();
                       setActiveStoryIdx(null);
                     }}
                     className="p-1 hover:bg-white/10 rounded-md transition-colors"
@@ -347,23 +414,24 @@ export default function Hero() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {currentStory?.imageUrl ? (
-                  <img
-                    src={currentStory.imageUrl}
-                    alt={currentStory.company}
-                    className="w-full h-full object-contain"
-                  />
+                  currentStory.mediaType === "video" ? (
+                    <video
+                      src={currentStory.imageUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <img
+                      src={currentStory.imageUrl}
+                      alt="Story"
+                      className="w-full h-full object-contain"
+                    />
+                  )
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center">
-                    <p className="text-2xl font-bold text-white leading-tight">
-                      {currentStory?.content}
-                    </p>
-                  </div>
-                )}
-                {currentStory?.imageUrl && (
-                  <div className="absolute bottom-12 inset-x-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
-                    <p className="text-lg font-medium leading-relaxed">
-                      {currentStory.content}
-                    </p>
                   </div>
                 )}
               </div>

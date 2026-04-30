@@ -7,11 +7,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Story } from "@/store/slices/portfolioSlice";
+import { ExperienceData } from "@/services/api";
 import { MapPin } from "lucide-react";
 
 interface ExperienceItemProps {
-  story: Story;
+  story: ExperienceData;
   index: number;
   showTech?: boolean;
 }
