@@ -115,10 +115,10 @@ export default function Hero() {
         {/* Avatar & Action Button Row */}
         <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-4 relative z-10">
           <div
-            className={`p-[3px] rounded-2xl transition-transform active:scale-95 ${hasStories ? "bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 cursor-pointer" : ""}`}
+            className={`rounded-full transition-transform active:scale-95 ${hasStories ? "p-[3px] bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 cursor-pointer" : ""}`}
             onClick={() => hasStories && setActiveStoryIdx(0)}
           >
-            <Avatar className="w-24 h-24 md:w-32 md:h-32 border-4 border-background shadow-sm bg-background">
+            <Avatar className="w-20 h-20 md:w-28 md:h-28 border-4 border-background shadow-sm bg-background">
               <AvatarImage
                 src="https://github.com/ishivamgaur.png"
                 alt="Shivam Gaur"
@@ -153,7 +153,7 @@ export default function Hero() {
               <TooltipTrigger
                 render={
                   <a
-                    href="https://instagram.com"
+                    href="https://instagram.com/ishivamgaur"
                     target="_blank"
                     rel="noopener noreferrer"
                   />
@@ -173,7 +173,7 @@ export default function Hero() {
               <TooltipTrigger
                 render={
                   <a
-                    href="https://linkedin.com"
+                    href="https://linkedin.com/in/ishivamgaur"
                     target="_blank"
                     rel="noopener noreferrer"
                   />
@@ -193,7 +193,7 @@ export default function Hero() {
               <TooltipTrigger
                 render={
                   <a
-                    href="https://twitter.com"
+                    href="https://twitter.com/ishivamgaur"
                     target="_blank"
                     rel="noopener noreferrer"
                   />
