@@ -31,6 +31,11 @@ export async function checkAuth(): Promise<boolean> {
 export interface SiteSettings {
   bannerImage: string;
   profileImage: string;
+  publicId?: string;
+  deleteBanner?: string;
+  deleteProfile?: string;
+  previousBanners?: any[];
+  previousProfiles?: any[];
 }
 
 export async function fetchSettings(): Promise<SiteSettings> {
@@ -58,6 +63,7 @@ export interface StoryData {
   _id?: string;
   imageUrl: string;
   mediaType?: "photo" | "video";
+  createdAt?: string;
 }
 
 export async function fetchStories(): Promise<StoryData[]> {
@@ -77,6 +83,16 @@ export async function createStory(
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Failed to create story");
   return data;
+}
+
+export async function deleteStory(id: string): Promise<void> {
+  const res = await fetch(`/api/stories/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || "Failed to delete story");
+  }
 }
 
 // ─── Experiences (Professional History) ─────────────

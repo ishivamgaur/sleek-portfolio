@@ -16,6 +16,18 @@ const SiteSettingsSchema = new mongoose.Schema(
       type: String,
       default: "https://github.com/ishivamgaur.png?size=200",
     },
+    previousBanners: [
+      {
+        url: { type: String },
+        publicId: { type: String },
+      },
+    ],
+    previousProfiles: [
+      {
+        url: { type: String },
+        publicId: { type: String },
+      },
+    ],
   },
   { timestamps: true },
 );

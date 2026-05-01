@@ -28,7 +28,11 @@ export function ProjectCard({
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth === 0) {
+    if (
+      imgRef.current &&
+      imgRef.current.complete &&
+      imgRef.current.naturalWidth === 0
+    ) {
       setImgError(true);
     }
   }, []);

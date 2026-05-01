@@ -6,7 +6,7 @@ import { Upload, Loader2, CheckCircle2, X } from "lucide-react";
 import Cropper from "react-easy-crop";
 
 interface FileUploadProps {
-  onUploadComplete: (url: string) => void;
+  onUploadComplete: (url: string, publicId?: string) => void;
   accept?: string;
   label?: string;
   uploadType?: "banner" | "profile" | "story" | "general";
@@ -163,7 +163,7 @@ export default function FileUpload({
       }
 
       const data = await res.json();
-      onUploadComplete(data.secure_url);
+      onUploadComplete(data.secure_url, data.public_id);
       setDone(true);
       setTimeout(() => setDone(false), 2000);
     } catch {

@@ -76,6 +76,21 @@ export default function Hero() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  const formatTimeAgo = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+
+    if (diffInMins < 1) return "just now";
+    if (diffInMins < 60) return `${diffInMins}m`;
+    if (diffInHours < 24) return `${diffInHours}h`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}d`;
+  };
+
   const hasStories = stories.length > 0;
   const currentStory = activeStoryIdx !== null ? stories[activeStoryIdx] : null;
 
@@ -397,7 +412,17 @@ export default function Hero() {
                     <AvatarFallback>SG</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold">Shivam Gaur</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-bold">Shivam Gaur</p>
+                      {currentStory?.createdAt && (
+                        <>
+                          <span className="text-white/60 text-xs">•</span>
+                          <span className="text-white/70 text-xs font-normal tracking-wide">
+                            {formatTimeAgo(currentStory.createdAt)}
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">

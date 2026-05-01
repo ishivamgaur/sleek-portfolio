@@ -22,10 +22,18 @@ export default function ProjectDetailsPage({
   const thumbRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    if (videoRef.current && videoRef.current.complete && videoRef.current.naturalWidth === 0) {
+    if (
+      videoRef.current &&
+      videoRef.current.complete &&
+      videoRef.current.naturalWidth === 0
+    ) {
       setImgError(true);
     }
-    if (thumbRef.current && thumbRef.current.complete && thumbRef.current.naturalWidth === 0) {
+    if (
+      thumbRef.current &&
+      thumbRef.current.complete &&
+      thumbRef.current.naturalWidth === 0
+    ) {
       setImgError(true);
     }
   }, []);
