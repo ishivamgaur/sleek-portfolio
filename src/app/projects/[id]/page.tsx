@@ -10,12 +10,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
 export default function ProjectDetailsPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const [imgError, setImgError] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -112,21 +115,28 @@ export default function ProjectDetailsPage({
       </motion.div>
 
       <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden bg-muted/30 border border-border/40 relative shadow-2xl">
-        {project.videoUrl ? (
+        {project.videoUrl && !imgError ? (
           <img
             src={project.videoUrl}
             alt={project.title}
+            onError={() => setImgError(true)}
             className="w-full h-full object-cover"
           />
-        ) : project.thumbnailUrl ? (
+        ) : project.thumbnailUrl && !imgError ? (
           <img
             src={project.thumbnailUrl}
             alt={project.title}
+            onError={() => setImgError(true)}
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <FolderGit2 className="w-10 h-10 text-muted-foreground/30" />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary/40 via-muted to-secondary/10 shadow-inner">
+            <div className="w-16 h-16 rounded-2xl bg-background/50 flex items-center justify-center shadow-sm mb-4 backdrop-blur-sm">
+              <FolderGit2 className="w-8 h-8 text-muted-foreground/70" />
+            </div>
+            <span className="text-xs font-bold text-muted-foreground/50 tracking-widest uppercase">
+              Project Preview
+            </span>
           </div>
         )}
       </div>
