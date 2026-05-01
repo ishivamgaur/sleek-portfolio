@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { portfolioData } from "@/data/portfolio";
+import useSWR from "swr";
+import { fetchExperiences } from "@/services/api";
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -9,9 +11,14 @@ import { ArrowUpRight } from "lucide-react";
 import { ExperienceItem } from "./ExperienceItem";
 
 export default function Experience() {
-  const experiences = portfolioData.experiences;
-
-  if (experiences.length === 0) return null;
+  const { data: experiences = [], isLoading } = useSWR(
+    "experiences",
+    fetchExperiences,
+    {
+      fallbackData: portfolioData.experiences,
+      revalidateOnFocus: false,
+    },
+  );
 
   const sortedExperiences = [...experiences].sort((a, b) => {
     return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();

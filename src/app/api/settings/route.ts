@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import dbConnect from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 import { isAuthenticated } from "@/lib/auth";
-import { jsonNoStore, tooManyRequests } from "@/lib/http";
+import { jsonNoStore, jsonPublicCache, tooManyRequests } from "@/lib/http";
 import { rateLimitRequest } from "@/lib/ratelimit";
 
 import crypto from "crypto";
@@ -53,22 +53,31 @@ async function deleteFromCloudinary(publicId: string) {
 }
 
 // GET — fetch current settings (public)
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const isWarmup = req.nextUrl.searchParams.get("warm") === "1";
+
     await dbConnect();
-    let settings = await SiteSettings.findOne({ key: "main" });
+    let settings = await SiteSettings.findOne({ key: "main" })
+      .select(
+        "bannerImage profileImage resumeUrl previousBanners previousProfiles",
+      )
+      .lean();
 
     if (!settings) {
-      settings = await SiteSettings.create({ key: "main" });
+      const createdSettings = await SiteSettings.create({ key: "main" });
+      settings = createdSettings.toObject();
     }
 
-    return jsonNoStore({
+    const data = {
       bannerImage: settings.bannerImage,
       profileImage: settings.profileImage,
       resumeUrl: settings.resumeUrl || "",
       previousBanners: settings.previousBanners || [],
       previousProfiles: settings.previousProfiles || [],
-    });
+    };
+
+    return isWarmup ? jsonNoStore(data) : jsonPublicCache(data);
   } catch (error) {
     console.error("Settings GET error:", error);
     return jsonNoStore({ error: "Failed to fetch settings" }, { status: 500 });
