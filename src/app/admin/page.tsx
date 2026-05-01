@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addProject,
   addStory,
   updateBannerImage,
   updateProfileImage,
@@ -35,7 +34,6 @@ import {
   fetchSettings,
   updateSettings,
   createStory,
-  createExperience,
 } from "@/services/api";
 
 export default function AdminPage() {
@@ -70,48 +68,10 @@ export default function AdminPage() {
       .catch(() => {});
   }, []);
 
-  const [projectData, setProjectData] = useState({
-    title: "",
-    description: "",
-    link: "",
-    tags: "",
-  });
   const [storyData, setStoryData] = useState({
     imageUrl: "",
     mediaType: "photo" as "photo" | "video",
   });
-  const [expData, setExpData] = useState({
-    role: "",
-    company: "",
-    content: "",
-    date: "",
-    startDate: "",
-    location: "",
-    type: "On-site",
-    tech: "",
-  });
-
-  const handleAddProject = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!projectData.title || !projectData.description) return;
-
-    dispatch(
-      addProject({
-        id: Date.now().toString(),
-        title: projectData.title,
-        description: projectData.description,
-        link: projectData.link,
-        tags: projectData.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-      }),
-    );
-
-    setProjectData({ title: "", description: "", link: "", tags: "" });
-    alert("Project added successfully!");
-  };
-
   const handleAddStory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!storyData.imageUrl) {
@@ -128,46 +88,6 @@ export default function AdminPage() {
       setStoryData({ imageUrl: "", mediaType: "photo" });
     } catch (err: any) {
       alert(err.message || "Failed to add story");
-    }
-  };
-
-  const handleAddExperience = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      !expData.role ||
-      !expData.company ||
-      !expData.content ||
-      !expData.startDate
-    )
-      return;
-
-    try {
-      await createExperience({
-        role: expData.role,
-        company: expData.company,
-        content: expData.content,
-        date: expData.date || "Current",
-        startDate: expData.startDate,
-        location: expData.location || "Noida",
-        type: expData.type,
-        tech: expData.tech
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-      });
-      alert("Experience added successfully!");
-      setExpData({
-        role: "",
-        company: "",
-        content: "",
-        date: "",
-        startDate: "",
-        location: "",
-        type: "On-site",
-        tech: "",
-      });
-    } catch (err: any) {
-      alert(err.message || "Failed to add experience");
     }
   };
 
@@ -328,229 +248,45 @@ export default function AdminPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        <div className="flex flex-col gap-8">
-          <Card className="border-border/50 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-xl">Add New Project</CardTitle>
-              <CardDescription>
-                Fill in the details to add a new project.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleAddProject} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Project Title</Label>
-                  <Input
-                    type="text"
-                    value={projectData.title}
-                    onChange={(e) =>
-                      setProjectData({ ...projectData, title: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    value={projectData.description}
-                    onChange={(e) =>
-                      setProjectData({
-                        ...projectData,
-                        description: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Link</Label>
-                    <Input
-                      type="url"
-                      value={projectData.link}
-                      onChange={(e) =>
-                        setProjectData({ ...projectData, link: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Tags</Label>
-                    <Input
-                      type="text"
-                      value={projectData.tags}
-                      onChange={(e) =>
-                        setProjectData({ ...projectData, tags: e.target.value })
-                      }
-                      placeholder="React, Next.js"
-                    />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full font-bold">
-                  Add Project
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-xl">Add New Story</CardTitle>
-              <CardDescription>
-                Upload a photo or video to your story.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleAddStory} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Story Media (Required)</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      value={storyData.imageUrl}
-                      onChange={(e) =>
-                        setStoryData({ ...storyData, imageUrl: e.target.value })
-                      }
-                      placeholder="Paste URL or upload"
-                      required
-                    />
-                    <FileUpload
-                      accept="image/*,video/*"
-                      label="Upload"
-                      uploadType="story"
-                      onUploadComplete={(url) =>
-                        setStoryData({
-                          ...storyData,
-                          imageUrl: url,
-                          mediaType: url.includes("/video/upload/")
-                            ? "video"
-                            : "photo",
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full font-bold">
-                  Add Story
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-
         <Card className="border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl">Add New Experience</CardTitle>
+            <CardTitle className="text-xl">Add New Story</CardTitle>
             <CardDescription>
-              Share a milestone in your professional journey.
+              Upload a photo or video to your story.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleAddExperience} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Company</Label>
-                  <Input
-                    type="text"
-                    value={expData.company}
-                    onChange={(e) =>
-                      setExpData({ ...expData, company: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Role</Label>
-                  <Input
-                    type="text"
-                    value={expData.role}
-                    onChange={(e) =>
-                      setExpData({ ...expData, role: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Start Date</Label>
-                  <Input
-                    type="date"
-                    value={expData.startDate}
-                    onChange={(e) =>
-                      setExpData({ ...expData, startDate: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>End Date (or blank)</Label>
-                  <Input
-                    type="date"
-                    value={expData.date}
-                    onChange={(e) =>
-                      setExpData({ ...expData, date: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Location</Label>
-                  <Input
-                    type="text"
-                    value={expData.location}
-                    onChange={(e) =>
-                      setExpData({ ...expData, location: e.target.value })
-                    }
-                    placeholder="Noida"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Type</Label>
-                  <Select
-                    value={expData.type}
-                    onValueChange={(val: string | null) =>
-                      setExpData({ ...expData, type: val || "On-site" })
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="On-site">On-site</SelectItem>
-                      <SelectItem value="Remote">Remote</SelectItem>
-                      <SelectItem value="Hybrid">Hybrid</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
+            <form onSubmit={handleAddStory} className="space-y-4">
               <div className="space-y-2">
-                <Label>Tech Stack (Comma separated)</Label>
-                <Input
-                  type="text"
-                  value={expData.tech}
-                  onChange={(e) =>
-                    setExpData({ ...expData, tech: e.target.value })
-                  }
-                  placeholder="React, Nextjs, Tailwind"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Description (End each bullet with a period)</Label>
-                <Textarea
-                  value={expData.content}
-                  onChange={(e) =>
-                    setExpData({ ...expData, content: e.target.value })
-                  }
-                  required
-                />
+                <Label>Story Media (Required)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    value={storyData.imageUrl}
+                    onChange={(e) =>
+                      setStoryData({ ...storyData, imageUrl: e.target.value })
+                    }
+                    placeholder="Paste URL or upload"
+                    required
+                  />
+                  <FileUpload
+                    accept="image/*,video/*"
+                    label="Upload"
+                    uploadType="story"
+                    onUploadComplete={(url) =>
+                      setStoryData({
+                        ...storyData,
+                        imageUrl: url,
+                        mediaType: url.includes("/video/upload/")
+                          ? "video"
+                          : "photo",
+                      })
+                    }
+                  />
+                </div>
               </div>
               <Button type="submit" className="w-full font-bold">
-                Add Experience
+                Add Story
               </Button>
             </form>
           </CardContent>

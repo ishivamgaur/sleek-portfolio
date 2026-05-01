@@ -74,15 +74,16 @@ export function ProjectCard({
               {project.title}
             </h3>
             {project.link && (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open(project.link, "_blank", "noopener,noreferrer");
+                }}
                 className="text-muted-foreground hover:text-primary transition-colors z-10"
-                onClick={(e) => e.stopPropagation()}
               >
                 <ArrowUpRight className="w-5 h-5" />
-              </a>
+              </button>
             )}
           </div>
 

@@ -157,6 +157,7 @@ export default function Hero() {
             alt="Banner"
             fill
             priority
+            sizes="(max-width: 768px) 100vw, 768px"
             className={`object-cover transition-opacity duration-500 ${bannerLoading ? "opacity-0" : "opacity-100"}`}
             onLoad={() => setBannerLoading(false)}
             onError={() => {

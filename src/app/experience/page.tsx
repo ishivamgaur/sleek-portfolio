@@ -1,15 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import useSWR from "swr";
-import { fetchExperiences, ExperienceData } from "@/services/api";
 import { ExperienceItem } from "@/components/ExperienceItem";
+import { portfolioData } from "@/data/portfolio";
 
 export default function ExperiencePage() {
-  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>(
-    "/api/experiences",
-    fetchExperiences,
-  );
+  const experiences = portfolioData.experiences;
 
   const sortedExperiences = [...experiences].sort((a, b) => {
     return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
@@ -33,11 +29,7 @@ export default function ExperiencePage() {
         </p>
       </motion.div>
 
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="size-8 border-4 border-muted border-t-foreground rounded-full animate-spin" />
-        </div>
-      ) : sortedExperiences.length === 0 ? (
+      {sortedExperiences.length === 0 ? (
         <p className="text-muted-foreground text-center py-12">
           No experience entries found.
         </p>

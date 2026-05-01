@@ -4,43 +4,10 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ProjectCard, Project } from "@/components/ProjectCard";
 
-// Mock data (In a real scenario, this would be fetched from MongoDB on the server side)
-const projects: Project[] = [
-  {
-    _id: "1",
-    title: "Portfolio Website",
-    description:
-      "A sleek, modern portfolio website built with Next.js, Tailwind CSS, and Framer Motion for ultra-smooth animations.",
-    tags: ["Next.js", "React", "Tailwind", "Framer Motion"],
-    link: "https://github.com/ishivamgaur",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1507238692062-8e0ec06eadec?q=80&w=600&auto=format&fit=crop",
-    videoUrl:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2FjcW12cm1oN2w3bWZlaDN0cWRzYWw3ZG5qamJpMmtwd2Rla2RkMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif",
-  },
-  {
-    _id: "2",
-    title: "Full Stack E-Commerce",
-    description:
-      "A complete MERN stack e-commerce platform with Stripe integration, Redux state management, and an admin dashboard.",
-    tags: ["MongoDB", "Express", "React", "Node.js"],
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=600&auto=format&fit=crop",
-    videoUrl:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm9sZnV6aXk0a2E2YzEwZWh3OTI3YzEwaHRrZWV5NWE4ZWY0YzMwaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jIGsO4/giphy.gif",
-  },
-  {
-    _id: "3",
-    title: "AI Chat Application",
-    description:
-      "Real-time AI chat application leveraging WebSockets and OpenAI's API for intelligent conversation capabilities.",
-    tags: ["OpenAI", "Socket.io", "React", "Node.js"],
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&auto=format&fit=crop",
-  },
-];
+import { portfolioData } from "@/data/portfolio";
 
 export default function AllProjectsPage() {
+  const projects = portfolioData.projects;
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

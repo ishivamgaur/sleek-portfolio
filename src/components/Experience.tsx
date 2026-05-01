@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import useSWR from "swr";
-import { fetchExperiences, ExperienceData } from "@/services/api";
+import { portfolioData } from "@/data/portfolio";
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -10,12 +9,8 @@ import { ArrowUpRight } from "lucide-react";
 import { ExperienceItem } from "./ExperienceItem";
 
 export default function Experience() {
-  const { data: experiences = [], isLoading } = useSWR<ExperienceData[]>(
-    "/api/experiences",
-    fetchExperiences,
-  );
+  const experiences = portfolioData.experiences;
 
-  if (isLoading) return null; // or a shimmer
   if (experiences.length === 0) return null;
 
   const sortedExperiences = [...experiences].sort((a, b) => {
