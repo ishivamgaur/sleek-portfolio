@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, MonitorPlay } from "lucide-react";
@@ -25,6 +25,13 @@ export function ProjectCard({
   idx: number;
 }) {
   const [imgError, setImgError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth === 0) {
+      setImgError(true);
+    }
+  }, []);
 
   return (
     <Link href={`/projects/${project._id}`} className="block">
@@ -48,6 +55,7 @@ export function ProjectCard({
             </div>
           ) : (
             <img
+              ref={imgRef}
               src={project.thumbnailUrl}
               alt={project.title}
               onError={() => setImgError(true)}

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ProjectDetailsPage({
   params,
@@ -18,6 +18,17 @@ export default function ProjectDetailsPage({
   params: { id: string };
 }) {
   const [imgError, setImgError] = useState(false);
+  const videoRef = useRef<HTMLImageElement>(null);
+  const thumbRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current && videoRef.current.complete && videoRef.current.naturalWidth === 0) {
+      setImgError(true);
+    }
+    if (thumbRef.current && thumbRef.current.complete && thumbRef.current.naturalWidth === 0) {
+      setImgError(true);
+    }
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -117,6 +128,7 @@ export default function ProjectDetailsPage({
       <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden bg-muted/30 border border-border/40 relative shadow-2xl">
         {project.videoUrl && !imgError ? (
           <img
+            ref={videoRef}
             src={project.videoUrl}
             alt={project.title}
             onError={() => setImgError(true)}
@@ -124,6 +136,7 @@ export default function ProjectDetailsPage({
           />
         ) : project.thumbnailUrl && !imgError ? (
           <img
+            ref={thumbRef}
             src={project.thumbnailUrl}
             alt={project.title}
             onError={() => setImgError(true)}
