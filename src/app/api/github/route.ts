@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+type GitHubRepo = { stargazers_count?: number };
+
 export async function GET() {
   const username = process.env.GITHUB_USERNAME || "ishivamgaur";
   const token = process.env.GITHUB_TOKEN;
@@ -25,8 +27,8 @@ export async function GET() {
 
     let stars = 0;
     if (Array.isArray(reposData)) {
-      reposData.forEach((repo: any) => {
-        stars += repo.stargazers_count;
+      (reposData as GitHubRepo[]).forEach((repo) => {
+        stars += repo.stargazers_count || 0;
       });
     }
 

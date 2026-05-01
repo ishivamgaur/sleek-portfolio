@@ -95,25 +95,23 @@ export default function Hero() {
   const currentStory = activeStoryIdx !== null ? stories[activeStoryIdx] : null;
 
   // Track "seen" state in localStorage — gradient fades after viewing
-  const [storiesSeen, setStoriesSeen] = useState(true); // default true to avoid flash
+  const getSeenStoryIds = () => {
+    if (typeof window === "undefined") return [] as string[];
+    return JSON.parse(localStorage.getItem("stories_seen") || "[]") as string[];
+  };
 
-  useEffect(() => {
-    // Check localStorage for seen state
-    const seenKey = "stories_seen";
-    const seenIds = JSON.parse(
-      localStorage.getItem(seenKey) || "[]",
-    ) as string[];
+  const storiesSeen = (() => {
+    const seenIds = getSeenStoryIds();
     const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
-    const allSeen =
-      allStoryIds.length > 0 && allStoryIds.every((id) => seenIds.includes(id));
-    setStoriesSeen(allSeen);
-  }, [stories]);
+    return (
+      allStoryIds.length > 0 && allStoryIds.every((id) => seenIds.includes(id))
+    );
+  })();
 
   const markStoriesSeen = () => {
     const seenKey = "stories_seen";
     const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
     localStorage.setItem(seenKey, JSON.stringify(allStoryIds));
-    setStoriesSeen(true);
   };
 
   // Show gradient only when stories exist AND not yet seen
@@ -135,20 +133,15 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, [activeStoryIdx, isPaused]);
 
-  useEffect(() => {
-    if (activeStoryIdx !== null) {
-      setProgress(0);
-      setIsPaused(false);
-    }
-  }, [activeStoryIdx]);
-
   const handleNext = (isAuto = false) => {
     if (activeStoryIdx !== null) {
       if (activeStoryIdx < stories.length - 1) {
+        setProgress(0);
         setActiveStoryIdx(activeStoryIdx + 1);
       } else if (isAuto) {
         // Viewed all stories — mark as seen
         markStoriesSeen();
+        setProgress(0);
         setActiveStoryIdx(null);
       }
     }
@@ -156,6 +149,7 @@ export default function Hero() {
 
   const handlePrev = () => {
     if (activeStoryIdx !== null && activeStoryIdx > 0) {
+      setProgress(0);
       setActiveStoryIdx(activeStoryIdx - 1);
     }
   };
@@ -205,6 +199,8 @@ export default function Hero() {
             }`}
             onClick={() => {
               if (hasStories) {
+                setProgress(0);
+                setIsPaused(false);
                 setActiveStoryIdx(0);
               }
             }}
@@ -376,6 +372,8 @@ export default function Hero() {
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer"
             onClick={() => {
               markStoriesSeen();
+              setProgress(0);
+              setIsPaused(false);
               setActiveStoryIdx(null);
             }}
           >
@@ -444,6 +442,8 @@ export default function Hero() {
                     onClick={(e) => {
                       e.stopPropagation();
                       markStoriesSeen();
+                      setProgress(0);
+                      setIsPaused(false);
                       setActiveStoryIdx(null);
                     }}
                     className="p-1 hover:bg-white/10 rounded-md transition-colors"

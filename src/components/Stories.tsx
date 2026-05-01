@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -12,38 +12,36 @@ export default function Stories() {
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (activeStoryIdx !== null) {
+  const handleNext = useCallback(() => {
+    if (activeStoryIdx === null) return;
+    if (activeStoryIdx < stories.length - 1) {
+      setActiveStoryIdx(activeStoryIdx + 1);
+    } else {
+      setActiveStoryIdx(null);
       setProgress(0);
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            handleNext();
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 50); // 5 seconds total (100 * 50ms)
     }
-    return () => clearInterval(interval);
-  }, [activeStoryIdx]);
+  }, [activeStoryIdx, stories.length]);
 
-  const handleNext = () => {
-    if (activeStoryIdx !== null) {
-      if (activeStoryIdx < stories.length - 1) {
-        setActiveStoryIdx(activeStoryIdx + 1);
-      } else {
-        setActiveStoryIdx(null);
-      }
-    }
-  };
-
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (activeStoryIdx !== null && activeStoryIdx > 0) {
       setActiveStoryIdx(activeStoryIdx - 1);
+      setProgress(0);
     }
-  };
+  }, [activeStoryIdx]);
+
+  useEffect(() => {
+    if (activeStoryIdx === null) return;
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          handleNext();
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 50); // 5 seconds total (100 * 50ms)
+    return () => clearInterval(interval);
+  }, [activeStoryIdx, handleNext]);
 
   if (stories.length === 0) return null;
 
@@ -54,7 +52,10 @@ export default function Stories() {
           <div
             key={story.id}
             className="flex flex-col items-center gap-1 cursor-pointer min-w-[80px]"
-            onClick={() => setActiveStoryIdx(idx)}
+            onClick={() => {
+              setProgress(0);
+              setActiveStoryIdx(idx);
+            }}
           >
             <div className="p-[3px] rounded-full bg-gradient-to-tr from-yellow-400 via-fuchsia-500 to-indigo-500 transition-transform hover:scale-105 active:scale-95">
               <div className="p-[2px] bg-background rounded-full">
@@ -131,7 +132,10 @@ export default function Stories() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setActiveStoryIdx(null)}
+                  onClick={() => {
+                    setActiveStoryIdx(null);
+                    setProgress(0);
+                  }}
                   className="p-1 hover:bg-white/10 rounded-full"
                 >
                   <X className="w-6 h-6" />

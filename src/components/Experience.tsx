@@ -39,7 +39,7 @@ export default function Experience() {
         {displayedExperiences.map((exp, idx) => (
           <ExperienceItem
             key={exp._id || String(idx)}
-            story={exp as any}
+            story={exp}
             index={idx}
           />
         ))}

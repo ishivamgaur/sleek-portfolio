@@ -3,7 +3,7 @@
 import { useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, Loader2, CheckCircle2, X } from "lucide-react";
-import Cropper from "react-easy-crop";
+import Cropper, { type Area } from "react-easy-crop";
 
 interface FileUploadProps {
   onUploadComplete: (url: string, publicId?: string) => void;
@@ -84,7 +84,7 @@ export default function FileUpload({
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isVideoSelected, setIsVideoSelected] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -110,12 +110,9 @@ export default function FileUpload({
     }
   };
 
-  const onCropComplete = useCallback(
-    (croppedArea: any, croppedAreaPixels: any) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    [],
-  );
+  const onCropComplete = useCallback((_: Area, pixels: Area) => {
+    setCroppedAreaPixels(pixels);
+  }, []);
 
   const handleCropSave = async () => {
     if (!imageSrc || !croppedAreaPixels) return;

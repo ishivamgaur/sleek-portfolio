@@ -1,24 +1,58 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import crypto from "node:crypto";
 
 const COOKIE_NAME = "admin_session";
-const SECRET = new TextEncoder().encode(
-  process.env.ADMIN_SESSION_SECRET || "fallback-secret-change-me",
-);
+const ISSUER = "sleek-portfolio";
+const AUDIENCE = "admin";
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __devAdminSessionSecret: string | undefined;
+}
+
+function getSecret(): Uint8Array {
+  const configured = process.env.ADMIN_SESSION_SECRET;
+  if (configured && configured.trim().length >= 32) {
+    return new TextEncoder().encode(configured);
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "ADMIN_SESSION_SECRET must be set (>= 32 chars) in production.",
+    );
+  }
+
+  if (!globalThis.__devAdminSessionSecret) {
+    globalThis.__devAdminSessionSecret = crypto.randomBytes(32).toString("hex");
+    console.warn(
+      "[auth] ADMIN_SESSION_SECRET not set; using an ephemeral dev secret (sessions reset on restart).",
+    );
+  }
+
+  return new TextEncoder().encode(globalThis.__devAdminSessionSecret);
+}
 
 /** Create a signed JWT valid for 24 hours */
 export async function createToken(): Promise<string> {
   return new SignJWT({ role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
+    .setIssuer(ISSUER)
+    .setAudience(AUDIENCE)
+    .setJti(crypto.randomUUID())
     .setIssuedAt()
     .setExpirationTime("24h")
-    .sign(SECRET);
+    .sign(getSecret());
 }
 
 /** Verify the JWT token — returns true if valid */
 export async function verifyToken(token: string): Promise<boolean> {
   try {
-    await jwtVerify(token, SECRET);
+    await jwtVerify(token, getSecret(), {
+      issuer: ISSUER,
+      audience: AUDIENCE,
+      algorithms: ["HS256"],
+    });
     return true;
   } catch {
     return false;

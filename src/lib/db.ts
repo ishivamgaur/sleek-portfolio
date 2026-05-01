@@ -13,11 +13,21 @@ if (!MONGODB_URI) {
   );
 }
 
-let cached = (global as any).mongoose;
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
 
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+declare global {
+  // eslint-disable-next-line no-var
+  var __mongooseCache: MongooseCache | undefined;
 }
+
+const cached: MongooseCache = globalThis.__mongooseCache || {
+  conn: null,
+  promise: null,
+};
+globalThis.__mongooseCache = cached;
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000; // doubles each retry
@@ -45,19 +55,20 @@ async function connectWithRetry(): Promise<typeof mongoose> {
     try {
       const conn = await mongoose.connect(MONGODB_URI!, opts);
       return conn;
-    } catch (err: any) {
+    } catch (err: unknown) {
       lastError = err;
+      const e = err as { code?: string; syscall?: string };
       const isDnsError =
-        err?.code === "ECONNREFUSED" ||
-        err?.code === "ENOTFOUND" ||
-        err?.code === "ETIMEOUT" ||
-        err?.syscall === "querySrv";
+        e?.code === "ECONNREFUSED" ||
+        e?.code === "ENOTFOUND" ||
+        e?.code === "ETIMEOUT" ||
+        e?.syscall === "querySrv";
 
       if (isDnsError && attempt < MAX_RETRIES) {
         const delay = RETRY_DELAY_MS * Math.pow(2, attempt - 1);
         console.warn(
           `[db] MongoDB DNS/connection error (attempt ${attempt}/${MAX_RETRIES}), retrying in ${delay}ms...`,
-          err.code || err.syscall,
+          e.code || e.syscall,
         );
         await new Promise((r) => setTimeout(r, delay));
       } else {

@@ -28,9 +28,21 @@ const SiteSettingsSchema = new mongoose.Schema(
         publicId: { type: String },
       },
     ],
+    resumeUrl: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true },
 );
+
+// If the model exists, check if it has the resumeUrl field. If not, delete it so it can be re-registered with the new schema.
+if (mongoose.models.SiteSettings) {
+  const schema = mongoose.models.SiteSettings.schema;
+  if (!schema.paths.resumeUrl) {
+    delete mongoose.models.SiteSettings;
+  }
+}
 
 export default mongoose.models.SiteSettings ||
   mongoose.model("SiteSettings", SiteSettingsSchema);

@@ -24,7 +24,7 @@ export default function AllProjectsPage() {
       >
         <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
-          A comprehensive archive of everything I've built, open-sourced, or
+          A comprehensive archive of everything I&apos;ve built, open-sourced, or
           experimented with.
         </p>
       </motion.div>

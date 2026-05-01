@@ -37,6 +37,7 @@ import {
   fetchStories,
   deleteStory,
   StoryData,
+  SiteSettings,
 } from "@/services/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, X, Trash2 } from "lucide-react";
@@ -60,15 +61,24 @@ export default function AdminPage() {
   const [profileUrl, setProfileUrl] = useState("");
   const [originalBannerUrl, setOriginalBannerUrl] = useState("");
   const [originalProfileUrl, setOriginalProfileUrl] = useState("");
+  const [resumeUrl, setResumeUrl] = useState("");
+  const [originalResumeUrl, setOriginalResumeUrl] = useState("");
   const [stories, setStories] = useState<StoryData[]>([]);
-  const [previousBanners, setPreviousBanners] = useState<any[]>([]);
-  const [previousProfiles, setPreviousProfiles] = useState<any[]>([]);
+  const [previousBanners, setPreviousBanners] = useState<
+    Array<{ url: string; publicId?: string }>
+  >([]);
+  const [previousProfiles, setPreviousProfiles] = useState<
+    Array<{ url: string; publicId?: string }>
+  >([]);
   const [currentBannerPublicId, setCurrentBannerPublicId] = useState("");
   const [currentProfilePublicId, setCurrentProfilePublicId] = useState("");
 
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const getErrorMessage = (err: unknown) =>
+    err instanceof Error ? err.message : "";
 
   const loadStories = () => {
     fetchStories()
@@ -123,13 +133,6 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, [activeStoryIdx, isPaused]);
 
-  useEffect(() => {
-    if (activeStoryIdx !== null) {
-      setProgress(0);
-      setIsPaused(false);
-    }
-  }, [activeStoryIdx]);
-
   // Check auth + fetch current settings on mount
   useEffect(() => {
     checkAuth()
@@ -138,11 +141,13 @@ export default function AdminPage() {
       .finally(() => setIsLoading(false));
 
     fetchSettings()
-      .then((s: any) => {
+      .then((s: SiteSettings) => {
         setBannerUrl(s.bannerImage || "");
         setProfileUrl(s.profileImage || "");
         setOriginalBannerUrl(s.bannerImage || "");
         setOriginalProfileUrl(s.profileImage || "");
+        setResumeUrl(s.resumeUrl || "");
+        setOriginalResumeUrl(s.resumeUrl || "");
         setPreviousBanners(s.previousBanners || []);
         setPreviousProfiles(s.previousProfiles || []);
       })
@@ -170,8 +175,8 @@ export default function AdminPage() {
       alert("Story added successfully!");
       setStoryData({ imageUrl: "", mediaType: "photo" });
       loadStories();
-    } catch (err: any) {
-      alert(err.message || "Failed to add story");
+    } catch (err: unknown) {
+      alert(getErrorMessage(err) || "Failed to add story");
     }
   };
 
@@ -181,8 +186,8 @@ export default function AdminPage() {
       await deleteStory(id);
       alert("Story deleted successfully!");
       loadStories();
-    } catch (err: any) {
-      alert(err.message || "Failed to delete story");
+    } catch (err: unknown) {
+      alert(getErrorMessage(err) || "Failed to delete story");
     }
   };
 
@@ -193,6 +198,7 @@ export default function AdminPage() {
       const res = await updateSettings({
         bannerImage: bannerUrl || undefined,
         profileImage: profileUrl || undefined,
+        resumeUrl: resumeUrl || undefined,
         publicId:
           bannerUrl === currentBannerPublicId
             ? undefined
@@ -206,13 +212,16 @@ export default function AdminPage() {
         dispatch(updateProfileImage(profileUrl));
         setOriginalProfileUrl(profileUrl);
       }
+      if (resumeUrl) {
+        setOriginalResumeUrl(resumeUrl);
+      }
       if (res) {
         setPreviousBanners(res.previousBanners || []);
         setPreviousProfiles(res.previousProfiles || []);
       }
       alert("Images updated successfully!");
-    } catch (err: any) {
-      alert(err.message || "Failed to update images");
+    } catch (err: unknown) {
+      alert(getErrorMessage(err) || "Failed to update images");
     }
   };
 
@@ -231,8 +240,8 @@ export default function AdminPage() {
         setPreviousProfiles(res.previousProfiles || []);
       }
       alert("Image deleted successfully!");
-    } catch (err: any) {
-      alert(err.message || "Failed to delete image");
+    } catch (err: unknown) {
+      alert(getErrorMessage(err) || "Failed to delete image");
     }
   };
 
@@ -245,8 +254,8 @@ export default function AdminPage() {
       setIsLoggedIn(true);
       setPassword("");
       setEmail("");
-    } catch (err: any) {
-      setLoginError(err.message || "Login failed");
+    } catch (err: unknown) {
+      setLoginError(getErrorMessage(err) || "Login failed");
     }
   };
 
@@ -398,15 +407,39 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Resume Link (Google Drive / Direct URL)</Label>
+                  {resumeUrl !== originalResumeUrl && (
+                    <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
+                      Modified
+                    </span>
+                  )}
+                </div>
+                <Input
+                  type="text"
+                  value={resumeUrl}
+                  onChange={(e) => setResumeUrl(e.target.value)}
+                  placeholder="Paste resume URL"
+                  className={
+                    resumeUrl !== originalResumeUrl
+                      ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
+                      : "transition-all"
+                  }
+                />
+              </div>
+
               <Button
                 type="submit"
                 disabled={
                   bannerUrl === originalBannerUrl &&
-                  profileUrl === originalProfileUrl
+                  profileUrl === originalProfileUrl &&
+                  resumeUrl === originalResumeUrl
                 }
                 className="w-full md:w-auto font-bold mt-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                Update Images
+                Update Settings
               </Button>
 
               {/* Previous Banners */}
@@ -416,7 +449,7 @@ export default function AdminPage() {
                     Previous Banners
                   </Label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {previousBanners.map((b: any, idx: number) => (
+                    {previousBanners.map((b, idx) => (
                       <div
                         key={idx}
                         className={`group relative h-20 rounded-lg overflow-hidden border transition cursor-pointer bg-muted/20 ${b.url === bannerUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
@@ -451,7 +484,7 @@ export default function AdminPage() {
                     Previous Profile Pictures
                   </Label>
                   <div className="flex flex-wrap gap-4">
-                    {previousProfiles.map((p: any, idx: number) => (
+                    {previousProfiles.map((p, idx) => (
                       <div
                         key={idx}
                         className={`group relative w-16 h-16 rounded-full border transition cursor-pointer bg-muted/20 ${p.url === profileUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
@@ -550,7 +583,11 @@ export default function AdminPage() {
                     className="relative group flex items-center justify-center bg-background/50"
                   >
                     <div
-                      onClick={() => setActiveStoryIdx(idx)}
+                      onClick={() => {
+                        setProgress(0);
+                        setIsPaused(false);
+                        setActiveStoryIdx(idx);
+                      }}
                       className="relative w-22 h-22 rounded-full border-2 border-primary/50 p-0.5 bg-background shadow-sm cursor-pointer active:scale-95 transition-transform"
                     >
                       <div className="w-full h-full rounded-full overflow-hidden">
@@ -596,7 +633,11 @@ export default function AdminPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer"
-            onClick={() => setActiveStoryIdx(null)}
+            onClick={() => {
+              setActiveStoryIdx(null);
+              setProgress(0);
+              setIsPaused(false);
+            }}
           >
             <div
               className="relative w-full max-w-lg h-full md:h-[95vh] md:max-h-[900px] bg-muted md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"

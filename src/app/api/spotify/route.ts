@@ -49,7 +49,9 @@ export async function GET() {
 
     const isPlaying = true; // We use true to trigger the UI, even if it's 'recently played'
     const title = song.name;
-    const artist = song.artists.map((_artist: any) => _artist.name).join(", ");
+    const artist = (song.artists as Array<{ name: string }>)
+      .map((a) => a.name)
+      .join(", ");
     const album = song.album.name;
     const albumImageUrl = song.album.images[0].url;
     const songUrl = song.external_urls.spotify;

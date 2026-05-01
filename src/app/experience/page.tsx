@@ -38,7 +38,7 @@ export default function ExperiencePage() {
           {sortedExperiences.map((exp, idx) => (
             <ExperienceItem
               key={exp._id || String(idx)}
-              story={exp as any}
+              story={exp}
               index={idx}
             />
           ))}

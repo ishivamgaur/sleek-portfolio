@@ -1,9 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import dbConnect from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 import { isAuthenticated } from "@/lib/auth";
+import { jsonNoStore, tooManyRequests } from "@/lib/http";
+import { rateLimitRequest } from "@/lib/ratelimit";
 
 import crypto from "crypto";
+
+type PreviousImage = { url: string; publicId?: string };
 
 async function deleteFromCloudinary(publicId: string) {
   try {
@@ -58,31 +62,42 @@ export async function GET() {
       settings = await SiteSettings.create({ key: "main" });
     }
 
-    return NextResponse.json({
+    return jsonNoStore({
       bannerImage: settings.bannerImage,
       profileImage: settings.profileImage,
+      resumeUrl: settings.resumeUrl || "",
       previousBanners: settings.previousBanners || [],
       previousProfiles: settings.previousProfiles || [],
     });
   } catch (error) {
     console.error("Settings GET error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch settings" },
-      { status: 500 },
-    );
+    return jsonNoStore({ error: "Failed to fetch settings" }, { status: 500 });
   }
 }
 
 // PUT — update settings (admin only)
 export async function PUT(req: NextRequest) {
   try {
+    const limit = await rateLimitRequest(req, {
+      keyPrefix: "settings:put",
+      limit: 30,
+      windowMs: 60_000,
+    });
+    if (!limit.ok) return tooManyRequests(limit.retryAfterSeconds);
+
     const authed = await isAuthenticated();
     if (!authed) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return jsonNoStore({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { bannerImage, profileImage, publicId, deleteBanner, deleteProfile } =
-      await req.json();
+    const {
+      bannerImage,
+      profileImage,
+      resumeUrl,
+      publicId,
+      deleteBanner,
+      deleteProfile,
+    } = await req.json();
     await dbConnect();
 
     let settings = await SiteSettings.findOne({ key: "main" });
@@ -93,7 +108,7 @@ export async function PUT(req: NextRequest) {
     if (bannerImage) {
       settings.bannerImage = bannerImage;
       const alreadyHas = settings.previousBanners.some(
-        (b: any) => b.url === bannerImage,
+        (b: PreviousImage) => b.url === bannerImage,
       );
       if (!alreadyHas) {
         settings.previousBanners.push({
@@ -106,7 +121,7 @@ export async function PUT(req: NextRequest) {
     if (profileImage) {
       settings.profileImage = profileImage;
       const alreadyHas = settings.previousProfiles.some(
-        (p: any) => p.url === profileImage,
+        (p: PreviousImage) => p.url === profileImage,
       );
       if (!alreadyHas) {
         settings.previousProfiles.push({
@@ -118,41 +133,43 @@ export async function PUT(req: NextRequest) {
 
     if (deleteBanner) {
       const bToDel = settings.previousBanners.find(
-        (b: any) => b.url === deleteBanner,
+        (b: PreviousImage) => b.url === deleteBanner,
       );
       if (bToDel && bToDel.publicId) {
         await deleteFromCloudinary(bToDel.publicId);
       }
       settings.previousBanners = settings.previousBanners.filter(
-        (b: any) => b.url !== deleteBanner,
+        (b: PreviousImage) => b.url !== deleteBanner,
       );
     }
 
     if (deleteProfile) {
       const pToDel = settings.previousProfiles.find(
-        (p: any) => p.url === deleteProfile,
+        (p: PreviousImage) => p.url === deleteProfile,
       );
       if (pToDel && pToDel.publicId) {
         await deleteFromCloudinary(pToDel.publicId);
       }
       settings.previousProfiles = settings.previousProfiles.filter(
-        (p: any) => p.url !== deleteProfile,
+        (p: PreviousImage) => p.url !== deleteProfile,
       );
+    }
+
+    if (resumeUrl !== undefined) {
+      settings.resumeUrl = resumeUrl;
     }
 
     await settings.save();
 
-    return NextResponse.json({
+    return jsonNoStore({
       bannerImage: settings.bannerImage,
       profileImage: settings.profileImage,
+      resumeUrl: settings.resumeUrl || "",
       previousBanners: settings.previousBanners || [],
       previousProfiles: settings.previousProfiles || [],
     });
   } catch (error) {
     console.error("Settings PUT error:", error);
-    return NextResponse.json(
-      { error: "Failed to update settings" },
-      { status: 500 },
-    );
+    return jsonNoStore({ error: "Failed to update settings" }, { status: 500 });
   }
 }
