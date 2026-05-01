@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     await dbConnect();
-    const stories = await Story.find({}).sort({ createdAt: -1 });
+    const stories = await Story.find({}).sort({ createdAt: 1 });
     return NextResponse.json(stories);
   } catch (error) {
     console.error("Stories GET error:", error);

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 
 export default function Stories() {
   const stories = useSelector((state: RootState) => state.portfolio.stories);
@@ -164,25 +164,16 @@ export default function Stories() {
                 )}
               </div>
 
-              {/* Navigation Controls */}
-              <button
-                onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
-                disabled={activeStoryIdx === 0}
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-
-              {/* Tap zones for mobile */}
-              <div className="absolute inset-0 flex z-10 md:hidden">
-                <div className="w-1/3 h-full" onClick={handlePrev} />
-                <div className="w-2/3 h-full" onClick={handleNext} />
+              {/* Tap zones for skipping */}
+              <div className="absolute inset-0 flex z-10">
+                <div
+                  className="w-1/3 h-full cursor-pointer"
+                  onClick={handlePrev}
+                />
+                <div
+                  className="w-2/3 h-full cursor-pointer"
+                  onClick={handleNext}
+                />
               </div>
             </div>
           </motion.div>

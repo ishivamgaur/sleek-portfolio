@@ -8,8 +8,6 @@ import {
   CalendarDays,
   Gift,
   X,
-  ChevronLeft,
-  ChevronRight,
   Play,
   Pause,
   Code,
@@ -455,40 +453,16 @@ export default function Hero() {
                 )}
               </div>
 
-              {stories.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrev();
-                    }}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-md text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
-                    disabled={activeStoryIdx === 0}
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext(false);
-                    }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/20 hover:bg-black/40 rounded-md text-white backdrop-blur-sm z-30 opacity-0 md:opacity-100 transition-opacity"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                </>
-              )}
-
-              <div className="absolute inset-0 flex z-10 md:hidden">
+              <div className="absolute inset-0 flex z-10">
                 <div
-                  className="w-1/3 h-full"
+                  className="w-1/3 h-full cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePrev();
                   }}
                 />
                 <div
-                  className="w-2/3 h-full"
+                  className="w-2/3 h-full cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleNext(false);
