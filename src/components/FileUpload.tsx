@@ -109,9 +109,26 @@ export default function FileUpload({
     if (file.type === "application/pdf") {
       await uploadDirectly(file, false, "image", file.name);
     } else if (file.type.startsWith("video/")) {
-      setIsVideoSelected(true);
+      // Check video duration (max 2 minutes)
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.onloadedmetadata = async () => {
+        window.URL.revokeObjectURL(video.src);
+        if (video.duration > 120) {
+          alert("Video is too long! Please select a video under 2 minutes.");
+          if (inputRef.current) inputRef.current.value = "";
+          return;
+        }
+        setIsVideoSelected(true);
+        setSelectedFile(file);
+        await uploadDirectly(file, true, "video");
+      };
+      video.src = URL.createObjectURL(file);
+    } else if (file.type === "image/gif") {
+      // Skip cropper for GIFs to preserve animation
+      setIsVideoSelected(false);
       setSelectedFile(file);
-      await uploadDirectly(file, true, "video");
+      await uploadDirectly(file, false, "image");
     } else {
       setIsVideoSelected(false);
       setSelectedFile(file);

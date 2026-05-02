@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Briefcase, Gift, X, Play, Pause, Code } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,6 +40,7 @@ export default function Hero() {
   const [settingsError, setSettingsError] = useState(false);
   const [stories, setStories] = useState<StoryData[]>([]);
   const [githubData, setGithubData] = useState<GitHubStats | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const loadData = () => {
@@ -151,6 +152,17 @@ export default function Hero() {
       setIsPaused(false);
     }
   }, [activeStoryIdx]);
+
+  // Sync video play/pause state
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isPaused) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+  }, [isPaused]);
 
   const handleNext = (isAuto = false) => {
     if (activeStoryIdx !== null) {
@@ -395,7 +407,7 @@ export default function Hero() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Progress Bar & Header Overlay */}
-              <div className="absolute top-0 inset-x-0 pt-4 pb-12 bg-gradient-to-b from-black/60 to-transparent z-20 pointer-events-none">
+              <div className="absolute top-0 inset-x-0 pt-4 pb-12 z-20 pointer-events-none">
                 <div className="px-4 flex gap-1 mb-3">
                   {stories.map((_, idx) => (
                     <div
@@ -474,6 +486,7 @@ export default function Hero() {
                   <>
                     {currentStory.mediaType === "video" ? (
                       <video
+                        ref={videoRef}
                         src={currentStory.imageUrl}
                         autoPlay
                         muted
@@ -483,7 +496,11 @@ export default function Hero() {
                       />
                     ) : (
                       <img
-                        src={currentStory.imageUrl}
+                        src={
+                          currentStory.imageUrl.includes(".gif")
+                            ? currentStory.imageUrl.replace("f_auto,", "")
+                            : currentStory.imageUrl
+                        }
                         alt="Story"
                         className="h-full w-full object-contain select-none pointer-events-none"
                       />

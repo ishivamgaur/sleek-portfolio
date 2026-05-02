@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
   updateBannerImage,
@@ -118,6 +118,7 @@ export default function AdminPage() {
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const getErrorMessage = (err: unknown) =>
     err instanceof Error ? err.message : "";
@@ -182,6 +183,17 @@ export default function AdminPage() {
     }
     return () => clearInterval(interval);
   }, [activeStoryIdx, isPaused]);
+
+  // Sync video play/pause state
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isPaused) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+  }, [isPaused]);
 
   // Check auth + fetch current settings on mount
   useEffect(() => {
@@ -608,7 +620,7 @@ export default function AdminPage() {
                             e.stopPropagation();
                             handleDeletePreviousImage("banner", b.url);
                           }}
-                          className="absolute top-1 right-1 p-1 bg-background/80 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full backdrop-blur-sm transition opacity-0 group-hover:opacity-100 cursor-pointer"
+                          className="absolute top-1 right-1 p-1 bg-background/80 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full backdrop-blur-sm transition opacity-100 cursor-pointer"
                           title="Delete image"
                         >
                           <X className="w-3.5 h-3.5" />
@@ -646,7 +658,7 @@ export default function AdminPage() {
                             e.stopPropagation();
                             handleDeletePreviousImage("profile", p.url);
                           }}
-                          className="absolute top-0 right-0 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-0 group-hover:opacity-100 cursor-pointer z-10"
+                          className="absolute top-0 right-0 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-100 cursor-pointer z-10"
                           title="Delete image"
                         >
                           <X className="w-3.5 h-3.5" />
@@ -746,7 +758,11 @@ export default function AdminPage() {
                           />
                         ) : (
                           <img
-                            src={story.imageUrl}
+                            src={
+                              story.imageUrl.includes(".gif")
+                                ? story.imageUrl.replace("f_auto,", "")
+                                : story.imageUrl
+                            }
                             alt="Story Preview"
                             className="w-full h-full object-cover rounded-full"
                           />
@@ -761,7 +777,7 @@ export default function AdminPage() {
                           handleDeleteStory(story._id);
                         }
                       }}
-                      className="absolute -top-1 right-3 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-0 group-hover:opacity-100 cursor-pointer z-10"
+                      className="absolute -top-1 right-3 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-100 cursor-pointer z-10"
                       title="Delete story"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -781,7 +797,7 @@ export default function AdminPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer"
+            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-lg flex items-center justify-center cursor-pointer"
             onClick={() => {
               setActiveStoryIdx(null);
               setProgress(0);
@@ -789,119 +805,133 @@ export default function AdminPage() {
             }}
           >
             <div
-              className="relative w-full max-w-lg h-full md:h-[95vh] md:max-h-[900px] bg-muted md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
+              className="relative bg-black md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
+              style={{
+                aspectRatio: "9 / 16",
+                width: "min(100vw, calc(90dvh * 9 / 16), 420px)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Progress Bar */}
-              <div className="absolute top-6 inset-x-4 flex gap-1.5 z-20">
-                {stories.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="h-1 flex-1 bg-white/20 rounded-md overflow-hidden"
-                  >
+              {/* Progress Bar & Header Overlay */}
+              <div className="absolute top-0 inset-x-0 pt-4 pb-12 z-20 pointer-events-none">
+                <div className="px-4 flex gap-1 mb-3">
+                  {stories.map((_, idx) => (
                     <div
-                      className="h-full bg-white transition-all duration-50 linear"
-                      style={{
-                        width:
-                          idx < activeStoryIdx
-                            ? "100%"
-                            : idx === activeStoryIdx
-                              ? `${progress}%`
-                              : "0%",
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
+                      key={idx}
+                      className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden"
+                    >
+                      <div
+                        className="h-full bg-white transition-all duration-50 linear"
+                        style={{
+                          width:
+                            idx < activeStoryIdx
+                              ? "100%"
+                              : idx === activeStoryIdx
+                                ? `${progress}%`
+                                : "0%",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
 
-              <div className="absolute top-8 inset-x-4 flex items-center justify-between z-20 text-white">
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-8 h-8 border border-white/20">
-                    <AvatarImage src={profileUrl || "/profile-pic.jpg"} />
-                    <AvatarFallback>SG</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-bold">Shivam Gaur</p>
-                      {stories[activeStoryIdx]?.createdAt && (
-                        <>
-                          <span className="text-white/60 text-xs">•</span>
-                          <span className="text-white/70 text-xs font-normal tracking-wide">
-                            {formatTimeAgo(stories[activeStoryIdx].createdAt)}
-                          </span>
-                        </>
-                      )}
+                <div className="px-4 flex items-center justify-between text-white pointer-events-auto">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-8 h-8 border border-white/20">
+                      <AvatarImage src={profileUrl || "/profile-pic.jpg"} />
+                      <AvatarFallback>SG</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[13px] md:text-sm font-bold shadow-sm">
+                          Shivam Gaur
+                        </p>
+                        {stories[activeStoryIdx]?.createdAt && (
+                          <>
+                            <span className="text-white/60 text-xs">•</span>
+                            <span className="text-white/70 text-[10px] md:text-xs font-normal tracking-wide">
+                              {formatTimeAgo(stories[activeStoryIdx].createdAt)}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsPaused(!isPaused);
+                      }}
+                    >
+                      {isPaused ? (
+                        <Play className="w-5 h-5 fill-white" />
+                      ) : (
+                        <Pause className="w-5 h-5 fill-white" />
+                      )}
+                    </button>
+                    <button
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveStoryIdx(null);
+                      }}
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsPaused(!isPaused);
-                    }}
-                    className="p-1 hover:bg-white/10 rounded-md transition-colors cursor-pointer"
-                    title={isPaused ? "Play" : "Pause"}
-                  >
-                    {isPaused ? (
-                      <Play className="w-5 h-5 fill-current" />
+              </div>
+
+              {/* Story Content */}
+              <div className="relative h-full w-full flex items-center justify-center">
+                {stories[activeStoryIdx] && (
+                  <>
+                    {stories[activeStoryIdx].mediaType === "video" ? (
+                      <video
+                        ref={videoRef}
+                        src={stories[activeStoryIdx].imageUrl}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="h-full w-full object-contain"
+                        onEnded={() => handleNext(true)}
+                      />
                     ) : (
-                      <Pause className="w-5 h-5 fill-current" />
+                      <img
+                        src={
+                          stories[activeStoryIdx].imageUrl.includes(".gif")
+                            ? stories[activeStoryIdx].imageUrl.replace(
+                                "f_auto,",
+                                "",
+                              )
+                            : stories[activeStoryIdx].imageUrl
+                        }
+                        alt="Story"
+                        className="h-full w-full object-contain select-none pointer-events-none"
+                      />
                     )}
-                  </button>
-                  <button
+                  </>
+                )}
+
+                {/* Tap to Navigate Areas */}
+                <div className="absolute inset-0 flex z-10">
+                  <div
+                    className="w-1/3 h-full cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setActiveStoryIdx(null);
+                      handlePrev();
                     }}
-                    className="p-1 hover:bg-white/10 rounded-md transition-colors cursor-pointer"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+                  />
+                  <div
+                    className="w-2/3 h-full cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                  />
                 </div>
-              </div>
-
-              <div
-                className="flex-1 relative bg-black flex items-center justify-center cursor-default"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {stories[activeStoryIdx]?.imageUrl ? (
-                  stories[activeStoryIdx].mediaType === "video" ? (
-                    <video
-                      src={stories[activeStoryIdx].imageUrl}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <img
-                      src={stories[activeStoryIdx].imageUrl}
-                      alt="Story"
-                      className="w-full h-full object-contain"
-                    />
-                  )
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 flex items-center justify-center text-center"></div>
-                )}
-              </div>
-
-              <div className="absolute inset-0 flex z-10">
-                <div
-                  className="w-1/3 h-full cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrev();
-                  }}
-                />
-                <div
-                  className="w-2/3 h-full cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNext(false);
-                  }}
-                />
               </div>
             </div>
           </motion.div>
