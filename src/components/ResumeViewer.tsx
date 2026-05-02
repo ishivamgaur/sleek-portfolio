@@ -15,10 +15,10 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
     setMounted(true);
   }, []);
 
-  // Use Native Browser Rendering with toolbar hiding parameters
-  // Native is much faster than Google Docs Viewer
+  // Use Google Docs Viewer for maximum compatibility across Mobile (iOS/Android) and Desktop
+  // Native PDF embedding often fails on mobile browsers.
   const previewUrl = resumeUrl
-    ? `${resumeUrl.split("#")[0]}#toolbar=0&navpanes=0&scrollbar=0`
+    ? `https://docs.google.com/viewer?url=${encodeURIComponent(resumeUrl)}&embedded=true`
     : "";
 
   // Cloudinary download link optimization
@@ -34,21 +34,14 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
         <>
           <div className="w-full relative group">
             <div
-              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px] ${isLoading ? "shimmer" : ""}`}
+              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px]  border border-border/50 ${isLoading ? "shimmer" : ""}`}
             >
-              {/* 
-                 Refined Clipping Strategy:
-                 Ensuring the top (header) is fully visible (top-0).
-                 Applying a more aggressive bottom offset to hide the floating zoom/toolbar.
-              */}
-              <div className="absolute inset-0 -bottom-24">
-                <iframe
-                  src={previewUrl}
-                  className={`w-full h-full border-none block transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"}`}
-                  title="Resume Preview"
-                  onLoad={() => setIsLoading(false)}
-                />
-              </div>
+              <iframe
+                src={previewUrl}
+                className={`w-full h-full border-none block transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                title="Resume Preview"
+                onLoad={() => setIsLoading(false)}
+              />
 
               {/* Minimal hover overlay */}
               {!isLoading && (
