@@ -469,14 +469,14 @@ export default function Hero() {
                         autoPlay
                         muted
                         playsInline
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain"
                         onEnded={() => handleNext(true)}
                       />
                     ) : (
                       <img
                         src={currentStory.imageUrl}
                         alt="Story"
-                        className="h-full w-full object-cover select-none pointer-events-none"
+                        className="h-full w-full object-contain select-none pointer-events-none"
                       />
                     )}
                   </>
