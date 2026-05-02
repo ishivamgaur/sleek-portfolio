@@ -27,11 +27,21 @@ import {
   createStory,
   fetchStories,
   deleteStory,
+  fetchAnalytics,
   StoryData,
   SiteSettings,
+  AnalyticsStats,
 } from "@/services/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, X } from "lucide-react";
+import {
+  Play,
+  Pause,
+  X,
+  Users,
+  Eye,
+  CalendarDays,
+  BarChart3,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const adminCardClass =
@@ -103,6 +113,7 @@ export default function AdminPage() {
   >([]);
   const [currentBannerPublicId, setCurrentBannerPublicId] = useState("");
   const [currentProfilePublicId, setCurrentProfilePublicId] = useState("");
+  const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null);
 
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
@@ -117,6 +128,12 @@ export default function AdminPage() {
       .then((data) => setStories(data))
       .catch(() => {})
       .finally(() => setIsStoriesLoading(false));
+  };
+
+  const loadAnalytics = () => {
+    fetchAnalytics()
+      .then((data) => setAnalytics(data))
+      .catch(() => {});
   };
 
   const handleNext = (isAuto = false) => {
@@ -192,6 +209,12 @@ export default function AdminPage() {
       .catch(() => {})
       .finally(() => setIsStoriesLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    loadAnalytics();
+  }, [isLoggedIn]);
 
   const [storyData, setStoryData] = useState({
     imageUrl: "",
@@ -375,6 +398,72 @@ export default function AdminPage() {
         </Button>
       </motion.div>
 
+      <Card className={`${adminCardClass} mb-4`}>
+        <CardHeader>
+          <CardTitle className={adminCardTitleClass}>
+            Website Analytics
+          </CardTitle>
+          <CardDescription className={adminCardDescriptionClass}>
+            Unique visitors and page visits tracked from your portfolio.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!analytics ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[0, 1, 2, 3].map((item) => (
+                <Skeleton key={item} className="h-20 rounded-md" />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="rounded-md border border-border bg-background/50 p-3">
+                  <Users className="size-4 text-muted-foreground mb-2" />
+                  <p className="text-2xl font-bold">
+                    {analytics.uniqueVisitors}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Unique users</p>
+                </div>
+                <div className="rounded-md border border-border bg-background/50 p-3">
+                  <Eye className="size-4 text-muted-foreground mb-2" />
+                  <p className="text-2xl font-bold">{analytics.totalVisits}</p>
+                  <p className="text-xs text-muted-foreground">Total visits</p>
+                </div>
+                <div className="rounded-md border border-border bg-background/50 p-3">
+                  <CalendarDays className="size-4 text-muted-foreground mb-2" />
+                  <p className="text-2xl font-bold">
+                    {analytics.todayUniqueVisitors}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Users today</p>
+                </div>
+                <div className="rounded-md border border-border bg-background/50 p-3">
+                  <BarChart3 className="size-4 text-muted-foreground mb-2" />
+                  <p className="text-2xl font-bold">{analytics.todayVisits}</p>
+                  <p className="text-xs text-muted-foreground">Visits today</p>
+                </div>
+              </div>
+
+              {analytics.popularPages.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Top Pages</Label>
+                  <div className="space-y-2">
+                    {analytics.popularPages.map((page) => (
+                      <div
+                        key={page.path}
+                        className="flex items-center justify-between rounded-md border border-border bg-background/40 px-3 py-2 text-sm"
+                      >
+                        <span className="truncate pr-3">{page.path}</span>
+                        <span className="font-semibold">{page.visits}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 gap-4">
         <Card className={adminCardClass}>
           <CardHeader>
@@ -385,180 +474,188 @@ export default function AdminPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleUpdateImages} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Banner Image</Label>
-                      {bannerUrl !== originalBannerUrl && (
-                        <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
-                          Modified
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <Input
-                        type="text"
-                        value={bannerUrl}
-                        onChange={(e) => setBannerUrl(e.target.value)}
-                        placeholder="Paste URL or upload"
-                        className={
-                          bannerUrl !== originalBannerUrl
-                            ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
-                            : "transition-all"
-                        }
-                      />
-                      <FileUpload
-                        accept="image/*"
-                        label="Upload"
-                        uploadType="banner"
-                        onUploadComplete={(url, publicId) => {
-                          setBannerUrl(url);
-                          if (publicId) setCurrentBannerPublicId(publicId);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Profile Image</Label>
-                      {profileUrl !== originalProfileUrl && (
-                        <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
-                          Modified
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <Input
-                        type="text"
-                        value={profileUrl}
-                        onChange={(e) => setProfileUrl(e.target.value)}
-                        placeholder="Paste URL or upload"
-                        className={
-                          profileUrl !== originalProfileUrl
-                            ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
-                            : "transition-all"
-                        }
-                      />
-                      <FileUpload
-                        accept="image/*"
-                        label="Upload"
-                        uploadType="profile"
-                        onUploadComplete={(url, publicId) => {
-                          setProfileUrl(url);
-                          if (publicId) setCurrentProfilePublicId(publicId);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label>Resume Link (Google Drive / Direct URL)</Label>
-                    {resumeUrl !== originalResumeUrl && (
+                    <Label>Banner Image</Label>
+                    {bannerUrl !== originalBannerUrl && (
                       <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
                         Modified
                       </span>
                     )}
                   </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={bannerUrl}
+                      onChange={(e) => setBannerUrl(e.target.value)}
+                      placeholder="Paste URL or upload"
+                      className={
+                        bannerUrl !== originalBannerUrl
+                          ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
+                          : "transition-all"
+                      }
+                    />
+                    <FileUpload
+                      accept="image/*"
+                      label="Upload"
+                      uploadType="banner"
+                      onUploadComplete={(url, publicId) => {
+                        setBannerUrl(url);
+                        if (publicId) setCurrentBannerPublicId(publicId);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Profile Image</Label>
+                    {profileUrl !== originalProfileUrl && (
+                      <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
+                        Modified
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={profileUrl}
+                      onChange={(e) => setProfileUrl(e.target.value)}
+                      placeholder="Paste URL or upload"
+                      className={
+                        profileUrl !== originalProfileUrl
+                          ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
+                          : "transition-all"
+                      }
+                    />
+                    <FileUpload
+                      accept="image/*"
+                      label="Upload"
+                      uploadType="profile"
+                      onUploadComplete={(url, publicId) => {
+                        setProfileUrl(url);
+                        if (publicId) setCurrentProfilePublicId(publicId);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Resume PDF</Label>
+                  {resumeUrl !== originalResumeUrl && (
+                    <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
+                      Modified
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2">
                   <Input
                     type="text"
                     value={resumeUrl}
                     onChange={(e) => setResumeUrl(e.target.value)}
-                    placeholder="Paste resume URL"
+                    placeholder="Upload PDF or paste direct URL"
                     className={
                       resumeUrl !== originalResumeUrl
                         ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
                         : "transition-all"
                     }
                   />
+                  <FileUpload
+                    accept="application/pdf"
+                    label="Upload"
+                    uploadType="resume"
+                    onUploadComplete={(url) => setResumeUrl(url)}
+                  />
                 </div>
+              </div>
 
-                <Button
-                  type="submit"
-                  disabled={
-                    bannerUrl === originalBannerUrl &&
-                    profileUrl === originalProfileUrl &&
-                    resumeUrl === originalResumeUrl
-                  }
-                  className="w-full md:w-auto font-bold mt-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                >
-                  Update Settings
-                </Button>
+              <Button
+                type="submit"
+                disabled={
+                  bannerUrl === originalBannerUrl &&
+                  profileUrl === originalProfileUrl &&
+                  resumeUrl === originalResumeUrl
+                }
+                className="w-full md:w-auto font-bold mt-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                Update Settings
+              </Button>
 
-                {isSettingsLoading ? (
-                  <PreviousBannersSkeleton />
-                ) : previousBanners && previousBanners.length > 0 ? (
-                  <div className="space-y-2 pt-4 border-t border-border mt-4">
-                    <Label className="text-sm font-medium">
-                      Previous Banners
-                    </Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {previousBanners.map((b, idx) => (
-                        <div
-                          key={idx}
-                          className={`group relative h-20 rounded-lg overflow-hidden border transition cursor-pointer bg-muted/20 ${b.url === bannerUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
-                          onClick={() => setBannerUrl(b.url)}
+              {isSettingsLoading ? (
+                <PreviousBannersSkeleton />
+              ) : previousBanners && previousBanners.length > 0 ? (
+                <div className="space-y-2 pt-4 border-t border-border mt-4">
+                  <Label className="text-sm font-medium">
+                    Previous Banners
+                  </Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {previousBanners.map((b, idx) => (
+                      <div
+                        key={idx}
+                        className={`group relative h-20 rounded-lg overflow-hidden border transition cursor-pointer bg-muted/20 ${b.url === bannerUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
+                        onClick={() => setBannerUrl(b.url)}
+                      >
+                        <img
+                          src={b.url}
+                          alt={`Previous banner ${idx + 1}`}
+                          className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePreviousImage("banner", b.url);
+                          }}
+                          className="absolute top-1 right-1 p-1 bg-background/80 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full backdrop-blur-sm transition opacity-0 group-hover:opacity-100 cursor-pointer"
+                          title="Delete image"
                         >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {isSettingsLoading ? (
+                <PreviousProfilesSkeleton />
+              ) : previousProfiles && previousProfiles.length > 0 ? (
+                <div className="space-y-2 pt-4 border-t border-border mt-4">
+                  <Label className="text-sm font-medium">
+                    Previous Profile Pictures
+                  </Label>
+                  <div className="flex flex-wrap gap-4">
+                    {previousProfiles.map((p, idx) => (
+                      <div
+                        key={idx}
+                        className={`group relative w-16 h-16 rounded-full border transition cursor-pointer bg-muted/20 ${p.url === profileUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
+                        onClick={() => setProfileUrl(p.url)}
+                      >
+                        <div className="w-full h-full rounded-full overflow-hidden">
                           <img
-                            src={b.url}
-                            alt={`Previous banner ${idx + 1}`}
+                            src={p.url}
+                            alt={`Previous profile ${idx + 1}`}
                             className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
                           />
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeletePreviousImage("banner", b.url);
-                            }}
-                            className="absolute top-1 right-1 p-1 bg-background/80 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full backdrop-blur-sm transition opacity-0 group-hover:opacity-100 cursor-pointer"
-                            title="Delete image"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {isSettingsLoading ? (
-                  <PreviousProfilesSkeleton />
-                ) : previousProfiles && previousProfiles.length > 0 ? (
-                  <div className="space-y-2 pt-4 border-t border-border mt-4">
-                    <Label className="text-sm font-medium">
-                      Previous Profile Pictures
-                    </Label>
-                    <div className="flex flex-wrap gap-4">
-                      {previousProfiles.map((p, idx) => (
-                        <div
-                          key={idx}
-                          className={`group relative w-16 h-16 rounded-full border transition cursor-pointer bg-muted/20 ${p.url === profileUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
-                          onClick={() => setProfileUrl(p.url)}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePreviousImage("profile", p.url);
+                          }}
+                          className="absolute top-0 right-0 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-0 group-hover:opacity-100 cursor-pointer z-10"
+                          title="Delete image"
                         >
-                          <div className="w-full h-full rounded-full overflow-hidden">
-                            <img
-                              src={p.url}
-                              alt={`Previous profile ${idx + 1}`}
-                              className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                            />
-                          </div>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeletePreviousImage("profile", p.url);
-                            }}
-                            className="absolute top-0 right-0 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-0 group-hover:opacity-100 cursor-pointer z-10"
-                            title="Delete image"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ) : null}
+                </div>
+              ) : null}
             </form>
           </CardContent>
         </Card>

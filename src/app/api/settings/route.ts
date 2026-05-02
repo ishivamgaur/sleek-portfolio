@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import dbConnect from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 import { isAuthenticated } from "@/lib/auth";
-import { jsonNoStore, jsonPublicCache, tooManyRequests } from "@/lib/http";
+import { jsonNoStore, tooManyRequests } from "@/lib/http";
 import { rateLimitRequest } from "@/lib/ratelimit";
 
 import crypto from "crypto";
@@ -53,10 +53,8 @@ async function deleteFromCloudinary(publicId: string) {
 }
 
 // GET — fetch current settings (public)
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const isWarmup = req.nextUrl.searchParams.get("warm") === "1";
-
     await dbConnect();
     let settings = await SiteSettings.findOne({ key: "main" })
       .select(
@@ -77,7 +75,7 @@ export async function GET(req: NextRequest) {
       previousProfiles: settings.previousProfiles || [],
     };
 
-    return isWarmup ? jsonNoStore(data) : jsonPublicCache(data);
+    return jsonNoStore(data);
   } catch (error) {
     console.error("Settings GET error:", error);
     return jsonNoStore({ error: "Failed to fetch settings" }, { status: 500 });

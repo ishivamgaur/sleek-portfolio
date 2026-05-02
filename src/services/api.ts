@@ -12,7 +12,9 @@ type ApiRequestOptions = Omit<RequestInit, "body"> & {
 const pendingRequests = new Map<string, AbortController>();
 
 function isPlainObject(value: unknown): value is object {
-  return typeof value === "object" && value !== null && !(value instanceof FormData);
+  return (
+    typeof value === "object" && value !== null && !(value instanceof FormData)
+  );
 }
 
 async function apiRequest<T>(
@@ -106,7 +108,9 @@ export interface SiteSettings {
 }
 
 export async function fetchSettings(): Promise<SiteSettings> {
-  return apiRequest<SiteSettings>("/api/settings");
+  return apiRequest<SiteSettings>("/api/settings", {
+    cache: "no-store",
+  });
 }
 
 export async function updateSettings(
@@ -143,6 +147,63 @@ export async function deleteStory(id: string): Promise<void> {
     method: "DELETE",
     parseAs: "void",
   });
+}
+
+export interface AnalyticsStats {
+  totalVisits: number;
+  uniqueVisitors: number;
+  todayVisits: number;
+  todayUniqueVisitors: number;
+  last7Days: Array<{
+    date: string;
+    visits: number;
+    uniqueVisitors: number;
+  }>;
+  popularPages: Array<{
+    path: string;
+    visits: number;
+  }>;
+}
+
+export async function fetchAnalytics(): Promise<AnalyticsStats> {
+  return apiRequest<AnalyticsStats>("/api/analytics");
+}
+
+export async function trackVisit(
+  path: string,
+  referrer: string,
+): Promise<void> {
+  await apiRequest<void>("/api/analytics", {
+    method: "POST",
+    body: { path, referrer },
+    credentials: "same-origin",
+    keepalive: true,
+    parseAs: "void",
+  });
+}
+
+export interface GitHubStats {
+  followers?: number;
+  publicRepos?: number;
+  stars?: number;
+  profileUrl?: string;
+  createdAt?: string;
+}
+
+export async function fetchGithubStats(): Promise<GitHubStats> {
+  return apiRequest<GitHubStats>("/api/github");
+}
+
+export interface SpotifyData {
+  isPlaying: boolean;
+  title?: string;
+  artist?: string;
+  songUrl?: string;
+  albumImageUrl?: string;
+}
+
+export async function fetchSpotify(): Promise<SpotifyData> {
+  return apiRequest<SpotifyData>("/api/spotify");
 }
 
 export interface ExperienceData {

@@ -16,16 +16,16 @@ export default function AllProjectsPage() {
     <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
       {/* Header section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -8 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className="mb-10"
       >
         <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
-          A comprehensive archive of everything I&apos;ve built, open-sourced, or
-          experimented with.
+          A comprehensive archive of everything I&apos;ve built, open-sourced,
+          or experimented with.
         </p>
       </motion.div>
 

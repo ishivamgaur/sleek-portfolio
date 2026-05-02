@@ -23,10 +23,10 @@ export function ExperienceItem({
 }: ExperienceItemProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
     >
       <div className="flex flex-col space-y-3">
         {/* Header: Company/Role & Date/Location */}

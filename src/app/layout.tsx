@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <AnalyticsTracker />
           <Navbar />
           <main className="max-w-3xl mx-auto w-full min-h-screen flex flex-col pb-8">
             {children}

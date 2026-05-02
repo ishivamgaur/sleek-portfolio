@@ -13,9 +13,7 @@ type RateLimitResult =
 
 declare global {
   // eslint-disable-next-line no-var
-  var __rateLimiters:
-    | Map<string, RateLimiterMemory>
-    | undefined;
+  var __rateLimiters: Map<string, RateLimiterMemory> | undefined;
 }
 
 function getLimiter({

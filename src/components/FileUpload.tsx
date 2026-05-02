@@ -9,7 +9,7 @@ interface FileUploadProps {
   onUploadComplete: (url: string, publicId?: string) => void;
   accept?: string;
   label?: string;
-  uploadType?: "banner" | "profile" | "story" | "general";
+  uploadType?: "banner" | "profile" | "story" | "resume" | "general";
 }
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
@@ -20,6 +20,7 @@ const DIMENSIONS: Record<string, { w: number; h: number }> = {
   banner: { w: 1200, h: 400 },
   profile: { w: 200, h: 200 },
   story: { w: 720, h: 1280 },
+  resume: { w: 800, h: 800 },
   general: { w: 800, h: 800 },
 };
 
@@ -27,8 +28,18 @@ const FOLDERS: Record<string, string> = {
   banner: "portfolio/banners",
   profile: "portfolio/profiles",
   story: "portfolio/stories",
+  resume: "portfolio/resumes",
   general: "portfolio/general",
 };
+
+function getSafeFileName(fileName: string) {
+  const nameWithoutExtension = fileName.replace(/\.[^/.]+$/, "");
+  return nameWithoutExtension
+    .trim()
+    .replace(/[^a-zA-Z0-9-_ ]/g, "")
+    .replace(/\s+/g, "-")
+    .slice(0, 80);
+}
 
 /** Get cropped image using canvas */
 async function getCroppedImg(
@@ -95,10 +106,12 @@ export default function FileUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type.startsWith("video/")) {
+    if (file.type === "application/pdf") {
+      await uploadDirectly(file, false, "image", file.name);
+    } else if (file.type.startsWith("video/")) {
       setIsVideoSelected(true);
       setSelectedFile(file);
-      await uploadDirectly(file, true);
+      await uploadDirectly(file, true, "video");
     } else {
       setIsVideoSelected(false);
       setSelectedFile(file);
@@ -124,7 +137,7 @@ export default function FileUpload({
         dim.w,
         dim.h,
       );
-      await uploadDirectly(croppedBlob, false);
+      await uploadDirectly(croppedBlob, false, "image");
       setImageSrc(null); // close modal
     } catch (e) {
       alert("Failed to crop image.");
@@ -132,17 +145,28 @@ export default function FileUpload({
     }
   };
 
-  const uploadDirectly = async (fileOrBlob: File | Blob, isVideo: boolean) => {
+  const uploadDirectly = async (
+    fileOrBlob: File | Blob,
+    isVideo: boolean,
+    resourceType: "image" | "video" | "raw",
+    originalFileName?: string,
+  ) => {
     setUploading(true);
     setDone(false);
 
     try {
-      const resourceType = isVideo ? "video" : "image";
       const form = new FormData();
       form.append("upload_preset", UPLOAD_PRESET);
       form.append("folder", FOLDERS[uploadType] || FOLDERS.general);
 
-      if (!isVideo) {
+      if (uploadType === "resume" && originalFileName) {
+        const safeName = getSafeFileName(originalFileName);
+        if (safeName) {
+          form.append("public_id", safeName);
+        }
+      }
+
+      if (resourceType === "image" && !originalFileName) {
         form.append("file", fileOrBlob, "upload.jpg");
       } else {
         form.append("file", fileOrBlob);

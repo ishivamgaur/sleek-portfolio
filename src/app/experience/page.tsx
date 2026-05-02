@@ -14,10 +14,10 @@ export default function ExperiencePage() {
   return (
     <div className="px-4 pt-24 pb-12 w-full">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -8 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         className="mb-10"
       >
         <h2 className="text-2xl font-bold tracking-tight">

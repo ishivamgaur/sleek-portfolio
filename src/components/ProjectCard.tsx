@@ -40,10 +40,10 @@ export function ProjectCard({
   return (
     <Link href={`/projects/${project._id}`} className="block">
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: idx * 0.1 }}
+        transition={{ duration: 0.3, delay: idx * 0.05 }}
         className="group relative flex flex-col cursor-pointer h-full"
       >
         {/* The Video Thumbnail */}

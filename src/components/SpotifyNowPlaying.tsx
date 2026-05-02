@@ -1,21 +1,26 @@
 "use client";
 
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
-
-interface SpotifyData {
-  isPlaying: boolean;
-  title?: string;
-  artist?: string;
-  songUrl?: string;
-  albumImageUrl?: string;
-}
+import { useCallback, useEffect, useState } from "react";
+import { fetchSpotify, SpotifyData } from "@/services/api";
 
 export default function SpotifyNowPlaying() {
-  const { data } = useSWR<SpotifyData>("/spotify", fetcher, {
-    refreshInterval: 30000, // Poll every 30 seconds
-    revalidateOnFocus: true,
-  });
+  const [data, setData] = useState<SpotifyData | null>(null);
+
+  const loadSpotify = useCallback(async () => {
+    try {
+      const spotifyData = await fetchSpotify();
+      setData(spotifyData);
+    } catch {
+      // Keep the last successful value if Spotify is temporarily unavailable.
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSpotify();
+    const interval = window.setInterval(loadSpotify, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, [loadSpotify]);
 
   if (!data || !data.isPlaying) return null;
 

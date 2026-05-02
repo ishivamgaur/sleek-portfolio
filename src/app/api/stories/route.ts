@@ -41,7 +41,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Stories POST error:", error);
     return jsonNoStore(
-      { error: error instanceof Error ? error.message : "Failed to create story" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to create story",
+      },
       { status: 500 },
     );
   }

@@ -2,18 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  MapPin,
-  Briefcase,
-  CalendarDays,
-  Gift,
-  X,
-  Play,
-  Pause,
-  Code,
-} from "lucide-react";
+import { MapPin, Briefcase, Gift, X, Play, Pause, Code } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -23,18 +13,18 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import SpotifyNowPlaying from "./SpotifyNowPlaying";
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
-import { fetchSettings, fetchStories } from "@/services/api";
+import {
+  fetchGithubStats,
+  fetchSettings,
+  fetchStories,
+  GitHubStats,
+  SiteSettings,
+  StoryData,
+} from "@/services/api";
 
 import Image from "next/image";
 
 export default function Hero() {
-  // Fetch stories from MongoDB
-  const { data: stories = [] } = useSWR("stories", fetchStories, {
-    revalidateOnFocus: false,
-    dedupingInterval: 60000,
-  });
   const defaultBanner = useSelector(
     (state: RootState) => state.portfolio.bannerImage,
   );
@@ -46,28 +36,47 @@ export default function Hero() {
   const [isPaused, setIsPaused] = useState(false);
   const [bannerError, setBannerError] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const [settingsError, setSettingsError] = useState(false);
+  const [stories, setStories] = useState<StoryData[]>([]);
+  const [githubData, setGithubData] = useState<GitHubStats | null>(null);
 
-  // Fetch persisted images from DB via SWR (cached, deduped)
-  const { data: siteSettings, error: settingsError } = useSWR(
-    "settings",
-    fetchSettings,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    },
-  );
+  useEffect(() => {
+    const loadData = () => {
+      fetchSettings()
+        .then((settings) => setSiteSettings(settings))
+        .catch(() => setSettingsError(true));
+
+      fetchStories()
+        .then((data) => setStories(data))
+        .catch(() => {});
+
+      fetchGithubStats()
+        .then((data) => setGithubData(data))
+        .catch(() => {});
+    };
+
+    // Initial load
+    loadData();
+
+    // Revalidate on focus - ensures instant updates when switching back from Admin tab
+    const handleFocus = () => loadData();
+    window.addEventListener("focus", handleFocus);
+
+    // Polling every 5 seconds for "instant" feel
+    const interval = setInterval(loadData, 5000);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(interval);
+    };
+  }, []);
 
   const settingsReady = !!siteSettings || !!settingsError;
   const bannerImage =
     siteSettings?.bannerImage || (settingsError ? defaultBanner : null);
   const profileImage =
     siteSettings?.profileImage || (settingsError ? defaultProfile : null);
-
-  // Use SWR for highly optimized, cached data fetching
-  const { data: githubData } = useSWR("/github", fetcher, {
-    revalidateOnFocus: false, // GitHub stats don't change by the second
-    dedupingInterval: 60000, // Cache for at least 1 minute
-  });
 
   const calculateDays = (dateString?: string) => {
     if (!dateString) return 0;

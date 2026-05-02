@@ -30,4 +30,3 @@ export function tooManyRequests(retryAfterSeconds: number) {
   res.headers.set("Retry-After", String(retryAfterSeconds));
   return res;
 }
-
