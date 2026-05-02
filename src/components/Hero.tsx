@@ -378,7 +378,11 @@ export default function Hero() {
             }}
           >
             <div
-              className="relative w-fit mx-auto h-full md:h-fit md:max-h-[90vh] bg-black md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
+              className="relative bg-black md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
+              style={{
+                aspectRatio: "9 / 16",
+                width: "min(100vw, calc(90dvh * 9 / 16), 420px)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Progress Bar & Header Overlay */}
@@ -456,7 +460,7 @@ export default function Hero() {
               </div>
 
               {/* Story Content */}
-              <div className="relative h-full flex items-center justify-center">
+              <div className="relative h-full w-full flex items-center justify-center">
                 {currentStory && (
                   <>
                     {currentStory.mediaType === "video" ? (
@@ -465,14 +469,14 @@ export default function Hero() {
                         autoPlay
                         muted
                         playsInline
-                        className="h-full md:h-[95vh] w-auto max-w-[100vw] md:max-w-[90vw] object-contain"
+                        className="h-full w-full object-cover"
                         onEnded={() => handleNext(true)}
                       />
                     ) : (
                       <img
                         src={currentStory.imageUrl}
                         alt="Story"
-                        className="h-full md:h-[95vh] w-auto max-w-[100vw] md:max-w-[90vw] object-contain select-none pointer-events-none"
+                        className="h-full w-full object-cover select-none pointer-events-none"
                       />
                     )}
                   </>
