@@ -2,8 +2,20 @@ import dbConnect from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 import ResumeHeader from "@/components/ResumeHeader";
 import ResumeViewer from "@/components/ResumeViewer";
+import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Resume",
+  description: `View and download the professional resume of ${siteConfig.name}, Software Developer based in NOIDA.`,
+  keywords: [
+    "Shivam Gaur Resume",
+    "Shivam Gaur CV",
+    "Software Developer Resume",
+    "Shivam Gaur NOIDA",
+  ],
+};
 
 function getCloudinaryPdfPreviewUrl(url: string) {
   if (!url || !url.includes("res.cloudinary.com")) return "";
