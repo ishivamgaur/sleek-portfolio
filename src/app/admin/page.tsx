@@ -639,7 +639,7 @@ export default function AdminPage() {
                 <div className="px-4 flex items-center justify-between text-white pointer-events-auto">
                   <div className="flex items-center gap-2">
                     <Avatar className="w-8 h-8 border border-white/20">
-                      <AvatarImage src={profileUrl || "/profile-pic.jpg"} />
+                      <AvatarImage src={"/profile-pic.jpg"} />
                       <AvatarFallback>SG</AvatarFallback>
                     </Avatar>
                     <div>
