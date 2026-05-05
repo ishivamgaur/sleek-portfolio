@@ -308,14 +308,14 @@ export default function Hero() {
 
           <div className="flex flex-col gap-y-2 text-[15px] text-muted-foreground mt-2">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] md:text-[15px] font-medium">
-              <span>Full Stack Developer</span>
+              <span>Engineer</span>
               <div className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
-              <span>NOIDA</span>
+              <span>Developer</span>
               {githubData?.createdAt ? (
                 <div className="flex items-center gap-x-2 whitespace-nowrap">
                   <div className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
-                  <span>
-                    Coding for {calculateDays(githubData.createdAt)} days
+                  <span className="text-[14px]">
+                    {calculateDays(githubData.createdAt)}d of Code
                   </span>
                 </div>
               ) : (
