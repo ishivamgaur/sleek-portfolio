@@ -45,7 +45,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const adminCardClass =
-  "rounded-md border border-border bg-muted/20 shadow-sm ring-0 dark:border-white/15 dark:bg-white/[0.03]";
+  "rounded-xl border border-dashed border-border bg-secondary/5 ring-0 dark:border-border dark:bg-secondary/10 transition-colors hover:bg-secondary/10";
 const adminCardTitleClass =
   "text-[16px] md:text-[17px] font-bold tracking-tight text-foreground leading-tight";
 const adminCardDescriptionClass = "text-muted-foreground mt-1 text-[14px]";
@@ -98,21 +98,9 @@ export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [bannerUrl, setBannerUrl] = useState("");
-  const [profileUrl, setProfileUrl] = useState("");
-  const [originalBannerUrl, setOriginalBannerUrl] = useState("");
-  const [originalProfileUrl, setOriginalProfileUrl] = useState("");
   const [resumeUrl, setResumeUrl] = useState("");
   const [originalResumeUrl, setOriginalResumeUrl] = useState("");
   const [stories, setStories] = useState<StoryData[]>([]);
-  const [previousBanners, setPreviousBanners] = useState<
-    Array<{ url: string; publicId?: string }>
-  >([]);
-  const [previousProfiles, setPreviousProfiles] = useState<
-    Array<{ url: string; publicId?: string }>
-  >([]);
-  const [currentBannerPublicId, setCurrentBannerPublicId] = useState("");
-  const [currentProfilePublicId, setCurrentProfilePublicId] = useState("");
   const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null);
 
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
@@ -204,14 +192,8 @@ export default function AdminPage() {
 
     fetchSettings()
       .then((s: SiteSettings) => {
-        setBannerUrl(s.bannerImage || "");
-        setProfileUrl(s.profileImage || "");
-        setOriginalBannerUrl(s.bannerImage || "");
-        setOriginalProfileUrl(s.profileImage || "");
         setResumeUrl(s.resumeUrl || "");
         setOriginalResumeUrl(s.resumeUrl || "");
-        setPreviousBanners(s.previousBanners || []);
-        setPreviousProfiles(s.previousProfiles || []);
       })
       .catch(() => {})
       .finally(() => setIsSettingsLoading(false));
@@ -263,57 +245,19 @@ export default function AdminPage() {
     }
   };
 
-  const handleUpdateImages = async (e: React.FormEvent) => {
+  const handleUpdateResume = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await updateSettings({
-        bannerImage: bannerUrl || undefined,
-        profileImage: profileUrl || undefined,
+      await updateSettings({
         resumeUrl: resumeUrl || undefined,
-        publicId:
-          bannerUrl === currentBannerPublicId
-            ? undefined
-            : currentBannerPublicId || currentProfilePublicId || undefined,
       });
-      if (bannerUrl) {
-        dispatch(updateBannerImage(bannerUrl));
-        setOriginalBannerUrl(bannerUrl);
-      }
-      if (profileUrl) {
-        dispatch(updateProfileImage(profileUrl));
-        setOriginalProfileUrl(profileUrl);
-      }
       if (resumeUrl) {
         setOriginalResumeUrl(resumeUrl);
       }
-      if (res) {
-        setPreviousBanners(res.previousBanners || []);
-        setPreviousProfiles(res.previousProfiles || []);
-      }
-      alert("Images updated successfully!");
+      alert("Resume updated successfully!");
     } catch (err: unknown) {
-      alert(getErrorMessage(err) || "Failed to update images");
-    }
-  };
-
-  const handleDeletePreviousImage = async (
-    type: "banner" | "profile",
-    imageUrl: string,
-  ) => {
-    if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
-    try {
-      const res = await updateSettings({
-        deleteBanner: type === "banner" ? imageUrl : undefined,
-        deleteProfile: type === "profile" ? imageUrl : undefined,
-      });
-      if (res) {
-        setPreviousBanners(res.previousBanners || []);
-        setPreviousProfiles(res.previousProfiles || []);
-      }
-      alert("Image deleted successfully!");
-    } catch (err: unknown) {
-      alert(getErrorMessage(err) || "Failed to delete image");
+      alert(getErrorMessage(err) || "Failed to update resume");
     }
   };
 
@@ -429,26 +373,26 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="rounded-md border border-border bg-background/50 p-3">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
                   <Users className="size-4 text-muted-foreground mb-2" />
                   <p className="text-2xl font-bold">
                     {analytics.uniqueVisitors}
                   </p>
                   <p className="text-xs text-muted-foreground">Unique users</p>
                 </div>
-                <div className="rounded-md border border-border bg-background/50 p-3">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
                   <Eye className="size-4 text-muted-foreground mb-2" />
                   <p className="text-2xl font-bold">{analytics.totalVisits}</p>
                   <p className="text-xs text-muted-foreground">Total visits</p>
                 </div>
-                <div className="rounded-md border border-border bg-background/50 p-3">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
                   <CalendarDays className="size-4 text-muted-foreground mb-2" />
                   <p className="text-2xl font-bold">
                     {analytics.todayUniqueVisitors}
                   </p>
                   <p className="text-xs text-muted-foreground">Users today</p>
                 </div>
-                <div className="rounded-md border border-border bg-background/50 p-3">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
                   <BarChart3 className="size-4 text-muted-foreground mb-2" />
                   <p className="text-2xl font-bold">{analytics.todayVisits}</p>
                   <p className="text-xs text-muted-foreground">Visits today</p>
@@ -462,7 +406,7 @@ export default function AdminPage() {
                     {analytics.popularPages.map((page) => (
                       <div
                         key={page.path}
-                        className="flex items-center justify-between rounded-md border border-border bg-background/40 px-3 py-2 text-sm"
+                        className="flex items-center justify-between rounded-xl border border-dashed border-border bg-secondary/5 px-4 py-2.5 text-sm transition-colors hover:bg-secondary/10"
                       >
                         <span className="truncate pr-3">{page.path}</span>
                         <span className="font-semibold">{page.visits}</span>
@@ -479,80 +423,15 @@ export default function AdminPage() {
       <div className="grid grid-cols-1 gap-4">
         <Card className={adminCardClass}>
           <CardHeader>
-            <CardTitle className={adminCardTitleClass}>Site Media</CardTitle>
+            <CardTitle className={adminCardTitleClass}>
+              Resume Settings
+            </CardTitle>
             <CardDescription className={adminCardDescriptionClass}>
-              Update your banner and profile pictures.
+              Update your professional resume link.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleUpdateImages} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Banner Image</Label>
-                    {bannerUrl !== originalBannerUrl && (
-                      <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
-                        Modified
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      value={bannerUrl}
-                      onChange={(e) => setBannerUrl(e.target.value)}
-                      placeholder="Paste URL or upload"
-                      className={
-                        bannerUrl !== originalBannerUrl
-                          ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
-                          : "transition-all"
-                      }
-                    />
-                    <FileUpload
-                      accept="image/*"
-                      label="Upload"
-                      uploadType="banner"
-                      onUploadComplete={(url, publicId) => {
-                        setBannerUrl(url);
-                        if (publicId) setCurrentBannerPublicId(publicId);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Profile Image</Label>
-                    {profileUrl !== originalProfileUrl && (
-                      <span className="text-xs text-emerald-600 font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded animate-in fade-in zoom-in duration-300">
-                        Modified
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      value={profileUrl}
-                      onChange={(e) => setProfileUrl(e.target.value)}
-                      placeholder="Paste URL or upload"
-                      className={
-                        profileUrl !== originalProfileUrl
-                          ? "border-emerald-500/70 focus-visible:ring-emerald-500 bg-emerald-500/5 transition-all"
-                          : "transition-all"
-                      }
-                    />
-                    <FileUpload
-                      accept="image/*"
-                      label="Upload"
-                      uploadType="profile"
-                      onUploadComplete={(url, publicId) => {
-                        setProfileUrl(url);
-                        if (publicId) setCurrentProfilePublicId(publicId);
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
+            <form onSubmit={handleUpdateResume} className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Resume PDF</Label>
@@ -585,89 +464,11 @@ export default function AdminPage() {
 
               <Button
                 type="submit"
-                disabled={
-                  bannerUrl === originalBannerUrl &&
-                  profileUrl === originalProfileUrl &&
-                  resumeUrl === originalResumeUrl
-                }
+                disabled={resumeUrl === originalResumeUrl}
                 className="w-full md:w-auto font-bold mt-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                Update Settings
+                Update Resume
               </Button>
-
-              {isSettingsLoading ? (
-                <PreviousBannersSkeleton />
-              ) : previousBanners && previousBanners.length > 0 ? (
-                <div className="space-y-2 pt-4 border-t border-border mt-4">
-                  <Label className="text-sm font-medium">
-                    Previous Banners
-                  </Label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {previousBanners.map((b, idx) => (
-                      <div
-                        key={idx}
-                        className={`group relative h-20 rounded-lg overflow-hidden border transition cursor-pointer bg-muted/20 ${b.url === bannerUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
-                        onClick={() => setBannerUrl(b.url)}
-                      >
-                        <img
-                          src={b.url}
-                          alt={`Previous banner ${idx + 1}`}
-                          className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                        />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePreviousImage("banner", b.url);
-                          }}
-                          className="absolute top-1 right-1 p-1 bg-background/80 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full backdrop-blur-sm transition opacity-100 cursor-pointer"
-                          title="Delete image"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {isSettingsLoading ? (
-                <PreviousProfilesSkeleton />
-              ) : previousProfiles && previousProfiles.length > 0 ? (
-                <div className="space-y-2 pt-4 border-t border-border mt-4">
-                  <Label className="text-sm font-medium">
-                    Previous Profile Pictures
-                  </Label>
-                  <div className="flex flex-wrap gap-4">
-                    {previousProfiles.map((p, idx) => (
-                      <div
-                        key={idx}
-                        className={`group relative w-16 h-16 rounded-full border transition cursor-pointer bg-muted/20 ${p.url === profileUrl ? "border-emerald-500 ring-2 ring-emerald-500/40 scale-95 shadow-md" : "border-border/60 hover:border-primary/50"}`}
-                        onClick={() => setProfileUrl(p.url)}
-                      >
-                        <div className="w-full h-full rounded-full overflow-hidden">
-                          <img
-                            src={p.url}
-                            alt={`Previous profile ${idx + 1}`}
-                            className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePreviousImage("profile", p.url);
-                          }}
-                          className="absolute top-0 right-0 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-100 cursor-pointer z-10"
-                          title="Delete image"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </form>
           </CardContent>
         </Card>
@@ -739,7 +540,7 @@ export default function AdminPage() {
                 {stories.map((story, idx) => (
                   <div
                     key={story._id}
-                    className="relative group flex items-center justify-center bg-background/50"
+                    className="relative group flex items-center justify-center bg-secondary/5 rounded-xl border border-dashed border-border p-4 aspect-square transition-colors hover:bg-secondary/10"
                   >
                     <div
                       onClick={() => {
@@ -747,13 +548,13 @@ export default function AdminPage() {
                         setIsPaused(false);
                         setActiveStoryIdx(idx);
                       }}
-                      className="relative w-22 h-22 rounded-full border-2 border-primary/50 p-0.5 bg-background shadow-sm cursor-pointer active:scale-95 transition-transform"
+                      className="relative w-20 h-20 shrink-0 rounded-full border-2 border-primary/50 p-0.5 bg-background shadow-sm cursor-pointer active:scale-95 transition-transform"
                     >
                       <div className="w-full h-full rounded-full overflow-hidden">
                         {story.mediaType === "video" ? (
                           <video
                             src={story.imageUrl}
-                            className="w-full h-full object-cover rounded-full"
+                            className="w-full h-full object-cover"
                             muted
                           />
                         ) : (
@@ -764,7 +565,7 @@ export default function AdminPage() {
                                 : story.imageUrl
                             }
                             alt="Story Preview"
-                            className="w-full h-full object-cover rounded-full"
+                            className="w-full h-full object-cover"
                           />
                         )}
                       </div>
@@ -777,10 +578,10 @@ export default function AdminPage() {
                           handleDeleteStory(story._id);
                         }
                       }}
-                      className="absolute -top-1 right-3 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-100 cursor-pointer z-10"
+                      className="absolute top-2 right-2 p-1 bg-destructive hover:bg-destructive/90 text-white rounded-full shadow-sm transition opacity-100 cursor-pointer z-10"
                       title="Delete story"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 ))}
@@ -848,7 +649,7 @@ export default function AdminPage() {
                         </p>
                         {stories[activeStoryIdx]?.createdAt && (
                           <>
-                            <span className="text-white/60 text-xs">•</span>
+                            <div className="w-1 h-1 rounded-full bg-white/40" />
                             <span className="text-white/70 text-[10px] md:text-xs font-normal tracking-wide">
                               {formatTimeAgo(stories[activeStoryIdx].createdAt)}
                             </span>

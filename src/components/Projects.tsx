@@ -14,13 +14,13 @@ export default function Projects() {
   const displayedProjects = projects.slice(0, 2);
 
   return (
-    <section className="px-4 pb-8">
+    <section className="px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-10"
       >
         <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
@@ -30,7 +30,12 @@ export default function Projects() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {displayedProjects?.map((project, idx) => (
-          <ProjectCard key={project._id} project={project} idx={idx} />
+          <ProjectCard
+            key={project._id}
+            project={project}
+            idx={idx}
+            showBullets={false}
+          />
         ))}
       </div>
 
@@ -41,9 +46,9 @@ export default function Projects() {
           className="mt-10 flex justify-center"
         >
           <Link href="/projects" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight shadow-sm active:scale-[0.98]">
+            <button className="flex items-center gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[13px] md:text-[14px] font-bold tracking-tight active:scale-95 group/btn cursor-pointer">
               View all projects
-              <ArrowUpRight className="w-4 h-4" />
+              <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
             </button>
           </Link>
         </motion.div>

@@ -54,7 +54,6 @@ export default async function ResumePage() {
   return (
     <div className="pt-24 pb-12 w-full px-4">
       <ResumeHeader />
-
       <ResumeViewer resumeUrl={resumeUrl} />
     </div>
   );

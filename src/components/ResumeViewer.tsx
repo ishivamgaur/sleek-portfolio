@@ -34,7 +34,7 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
         <>
           <div className="w-full relative group">
             <div
-              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px]  border border-border/50 ${isLoading ? "shimmer" : ""}`}
+              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px]  border border-border ${isLoading ? "shimmer" : ""}`}
             >
               <iframe
                 src={previewUrl}
@@ -58,14 +58,14 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
               rel="noopener noreferrer"
               className="w-full sm:w-auto"
             >
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight shadow-sm active:scale-[0.98]">
+              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
                 View full resume
                 <ArrowUpRight className="w-4 h-4" />
               </button>
             </a>
 
             <a href={downloadUrl} download className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight shadow-sm active:scale-[0.98]">
+              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
                 Download PDF
                 <Download className="w-4 h-4" />
               </button>
@@ -73,7 +73,7 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
           </div>
         </>
       ) : (
-        <div className="flex min-h-[400px] w-full items-center justify-center p-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-3xl bg-muted/5">
+        <div className="flex min-h-[400px] w-full items-center justify-center p-8 text-center text-muted-foreground border border-dashed border-border rounded-xl bg-secondary/5">
           <div className="flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
               <svg

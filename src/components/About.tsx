@@ -19,13 +19,13 @@ const highlights = [
 
 export default function About() {
   return (
-    <section className="px-4 pb-8">
+    <section className="px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-10"
       >
         <h2 className="text-2xl font-bold tracking-tight">About Me</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
@@ -55,9 +55,9 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
-              className="h-full rounded-md border border-border bg-muted/20 p-4 shadow-sm transition-colors dark:border-white/15 dark:bg-white/[0.03]"
+              className="h-full rounded-xl border border-dashed border-border bg-secondary/5 p-5 transition-colors hover:bg-secondary/10"
             >
-              <h3 className="text-[15px] font-bold tracking-tight text-foreground">
+              <h3 className="text-[16px] font-bold tracking-tight text-foreground">
                 {item.title}
               </h3>
               <p className="text-muted-foreground leading-relaxed text-[14px] mt-2">

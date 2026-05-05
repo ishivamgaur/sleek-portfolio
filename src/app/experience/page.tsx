@@ -40,6 +40,7 @@ export default function ExperiencePage() {
               key={exp._id || String(idx)}
               story={exp}
               index={idx}
+              defaultExpanded={true}
             />
           ))}
         </div>

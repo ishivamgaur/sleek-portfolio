@@ -20,9 +20,13 @@ export interface Project {
 export function ProjectCard({
   project,
   idx,
+  showDescription = true,
+  showBullets = true,
 }: {
   project: Project;
   idx: number;
+  showDescription?: boolean;
+  showBullets?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -47,9 +51,9 @@ export function ProjectCard({
         className="group relative flex flex-col cursor-pointer h-full"
       >
         {/* The Video Thumbnail */}
-        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/30 border border-border/40">
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/30 border border-border">
           {!project.thumbnailUrl || imgError ? (
-            <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary/40 via-muted to-secondary/10 border border-border/50 shadow-inner">
+            <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary/40 via-muted to-secondary/10 border border-border shadow-inner">
               <div className="w-14 h-14 rounded-2xl bg-background/50 flex items-center justify-center shadow-sm mb-3 backdrop-blur-sm">
                 <MonitorPlay className="w-7 h-7 text-muted-foreground/70" />
               </div>
@@ -99,9 +103,22 @@ export function ProjectCard({
             )}
           </div>
 
-          <p className="text-[14px] text-muted-foreground leading-snug mt-1.5 line-clamp-2">
-            {project.description}
-          </p>
+          {showDescription && (
+            <div className="text-[14px] text-muted-foreground leading-relaxed mt-2 flex flex-col gap-1">
+              {project.description.split("\n").map((line, i) => {
+                const cleanLine = line.replace(/^[•◦-]\s*/, "").trim();
+                if (!cleanLine) return null;
+                return (
+                  <span key={i} className="flex gap-2">
+                    {showBullets && (
+                      <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0" />
+                    )}
+                    {cleanLine}
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2 mt-3">
             {project.tags.slice(0, 3).map((tag) => (

@@ -13,7 +13,7 @@ export default function AllProjectsPage() {
   };
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
+    <div className="px-4 pt-24 pb-12 w-full">
       {/* Header section */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
@@ -30,9 +30,14 @@ export default function AllProjectsPage() {
       </motion.div>
 
       {/* Full Grid of all projects */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40 flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
         {projects.map((project, idx) => (
-          <ProjectCard key={project._id} project={project} idx={idx} />
+          <ProjectCard
+            key={project._id}
+            project={project}
+            idx={idx}
+            showBullets={false}
+          />
         ))}
       </div>
 

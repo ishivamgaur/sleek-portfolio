@@ -133,7 +133,7 @@ export default function ProjectDetailsPage({
         </div>
       </motion.div>
 
-      <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden bg-muted/30 border border-border/40 relative shadow-2xl">
+      <div className="w-full aspect-video md:aspect-[21/9] rounded-xl overflow-hidden bg-secondary/5 border border-dashed border-border relative">
         {project.videoUrl && !imgError ? (
           <img
             ref={videoRef}
@@ -176,9 +176,9 @@ export default function ProjectDetailsPage({
               {project.features.map((feature, idx) => (
                 <li
                   key={idx}
-                  className="flex items-start bg-secondary/10 p-4 rounded-xl border border-border/20"
+                  className="flex items-start bg-secondary/5 p-4 rounded-xl border border-dashed border-border"
                 >
-                  <span className="mr-3 mt-1.5 h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0 shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                  <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0 mr-3" />
                   <span className="leading-snug text-[14px] text-muted-foreground">
                     {feature}
                   </span>

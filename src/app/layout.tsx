@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import Quotes from "@/components/Quotes";
 
 import { siteConfig } from "@/config/site";
 
-const font = Poppins({
+const font = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -103,7 +105,7 @@ export default function RootLayout({
           )}
       </head>
       <body
-        className={`${font.className} min-h-screen bg-background text-foreground antialiased`}
+        className={`${font.variable} font-sans min-h-screen bg-background text-foreground antialiased`}
       >
         <Providers
           attribute="class"
@@ -112,10 +114,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AnalyticsTracker />
-          <Navbar />
-          <main className="max-w-3xl mx-auto w-full min-h-screen flex flex-col pb-8">
-            {children}
-          </main>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="max-w-3xl mx-auto w-full flex-grow flex flex-col pb-8">
+              {children}
+              <div className="px-4 mt-8">
+                <Quotes />
+              </div>
+            </main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>
