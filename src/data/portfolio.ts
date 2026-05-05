@@ -45,6 +45,7 @@ export const portfolioData = {
       startDate: "2025-09-01",
       date: "Current",
       location: "Greater Noida, Section 90",
+      shortLocation: "Gr. Noida, Sec 90",
       type: "On-site",
       tech: [
         "React",
@@ -67,6 +68,7 @@ export const portfolioData = {
       startDate: "2024-12-01",
       date: "2025-08-31",
       location: "Knowledge Park III, Greater Noida",
+      shortLocation: "KP III, Gr. Noida",
       type: "On-site",
       tech: [
         "React",

@@ -1,26 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { fetchSpotify, SpotifyData } from "@/services/api";
+import { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { fetchSpotify } from "@/services/api";
 
 export default function SpotifyNowPlaying() {
-  const [data, setData] = useState<SpotifyData | null>(null);
+  const dispatch = useDispatch();
+  const data = useSelector((state: RootState) => state.portfolio.spotifyData);
+  const hasFetchedSpotify = useSelector(
+    (state: RootState) => state.portfolio.hasFetchedSpotify,
+  );
 
   const loadSpotify = useCallback(async () => {
     try {
       const spotifyData = await fetchSpotify();
-      setData(spotifyData);
+      dispatch({ type: "portfolio/setSpotifyData", payload: spotifyData });
     } catch {
       // Keep the last successful value if Spotify is temporarily unavailable.
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    loadSpotify();
-    const interval = window.setInterval(loadSpotify, 30_000);
+    // Only fetch immediately on mount if we haven't fetched before
+    if (!hasFetchedSpotify) {
+      loadSpotify();
+    }
 
+    // Always keep polling in the background so the current song stays updated
+    const interval = window.setInterval(loadSpotify, 30_000);
     return () => window.clearInterval(interval);
-  }, [loadSpotify]);
+  }, [loadSpotify, hasFetchedSpotify]);
 
   if (!data || !data.isPlaying) return null;
 

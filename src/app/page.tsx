@@ -16,7 +16,7 @@ const sections = [Hero, About, Experience, Projects, Personal];
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-10 pb-12">
+    <div className="flex flex-col gap-14 pb-12">
       {sections.map((Section, i) => (
         <div key={i}>
           <Section />

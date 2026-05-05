@@ -3,7 +3,7 @@ import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Experience | Shivam Gaur",
-  description: `Detailed professional experience and work history of ${siteConfig.name}, showcasing skills and roles in software development.`,
+  description: `Detailed Work Experience and work history of ${siteConfig.name}, showcasing skills and roles in software development.`,
   keywords: [
     "Shivam Gaur Experience",
     "Software Developer Work History",
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Experience | Shivam Gaur",
-    description: `Professional experience and work history of ${siteConfig.name}.`,
+    description: `Work Experience and work history of ${siteConfig.name}.`,
     url: `${siteConfig.url}/experience`,
     type: "profile",
   },
   twitter: {
     card: "summary_large_image",
     title: "Experience | Shivam Gaur",
-    description: `Professional experience and work history of ${siteConfig.name}.`,
+    description: `Work Experience and work history of ${siteConfig.name}.`,
   },
 };
 

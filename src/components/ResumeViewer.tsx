@@ -1,32 +1,64 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUpRight, Download } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface ResumeViewerProps {
   resumeUrl: string;
 }
 
 export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
+  const dispatch = useDispatch();
+  const hasLoadedBefore = useSelector(
+    (state: RootState) => state.portfolio.hasLoadedResume,
+  );
+
+  // Only show the loading skeleton if we haven't loaded it globally yet
+  const [isLoading, setIsLoading] = useState(!hasLoadedBefore);
+  const imgRef = React.useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    // If the image is already in browser cache, onLoad might not fire again.
+    // We instantly mark it as loaded if the img.complete property is true.
+    if (imgRef.current && imgRef.current.complete) {
+      handleLoadSuccess();
+    }
   }, []);
 
-  // Use Google Docs Viewer for maximum compatibility across Mobile (iOS/Android) and Desktop
-  // Native PDF embedding often fails on mobile browsers.
-  const previewUrl = resumeUrl
-    ? `https://docs.google.com/viewer?url=${encodeURIComponent(resumeUrl)}&embedded=true`
-    : "";
+  const handleLoadSuccess = () => {
+    setIsLoading(false);
+    if (!hasLoadedBefore) {
+      dispatch({ type: "portfolio/setHasLoadedResume", payload: true });
+    }
+  };
+
+  const isCloudinary =
+    resumeUrl?.includes("res.cloudinary.com") &&
+    resumeUrl?.includes("/image/upload/");
+
+  let previewUrl = "";
+  if (isCloudinary) {
+    // Cloudinary can perfectly render the first page of a PDF as an optimized image instantly.
+    previewUrl = resumeUrl
+      .split("?")[0]
+      .replace("/image/upload/", "/image/upload/pg_1,f_auto,q_auto,w_1400/")
+      .replace(/\.pdf$/i, ".jpg");
+  } else if (resumeUrl?.includes("drive.google.com")) {
+    const idMatch = resumeUrl.match(/\/d\/([^/]+)/);
+    previewUrl = idMatch
+      ? `https://drive.google.com/file/d/${idMatch[1]}/preview`
+      : resumeUrl;
+  } else {
+    // Fallback to Google Docs viewer for generic links
+    previewUrl = resumeUrl
+      ? `https://docs.google.com/viewer?url=${encodeURIComponent(resumeUrl)}&embedded=true`
+      : "";
+  }
 
   // Cloudinary download link optimization
   const downloadUrl = resumeUrl?.replace("/upload/", "/upload/fl_attachment/");
-
-  if (!mounted) {
-    return <div className="w-full aspect-[1/1.4] shimmer max-h-[1000px]" />;
-  }
 
   return (
     <div className="w-full flex flex-col items-center gap-8">
@@ -34,14 +66,25 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
         <>
           <div className="w-full relative group">
             <div
-              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px]  border border-border ${isLoading ? "shimmer" : ""}`}
+              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px] border border-border rounded-xl ${isLoading && !hasLoadedBefore ? "animate-pulse bg-secondary/10" : ""}`}
             >
-              <iframe
-                src={previewUrl}
-                className={`w-full h-full border-none block transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"}`}
-                title="Resume Preview"
-                onLoad={() => setIsLoading(false)}
-              />
+              {isCloudinary ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={imgRef}
+                  src={previewUrl}
+                  alt="Resume Preview"
+                  className={`w-full h-full object-cover border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
+                  onLoad={handleLoadSuccess}
+                />
+              ) : (
+                <iframe
+                  src={previewUrl}
+                  className={`w-full h-full border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
+                  title="Resume Preview"
+                  onLoad={handleLoadSuccess}
+                />
+              )}
 
               {/* Minimal hover overlay */}
               {!isLoading && (
@@ -66,7 +109,7 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
 
             <a href={downloadUrl} download className="w-full sm:w-auto">
               <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
-                Download PDF
+                Download
                 <Download className="w-4 h-4" />
               </button>
             </a>

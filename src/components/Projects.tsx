@@ -20,12 +20,9 @@ export default function Projects() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-10"
+        className="mb-6"
       >
         <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          Hover to play video previews. Click to view full details.
-        </p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

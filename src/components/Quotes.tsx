@@ -14,7 +14,7 @@ export default function Quotes() {
       >
         <div className="flex items-start gap-4 p-5 pb-9 rounded-2xl bg-secondary/5 hover:bg-secondary/10 transition-colors border border-dashed border-border relative overflow-hidden">
           {/* Stylish Text-based Quote Watermark */}
-          <div className="absolute -top-5 -left-1 text-[280px] leading-none font-serif text-primary/10 select-none pointer-events-none">
+          <div className="absolute -top-10 -left-0 text-[280px] leading-none font-serif text-primary/10 select-none pointer-events-none">
             &ldquo;
           </div>
           <div className="relative z-10 flex flex-col w-full">

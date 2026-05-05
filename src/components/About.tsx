@@ -25,12 +25,9 @@ export default function About() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-10"
+        className="mb-6"
       >
-        <h2 className="text-2xl font-bold tracking-tight">About Me</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          A little more about how I build and what I care about.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">Readme.md</h2>
       </motion.div>
 
       <motion.div

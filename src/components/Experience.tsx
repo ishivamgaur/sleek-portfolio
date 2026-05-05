@@ -25,15 +25,12 @@ export default function Experience() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-10"
+        className="mb-6"
       >
-        <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          My professional journey and milestones.
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">Work Experience</h2>
       </motion.div>
 
-      <div className="space-y-12">
+      <div className="space-y-6">
         {displayedExperiences.map((exp, idx) => (
           <ExperienceItem
             key={exp._id || String(idx)}

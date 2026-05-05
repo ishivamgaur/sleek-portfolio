@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import SpotifyNowPlaying from "./SpotifyNowPlaying";
 import {
@@ -30,8 +30,21 @@ export default function Hero() {
   const [isPaused, setIsPaused] = useState(false);
   const [bannerError, setBannerError] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
-  const [stories, setStories] = useState<StoryData[]>([]);
-  const [githubData, setGithubData] = useState<GitHubStats | null>(null);
+  const dispatch = useDispatch();
+
+  // Connect to Redux store instead of local state
+  const stories = useSelector(
+    (state: RootState) => state.portfolio.instagramStories,
+  );
+  const githubData = useSelector(
+    (state: RootState) => state.portfolio.githubStats,
+  );
+  const hasFetchedStories = useSelector(
+    (state: RootState) => state.portfolio.hasFetchedStories,
+  );
+  const hasFetchedGithub = useSelector(
+    (state: RootState) => state.portfolio.hasFetchedGithub,
+  );
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const bannerImage = "/banner.jpg";
@@ -39,26 +52,27 @@ export default function Hero() {
 
   useEffect(() => {
     const loadData = () => {
-      fetchStories()
-        .then((data) => setStories(data))
-        .catch(() => {});
+      if (!hasFetchedStories) {
+        fetchStories()
+          .then((data) =>
+            dispatch({ type: "portfolio/setInstagramStories", payload: data }),
+          )
+          .catch(() => {});
+      }
 
-      fetchGithubStats()
-        .then((data) => setGithubData(data))
-        .catch(() => {});
+      if (!hasFetchedGithub) {
+        fetchGithubStats()
+          .then((data) =>
+            dispatch({ type: "portfolio/setGithubStats", payload: data }),
+          )
+          .catch(() => {});
+      }
     };
 
     loadData();
 
-    const handleFocus = () => loadData();
-    window.addEventListener("focus", handleFocus);
-    const interval = setInterval(loadData, 5000);
-
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-      clearInterval(interval);
-    };
-  }, []);
+    // Optionally: remove focus listener and aggressive polling since we persist in Redux now
+  }, [dispatch, hasFetchedStories, hasFetchedGithub]);
 
   const calculateDays = (dateString?: string) => {
     if (!dateString) return 0;

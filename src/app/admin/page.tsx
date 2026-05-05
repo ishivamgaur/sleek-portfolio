@@ -342,7 +342,7 @@ export default function AdminPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-muted-foreground mt-1 text-[15px]">
-            Manage your portfolio projects and professional experience.
+            Manage your portfolio projects and Work Experience.
           </p>
         </div>
         <Button

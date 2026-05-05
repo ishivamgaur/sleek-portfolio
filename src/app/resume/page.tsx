@@ -4,7 +4,7 @@ import ResumeHeader from "@/components/ResumeHeader";
 import ResumeViewer from "@/components/ResumeViewer";
 import { siteConfig } from "@/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // Cache the page for 60 seconds to make navigations instant
 
 export const metadata = {
   title: "Resume | Shivam Gaur",

@@ -12,12 +12,9 @@ export default function Personal() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mb-10"
+        className="mb-6"
       >
-        <h2 className="text-2xl font-bold tracking-tight">Personal</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          More about who I am beyond the code. My life goals and favorite films.
-        </p>
+        <h2 className="text-[26px] font-bold tracking-tight">Personal</h2>
       </motion.div>
 
       <div className="flex flex-col gap-3">

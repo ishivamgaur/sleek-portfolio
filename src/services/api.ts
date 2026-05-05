@@ -211,6 +211,7 @@ export interface ExperienceData {
   role: string;
   company: string;
   location: string;
+  shortLocation?: string;
   type: string;
   content: string;
   date: string;

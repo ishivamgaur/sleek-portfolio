@@ -27,6 +27,17 @@ interface PortfolioState {
   stories: Story[];
   bannerImage: string;
   profileImage: string;
+
+  // Persisted API Data
+  instagramStories: any[];
+  githubStats: any | null;
+  spotifyData: any | null;
+  hasFetchedStories: boolean;
+  hasFetchedGithub: boolean;
+  hasFetchedSpotify: boolean;
+
+  // UI State
+  hasLoadedResume: boolean;
 }
 
 const initialState: PortfolioState = {
@@ -42,6 +53,14 @@ const initialState: PortfolioState = {
     },
   ],
   stories: [],
+
+  instagramStories: [],
+  githubStats: null,
+  spotifyData: null,
+  hasFetchedStories: false,
+  hasFetchedGithub: false,
+  hasFetchedSpotify: false,
+  hasLoadedResume: false,
 };
 
 const portfolioSlice = createSlice({
@@ -66,6 +85,23 @@ const portfolioSlice = createSlice({
     updateProfileImage: (state, action: PayloadAction<string>) => {
       state.profileImage = action.payload;
     },
+
+    // API Persistence Reducers
+    setInstagramStories: (state, action: PayloadAction<any[]>) => {
+      state.instagramStories = action.payload;
+      state.hasFetchedStories = true;
+    },
+    setGithubStats: (state, action: PayloadAction<any>) => {
+      state.githubStats = action.payload;
+      state.hasFetchedGithub = true;
+    },
+    setSpotifyData: (state, action: PayloadAction<any>) => {
+      state.spotifyData = action.payload;
+      state.hasFetchedSpotify = true;
+    },
+    setHasLoadedResume: (state, action: PayloadAction<boolean>) => {
+      state.hasLoadedResume = action.payload;
+    },
   },
 });
 
@@ -76,5 +112,9 @@ export const {
   removeStory,
   updateBannerImage,
   updateProfileImage,
+  setInstagramStories,
+  setGithubStats,
+  setSpotifyData,
+  setHasLoadedResume,
 } = portfolioSlice.actions;
 export default portfolioSlice.reducer;

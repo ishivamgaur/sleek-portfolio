@@ -20,9 +20,7 @@ export default function ExperiencePage() {
         transition={{ duration: 0.3, ease: "easeOut" }}
         className="mb-10"
       >
-        <h2 className="text-2xl font-bold tracking-tight">
-          Professional Experience
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight">Work Experience</h2>
         <p className="text-muted-foreground mt-1 text-[15px]">
           A detailed overview of my professional journey and technical
           expertise.

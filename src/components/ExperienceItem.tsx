@@ -34,9 +34,9 @@ export function ExperienceItem({
       viewport={{ once: true }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
     >
-      <div className="flex flex-col space-y-3 group/toggle">
+      <div className="flex flex-col space-y-2 group/toggle">
         {/* Header: Company/Role & Date/Location */}
-        <div className="flex flex-col space-y-1.5">
+        <div className="flex flex-col space-y-0">
           <div className="flex items-start justify-between gap-2">
             <div
               className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
@@ -45,28 +45,50 @@ export function ExperienceItem({
               <h3 className="text-[16px] md:text-[17px] font-bold tracking-tight text-foreground leading-tight truncate group-hover/toggle:text-primary transition-colors">
                 {story.company}
               </h3>
-              <motion.div
-                className="text-muted-foreground group-hover/toggle:text-primary transition-colors duration-300 opacity-0 group-hover/toggle:opacity-100 shrink-0"
-                animate={{ rotate: isExpanded ? 90 : 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-              >
-                <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
-              </motion.div>
+              <div className="p-0.5 rounded-md bg-secondary/5 border border-border/30 text-muted-foreground group-hover/toggle:text-primary group-hover/toggle:bg-primary/5 group-hover/toggle:border-primary/20 transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover/toggle:opacity-100 shrink-0">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.div
+                      animate={{ rotate: isExpanded ? 90 : 0 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      className="flex items-center justify-center"
+                    >
+                      <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
+                    </motion.div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>{isExpanded ? "Collapse" : "Expand"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-[13px] md:text-[14px] text-muted-foreground/80 font-medium mt-0.5">
-                {formatDate(story.startDate)} —{" "}
-                {story.date === "Current" ? "Current" : formatDate(story.date)}
+              <span className="text-[11px] md:text-[14px] text-muted-foreground/80 font-medium mt-0.5">
+                <span className="inline sm:hidden">
+                  {formatDateShort(story.startDate)} —{" "}
+                  {story.date === "Current"
+                    ? "Current"
+                    : formatDateShort(story.date)}
+                </span>
+                <span className="hidden sm:inline">
+                  {formatDate(story.startDate)} —{" "}
+                  {story.date === "Current"
+                    ? "Current"
+                    : formatDate(story.date)}
+                </span>
               </span>
             </div>
           </div>
 
           <div className="flex items-center justify-between gap-4">
-            <p className="text-[13px] md:text-[14px] font-medium text-foreground/60">
+            <p className="text-[12px] md:text-[14px] font-medium text-foreground/60">
               {story.role}
             </p>
-            <p className="text-[13px] md:text-[14px] text-muted-foreground/60 font-medium">
-              {story.location}
+            <p className="text-[11px] md:text-[14px] text-muted-foreground/60 font-medium shrink-0">
+              <span className="inline sm:hidden">
+                {story.shortLocation || story.location}
+              </span>
+              <span className="hidden sm:inline">{story.location}</span>
             </p>
           </div>
         </div>
@@ -80,25 +102,37 @@ export function ExperienceItem({
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className="flex flex-col space-y-3 pb-2">
-                {/* Tech Stack Icons */}
+              <div className="pt-2 flex flex-col space-y-3 pb-2">
+                <div className="border-t border-dashed border-border w-full" />
+
+                {/* Tech Stack Section */}
                 {showTech && story.tech && story.tech.length > 0 && (
-                  <div className="pt-1.5 pb-0.5 px-1.5">
-                    <TechDock tech={story.tech} />
+                  <div className="space-y-2">
+                    <h4 className="text-[13px] font-bold text-foreground/80">
+                      Technologies & Tools
+                    </h4>
+                    <div className="pt-0.5 pb-0.5">
+                      <TechDock tech={story.tech} />
+                    </div>
                   </div>
                 )}
 
-                {/* Description Bullets */}
-                <div className="flex flex-col space-y-3">
-                  {allBullets.map((bullet, i) => (
-                    <div
-                      key={i}
-                      className="flex gap-2 text-muted-foreground leading-normal text-[14px]"
-                    >
-                      <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0" />
-                      <span>{bullet.trim()}</span>
-                    </div>
-                  ))}
+                {/* Description Section */}
+                <div className="space-y-2.5">
+                  <h4 className="text-[13px] font-bold text-foreground/80">
+                    Key Contributions & Achievements
+                  </h4>
+                  <div className="flex flex-col space-y-3">
+                    {allBullets.map((bullet, i) => (
+                      <div
+                        key={i}
+                        className="flex gap-2 text-muted-foreground leading-normal text-[14px]"
+                      >
+                        <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0" />
+                        <span>{bullet.trim()}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -201,6 +235,18 @@ function formatDate(dateStr: string) {
       month: "long",
       year: "numeric",
     });
+  } catch (e) {
+    return dateStr;
+  }
+}
+
+function formatDateShort(dateStr: string) {
+  if (!dateStr || dateStr === "Current") return dateStr;
+  try {
+    const date = new Date(dateStr);
+    const month = date.toLocaleDateString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    return `${month} ${year}`;
   } catch (e) {
     return dateStr;
   }
