@@ -7,7 +7,7 @@ import { siteConfig } from "@/config/site";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Resume",
+  title: "Resume | Shivam Gaur",
   description: `View and download the professional resume of ${siteConfig.name}, Software Developer based in NOIDA.`,
   keywords: [
     "Shivam Gaur Resume",
@@ -15,6 +15,20 @@ export const metadata = {
     "Software Developer Resume",
     "Shivam Gaur NOIDA",
   ],
+  alternates: {
+    canonical: `${siteConfig.url}/resume`,
+  },
+  openGraph: {
+    title: "Resume | Shivam Gaur",
+    description: `View and download the professional resume of ${siteConfig.name}.`,
+    url: `${siteConfig.url}/resume`,
+    type: "profile",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Resume | Shivam Gaur",
+    description: `View and download the professional resume of ${siteConfig.name}.`,
+  },
 };
 
 function getCloudinaryPdfPreviewUrl(url: string) {
@@ -51,10 +65,29 @@ export default async function ResumePage() {
 
   const resumeUrl = settings?.resumeUrl || "";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@type": "Person",
+      name: "Shivam Gaur",
+      jobTitle: "Software Developer",
+      url: `${siteConfig.url}/resume`,
+    },
+  };
+
   return (
-    <div className="pt-24 pb-12 w-full px-4">
-      <ResumeHeader />
-      <ResumeViewer resumeUrl={resumeUrl} />
-    </div>
+    <>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <div className="pt-24 pb-12 w-full px-4">
+        <ResumeHeader />
+        <ResumeViewer resumeUrl={resumeUrl} />
+      </div>
+    </>
   );
 }
