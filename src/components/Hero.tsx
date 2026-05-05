@@ -312,17 +312,17 @@ export default function Hero() {
               <div className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
               <span>NOIDA</span>
               {githubData?.createdAt ? (
-                <>
+                <div className="flex items-center gap-x-2 whitespace-nowrap">
                   <div className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
                   <span>
                     Coding for {calculateDays(githubData.createdAt)} days
                   </span>
-                </>
+                </div>
               ) : (
-                <>
+                <div className="flex items-center gap-x-2 whitespace-nowrap">
                   <div className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
                   <Skeleton className="h-4 w-32" />
-                </>
+                </div>
               )}
             </div>
           </div>

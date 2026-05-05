@@ -33,20 +33,20 @@ export default function MoviesPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: idx * 0.05 }}
-            className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-xl border border-dashed border-border bg-secondary/5 hover:bg-secondary/10 transition-colors gap-4"
+            className="flex flex-row items-center justify-between p-4 sm:p-5 rounded-xl border border-dashed border-border bg-secondary/5 hover:bg-secondary/10 transition-colors gap-4"
           >
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col">
-                <span className="text-[16px] text-foreground font-semibold">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="flex flex-col min-w-0">
+                <span className="text-[16px] text-foreground font-semibold truncate">
                   {movie.title}
                 </span>
-                <span className="text-[13px] text-muted-foreground mt-0.5">
+                <span className="text-[13px] text-muted-foreground mt-0.5 truncate">
                   Dir. {movie.director}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center sm:justify-end ml-14 sm:ml-0">
+            <div className="flex items-center shrink-0">
               <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[12px] font-semibold tracking-wider font-mono">
                 {movie.year}
               </span>

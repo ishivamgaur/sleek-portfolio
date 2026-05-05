@@ -78,12 +78,10 @@ export default async function ResumePage() {
 
   return (
     <>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="pt-24 pb-12 w-full px-4">
         <ResumeHeader />
         <ResumeViewer resumeUrl={resumeUrl} />
