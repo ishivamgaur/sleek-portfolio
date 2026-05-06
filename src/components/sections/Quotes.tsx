@@ -1,8 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-
+import FadeIn from "@/components/animations/FadeIn";
 import { QUOTES } from "@/data/portfolio";
 
 export default function Quotes() {
@@ -41,13 +40,7 @@ export default function Quotes() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="w-full"
-      >
+      <FadeIn className="w-full">
         <div className="flex items-start gap-4 p-5 pb-9 rounded-2xl bg-secondary/5 hover:bg-secondary/10 transition-colors border border-dashed border-border relative overflow-hidden">
           {/* Stylish Text-based Quote Watermark */}
           <div className="absolute -top-10 -left-0 text-[280px] leading-none font-serif text-primary/10 select-none pointer-events-none">
@@ -66,7 +59,7 @@ export default function Quotes() {
             </span>
           </div>
         </div>
-      </motion.div>
+      </FadeIn>
     </div>
   );
 }

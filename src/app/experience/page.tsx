@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ExperienceItem } from "@/components/ExperienceItem";
+import FadeIn from "@/components/animations/FadeIn";
+import { ExperienceItem } from "@/components/portfolio/ExperienceItem";
 import { portfolioData } from "@/data/portfolio";
 
 export default function ExperiencePage() {
-  const experiences = portfolioData.experiences;
+  const experiences = portfolioData.experiences || [];
 
   const sortedExperiences = [...experiences].sort((a, b) => {
     return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
@@ -13,19 +13,15 @@ export default function ExperiencePage() {
 
   return (
     <div className="px-4 pt-24 pb-12 w-full">
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="mb-10"
-      >
-        <h2 className="text-2xl font-bold tracking-tight">Work Experience</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          A detailed overview of my professional journey and technical
-          expertise.
-        </p>
-      </motion.div>
+      <FadeIn delay={0.1}>
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold tracking-tight">Work Experience</h2>
+          <p className="text-muted-foreground mt-1 text-[15px]">
+            A detailed overview of my professional journey and technical
+            expertise.
+          </p>
+        </div>
+      </FadeIn>
 
       {sortedExperiences.length === 0 ? (
         <p className="text-muted-foreground text-center py-12">

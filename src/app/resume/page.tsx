@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
-import ResumeHeader from "@/components/ResumeHeader";
-import ResumeViewer from "@/components/ResumeViewer";
+import ResumeHeader from "@/components/portfolio/ResumeHeader";
+import ResumeViewer from "@/components/portfolio/ResumeViewer";
 import { siteConfig } from "@/config/site";
 
 export const revalidate = 60; // Cache the page for 60 seconds to make navigations instant
@@ -57,13 +57,18 @@ function getGoogleDrivePreviewUrl(url: string) {
 }
 
 export default async function ResumePage() {
-  await dbConnect();
+  let resumeUrl = "";
 
-  const settings = await SiteSettings.findOne({ key: "main" })
-    .select("resumeUrl")
-    .lean<{ resumeUrl?: string }>();
-
-  const resumeUrl = settings?.resumeUrl || "";
+  try {
+    await dbConnect();
+    const settings = await SiteSettings.findOne({ key: "main" })
+      .select("resumeUrl")
+      .lean<{ resumeUrl?: string }>();
+    resumeUrl = settings?.resumeUrl || "";
+  } catch (error) {
+    console.error("[ResumePage] Database connection failed:", error);
+    // Fallback to empty string if DB fails
+  }
 
   const jsonLd = {
     "@context": "https://schema.org",

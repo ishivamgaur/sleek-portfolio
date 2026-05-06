@@ -3,11 +3,10 @@ import { Hanken_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import AnalyticsTracker from "@/components/AnalyticsTracker";
-import Quotes from "@/components/Quotes";
-
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import AnalyticsTracker from "@/components/widgets/AnalyticsTracker";
+import Quotes from "@/components/sections/Quotes";
 import { siteConfig } from "@/config/site";
 
 const font = Hanken_Grotesk({

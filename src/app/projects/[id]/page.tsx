@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
+import FadeIn from "@/components/animations/FadeIn";
 
 export default function ProjectDetailsPage({
   params,
@@ -73,131 +74,149 @@ export default function ProjectDetailsPage({
 
   return (
     <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
-      <Link
-        href="/projects"
-        className="inline-flex items-center gap-2 text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors group w-fit"
-      >
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to projects
-      </Link>
+      <FadeIn delay={0.1} direction="up">
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors group w-fit"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to projects
+        </Link>
+      </FadeIn>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="space-y-6"
-      >
+      <div className="space-y-6">
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold tracking-tight">{project.title}</h2>
-          <p className="text-muted-foreground mt-1 text-[15px]">
-            {project.description}
-          </p>
+          <FadeIn delay={0.15} direction="up">
+            <h2 className="text-2xl font-bold tracking-tight">
+              {project.title}
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.2} direction="up">
+            <p className="text-muted-foreground mt-1 text-[15px]">
+              {project.description}
+            </p>
+          </FadeIn>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-2">
           <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className="bg-secondary/40 font-medium px-2.5 py-0.5 text-[11px] rounded-md border-none"
-              >
-                {tag}
-              </Badge>
+            {project.tags.map((tag, idx) => (
+              <FadeIn key={tag} delay={0.25 + idx * 0.05} direction="up">
+                <Badge
+                  variant="secondary"
+                  className="bg-secondary/40 font-medium px-2.5 py-0.5 text-[11px] rounded-md border-none"
+                >
+                  {tag}
+                </Badge>
+              </FadeIn>
             ))}
           </div>
 
-          <div className="flex items-center gap-6 text-[13px]">
-            {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
-              >
-                <GitBranch className="w-4 h-4 text-primary/60" /> Source
-              </a>
-            )}
-            {project.link && (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
-              >
-                <ExternalLink className="w-4 h-4 text-primary/60" /> Visit Site
-              </a>
-            )}
-          </div>
-        </div>
-      </motion.div>
-
-      <div className="w-full aspect-video md:aspect-[21/9] rounded-xl overflow-hidden bg-secondary/5 border border-dashed border-border relative">
-        {project.videoUrl && !imgError ? (
-          <img
-            ref={videoRef}
-            src={project.videoUrl}
-            alt={project.title}
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover"
-          />
-        ) : project.thumbnailUrl && !imgError ? (
-          <img
-            ref={thumbRef}
-            src={project.thumbnailUrl}
-            alt={project.title}
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary/40 via-muted to-secondary/10 shadow-inner">
-            <div className="w-16 h-16 rounded-2xl bg-background/50 flex items-center justify-center shadow-sm mb-4 backdrop-blur-sm">
-              <FolderGit2 className="w-8 h-8 text-muted-foreground/70" />
+          <FadeIn delay={0.4} direction="up">
+            <div className="flex items-center gap-6 text-[13px]">
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                >
+                  <GitBranch className="w-4 h-4 text-primary/60" /> Source
+                </a>
+              )}
+              {project.link && (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                >
+                  <ExternalLink className="w-4 h-4 text-primary/60" /> Visit
+                  Site
+                </a>
+              )}
             </div>
-            <span className="text-xs font-bold text-muted-foreground/50 tracking-widest uppercase">
-              Project Preview
-            </span>
-          </div>
-        )}
+          </FadeIn>
+        </div>
       </div>
 
+      <FadeIn delay={0.5} direction="up">
+        <div className="w-full aspect-video md:aspect-[21/9] rounded-xl overflow-hidden bg-secondary/5 border border-dashed border-border relative">
+          {project.videoUrl && !imgError ? (
+            <img
+              ref={videoRef}
+              src={project.videoUrl}
+              alt={project.title}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover"
+            />
+          ) : project.thumbnailUrl && !imgError ? (
+            <img
+              ref={thumbRef}
+              src={project.thumbnailUrl}
+              alt={project.title}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary/40 via-muted to-secondary/10 shadow-inner">
+              <div className="w-16 h-16 rounded-2xl bg-background/50 flex items-center justify-center shadow-sm mb-4 backdrop-blur-sm">
+                <FolderGit2 className="w-8 h-8 text-muted-foreground/70" />
+              </div>
+              <span className="text-xs font-bold text-muted-foreground/50 tracking-widest uppercase">
+                Project Preview
+              </span>
+            </div>
+          )}
+        </div>
+      </FadeIn>
+
       <div className="w-full space-y-10 pt-4">
-        <div className="text-[16px] text-foreground/90 leading-relaxed whitespace-pre-wrap">
-          {project.content}
+        <div className="flex flex-col space-y-4">
+          {project.content.split("\n\n").map((paragraph, i) => (
+            <FadeIn key={i} delay={0.6 + i * 0.1} direction="up">
+              <div className="text-[16px] text-foreground/90 leading-relaxed">
+                {paragraph}
+              </div>
+            </FadeIn>
+          ))}
         </div>
 
         {project.features && project.features.length > 0 && (
           <div className="space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground/50">
-              Key Features
-            </h3>
+            <FadeIn delay={0.7} direction="up">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground/50">
+                Key Features
+              </h3>
+            </FadeIn>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {project.features.map((feature, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-start bg-secondary/5 p-4 rounded-xl border border-dashed border-border"
-                >
-                  <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0 mr-3" />
-                  <span className="leading-snug text-[14px] text-muted-foreground">
-                    {feature}
-                  </span>
-                </li>
+                <FadeIn key={idx} delay={0.75 + idx * 0.05} direction="up">
+                  <li className="flex items-start bg-secondary/5 p-4 rounded-xl border border-dashed border-border h-full">
+                    <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0 mr-3" />
+                    <span className="leading-snug text-[14px] text-muted-foreground">
+                      {feature}
+                    </span>
+                  </li>
+                </FadeIn>
               ))}
             </ul>
           </div>
         )}
       </div>
 
-      <div className="pt-16 pb-4 flex justify-center mt-auto">
-        <button
-          onClick={scrollToTop}
-          className="text-[13px] font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors"
-        >
-          Back to top
-          <ArrowUpRight className="w-4 h-4 -rotate-45" />
-        </button>
-      </div>
+      <FadeIn delay={0.9} direction="up">
+        <div className="pt-16 pb-4 flex justify-center mt-auto">
+          <button
+            onClick={scrollToTop}
+            className="text-[13px] font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors"
+          >
+            Back to top
+            <ArrowUpRight className="w-4 h-4 -rotate-45" />
+          </button>
+        </div>
+      </FadeIn>
     </div>
   );
 }
+

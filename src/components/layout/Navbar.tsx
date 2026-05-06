@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "@/components/widgets/ThemeToggle";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";

@@ -5,6 +5,8 @@ import { ArrowUpRight, Download } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 
+import FadeIn from "@/components/animations/FadeIn";
+
 interface ResumeViewerProps {
   resumeUrl: string;
 }
@@ -64,55 +66,61 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
     <div className="w-full flex flex-col items-center gap-8">
       {resumeUrl ? (
         <>
-          <div className="w-full relative group">
-            <div
-              className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px] border border-border rounded-xl ${isLoading && !hasLoadedBefore ? "animate-pulse bg-secondary/10" : ""}`}
-            >
-              {isCloudinary ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  ref={imgRef}
-                  src={previewUrl}
-                  alt="Resume Preview"
-                  className={`w-full h-full object-cover border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
-                  onLoad={handleLoadSuccess}
-                />
-              ) : (
-                <iframe
-                  src={previewUrl}
-                  className={`w-full h-full border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
-                  title="Resume Preview"
-                  onLoad={handleLoadSuccess}
-                />
-              )}
+          <FadeIn delay={0.3} direction="up" fullWidth>
+            <div className="w-full relative group">
+              <div
+                className={`w-full aspect-[1/1.4] overflow-hidden bg-transparent relative max-h-[1000px] border border-border rounded-xl ${isLoading && !hasLoadedBefore ? "animate-pulse bg-secondary/10" : ""}`}
+              >
+                {isCloudinary ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    ref={imgRef}
+                    src={previewUrl}
+                    alt="Resume Preview"
+                    className={`w-full h-full object-cover border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
+                    onLoad={handleLoadSuccess}
+                  />
+                ) : (
+                  <iframe
+                    src={previewUrl}
+                    className={`w-full h-full border-none block transition-opacity duration-300 ${isLoading && !hasLoadedBefore ? "opacity-0" : "opacity-100"}`}
+                    title="Resume Preview"
+                    onLoad={handleLoadSuccess}
+                  />
+                )}
 
-              {/* Minimal hover overlay */}
-              {!isLoading && (
-                <div className="absolute inset-0 pointer-events-none transition-all duration-500 group-hover:bg-primary/[0.005]" />
-              )}
+                {/* Minimal hover overlay */}
+                {!isLoading && (
+                  <div className="absolute inset-0 pointer-events-none transition-all duration-500 group-hover:bg-primary/[0.005]" />
+                )}
+              </div>
             </div>
-          </div>
+          </FadeIn>
 
           {/* Action Buttons - Matching Home Page Style */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full">
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto"
-            >
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
-                View full resume
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-            </a>
+            <FadeIn delay={0.4} direction="up" fullWidth>
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <button className="w-full flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
+                  View full resume
+                  <ArrowUpRight className="w-4 h-4" />
+                </button>
+              </a>
+            </FadeIn>
 
-            <a href={downloadUrl} download className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
-                Download
-                <Download className="w-4 h-4" />
-              </button>
-            </a>
+            <FadeIn delay={0.5} direction="up" fullWidth>
+              <a href={downloadUrl} download className="w-full">
+                <button className="w-full flex items-center justify-center gap-2 px-6 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-accent hover:text-accent-foreground transition-all duration-200 text-sm font-bold tracking-tight active:scale-[0.98]">
+                  Download
+                  <Download className="w-4 h-4" />
+                </button>
+              </a>
+            </FadeIn>
           </div>
         </>
       ) : (

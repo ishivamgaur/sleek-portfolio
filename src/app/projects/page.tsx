@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { ProjectCard, Project } from "@/components/ProjectCard";
+import { ProjectCard } from "@/components/portfolio/ProjectCard";
+import FadeIn from "@/components/animations/FadeIn";
 
 import { portfolioData } from "@/data/portfolio";
 
@@ -15,19 +15,15 @@ export default function AllProjectsPage() {
   return (
     <div className="px-4 pt-24 pb-12 w-full">
       {/* Header section */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="mb-10"
-      >
-        <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
-        <p className="text-muted-foreground mt-1 text-[15px]">
-          A comprehensive archive of everything I&apos;ve built, open-sourced,
-          or experimented with.
-        </p>
-      </motion.div>
+      <FadeIn direction="up">
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
+          <p className="text-muted-foreground mt-1 text-[15px]">
+            A comprehensive archive of everything I&apos;ve built, open-sourced,
+            or experimented with.
+          </p>
+        </div>
+      </FadeIn>
 
       {/* Full Grid of all projects */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">

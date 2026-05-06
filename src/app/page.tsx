@@ -1,26 +1,21 @@
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Projects from "@/components/Projects";
-import Experience from "@/components/Experience";
-import Personal from "@/components/Personal";
-
-function Separator() {
-  return (
-    <div className="px-4">
-      <div className="w-full h-px bg-border my-10" />
-    </div>
-  );
-}
+import Hero from "@/components/sections/Hero";
+import About from "@/components/sections/About";
+import Projects from "@/components/sections/Projects";
+import Experience from "@/components/sections/Experience";
+import Personal from "@/components/sections/Personal";
+import FadeIn from "@/components/animations/FadeIn";
 
 const sections = [Hero, About, Experience, Projects, Personal];
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-14 pb-12">
+    <div className="flex flex-col pb-12">
       {sections.map((Section, i) => (
-        <div key={i}>
-          <Section />
-        </div>
+        <FadeIn key={i} delay={i * 0.1}>
+          <div className="mb-14">
+            <Section />
+          </div>
+        </FadeIn>
       ))}
     </div>
   );

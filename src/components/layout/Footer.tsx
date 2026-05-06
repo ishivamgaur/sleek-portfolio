@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
+import FadeIn from "@/components/animations/FadeIn";
 import {
   Tooltip,
   TooltipContent,
@@ -17,13 +18,7 @@ export default function Footer() {
         <div className="w-full border-t border-dashed border-border my-8" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="px-4 flex flex-col items-center gap-6"
-      >
+      <FadeIn className="px-4 flex flex-col items-center gap-6">
         {/* Navigation Row */}
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-semibold tracking-tight text-muted-foreground/80">
           <Link href="/" className="hover:text-foreground transition-colors">
@@ -131,7 +126,7 @@ export default function Footer() {
             Designed & Crafted with ❤️ using Next.js & Framer Motion
           </p>
         </div>
-      </motion.div>
+      </FadeIn>
     </footer>
   );
 }
