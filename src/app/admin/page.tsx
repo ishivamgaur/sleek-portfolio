@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/components/widgets/FileUpload";
 import {
   checkAuth,
   login,

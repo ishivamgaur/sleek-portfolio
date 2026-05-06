@@ -1,4 +1,4 @@
-import { Project } from "@/components/ProjectCard";
+import { Project } from "@/components/portfolio/ProjectCard";
 import { ExperienceData } from "@/services/api";
 
 export const portfolioData = {
