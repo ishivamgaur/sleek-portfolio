@@ -123,18 +123,44 @@ export const portfolioData = {
   ],
 
   bucketList: [
-    { _id: "1", title: "Build a tech startup", completed: false },
-    { _id: "2", title: "Travel to Japan", completed: false },
-    { _id: "3", title: "Master Next.js & React ecosystem", completed: true },
+    // Career & Ambition
+    { _id: "1", title: "Work at a FAANG company", completed: false },
+    { _id: "2", title: "Build a tech startup", completed: false },
+    { _id: "25", title: "Build a SaaS product", completed: false },
+    { _id: "3", title: "Work abroad", completed: false },
+
+    // Travel & Exploration
+    { _id: "4", title: "Travel to Japan", completed: false },
+    { _id: "5", title: "Travel to Switzerland", completed: false },
+    { _id: "6", title: "Travel to Kashmir", completed: false },
+    { _id: "7", title: "Visit all 12 Jyotirlingas", completed: false },
+
+    // Milestones & Adrenaline
+    { _id: "8", title: "Take family on a flight", completed: false },
+    { _id: "9", title: "Bungee jumping", completed: false },
+    { _id: "10", title: "Skydiving & Parachuting", completed: false },
+    { _id: "11", title: "Run a marathon", completed: false },
     {
-      _id: "4",
-      title: "Contribute to an open-source project",
+      _id: "12",
+      title: "Watch a stadium match with close friends",
       completed: false,
     },
-    { _id: "5", title: "Speak at a tech conference", completed: false },
-    { _id: "6", title: "Run a marathon", completed: false },
-    { _id: "7", title: "Write a technical blog/book", completed: false },
-    { _id: "8", title: "Learn to play an instrument", completed: false },
+
+    // Skills & Personal Growth
+    { _id: "13", title: "Build a great physique", completed: false },
+    { _id: "14", title: "Learn to swim", completed: false },
+    { _id: "15", title: "Learn to play guitar", completed: false },
+    { _id: "16", title: "Learn to sing", completed: false },
+    { _id: "17", title: "Read my first book fully", completed: false },
+    { _id: "18", title: "Read 100 books", completed: false },
+    { _id: "19", title: "Read 500 books", completed: false },
+    { _id: "20", title: "Learn how to be patient", completed: false },
+
+    // Possessions & Lifestyle
+    { _id: "21", title: "Buy a house", completed: false },
+    { _id: "22", title: "Buy a car", completed: false },
+    { _id: "23", title: "Get a MacBook Pro", completed: false },
+    { _id: "24", title: "Build a gaming setup", completed: false },
   ],
 
   favoriteMovies: [
@@ -170,3 +196,371 @@ export const portfolioData = {
     },
   ],
 };
+
+export const QUOTES = [
+  // General / Tech
+  {
+    text: "The only way to do great work is to love what you do. Stay hungry, stay foolish.",
+    author: "Steve Jobs",
+  },
+  {
+    text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+    author: "Nelson Mandela",
+  },
+
+  // Death Note
+  { text: "I am Justice!", author: "L, Death Note" },
+  {
+    text: "If you can't win the game, if you can't solve the puzzle, you're nothing but a loser.",
+    author: "Near, Death Note",
+  },
+  {
+    text: "In this world, there are very few people who actually trust each other.",
+    author: "Light Yagami, Death Note",
+  },
+  {
+    text: "The human world is a boring place with boring people doing boring things.",
+    author: "Ryuk, Death Note",
+  },
+  {
+    text: "Apples in the human world are worth the trip.",
+    author: "Ryuk, Death Note",
+  },
+  {
+    text: "As long as it doesn't kill me, I don't care.",
+    author: "Ryuk, Death Note",
+  },
+  {
+    text: "You have lost, Light. Didn't I say in the beginning... when you die, the one who'll write your name down in a notebook will be me.",
+    author: "Ryuk, Death Note",
+  },
+  {
+    text: "I'll take a potato chip... and eat it!",
+    author: "Light Yagami, Death Note",
+  },
+  {
+    text: "This world is rotten, and those who are making it rot deserve to die.",
+    author: "Light Yagami, Death Note",
+  },
+  {
+    text: "Kira is childish and he hates losing... I am also childish and I hate to lose. That's how I know.",
+    author: "L, Death Note",
+  },
+  {
+    text: "Sometimes, the questions are complicated – and the answers are simple.",
+    author: "L, Death Note",
+  },
+  {
+    text: "Being alone is better than being with the wrong person.",
+    author: "L, Death Note",
+  },
+  {
+    text: "Learn to treasure your life because unfortunately, it can be taken away from you anytime.",
+    author: "L, Death Note",
+  },
+  {
+    text: "Look around you, and all you will see are people the world would be better off without.",
+    author: "Light Yagami, Death Note",
+  },
+  {
+    text: "There is no heaven or hell. No matter what you do while you're alive, everybody goes to the same place once you die. Death is Equal.",
+    author: "Death Note",
+  },
+  {
+    text: "By trying too hard, we put ourselves at a greater risk.",
+    author: "L, Death Note",
+  },
+  {
+    text: "Nobody can tell what is right and what is wrong, what is righteous and what is evil.",
+    author: "Near, Death Note",
+  },
+  {
+    text: "If you don't cross any lines, you'll never know where they are.",
+    author: "Light Yagami, Death Note",
+  },
+  {
+    text: "Risking your life and doing something that could easily rob you of your life are exact opposites.",
+    author: "L, Death Note",
+  },
+
+  // Marvel / Spider-Man
+  { text: "Part of the journey is the end.", author: "Tony Stark, Marvel" },
+  {
+    text: "The hardest choices require the strongest wills.",
+    author: "Thanos, Marvel",
+  },
+  { text: "What is grief, if not love persevering?", author: "Vision, Marvel" },
+  {
+    text: "With great power comes great responsibility.",
+    author: "Uncle Ben, Spider-Man",
+  },
+  {
+    text: "Whatever comes our way, whatever battle we have raging inside us, we always have a choice.",
+    author: "Peter Parker, Spider-Man",
+  },
+  {
+    text: "Sometimes, to do what's right, we have to be steady and give up the thing we want the most. Even our dreams.",
+    author: "Peter Parker, Spider-Man 2",
+  },
+  {
+    text: "Not everyone is meant to make a difference. But for me, the choice to lead an ordinary life is no longer an option.",
+    author: "Peter Parker, Spider-Man",
+  },
+  {
+    text: "I believe there's a hero in all of us.",
+    author: "Aunt May, Spider-Man 2",
+  },
+  {
+    text: "No man can win every battle, but no man should fall without a struggle.",
+    author: "Peter Parker, Spider-Man",
+  },
+  { text: "I am Iron Man.", author: "Tony Stark, Marvel" },
+  { text: "I love you 3000.", author: "Tony Stark, Marvel" },
+  { text: "I can do this all day.", author: "Steve Rogers, Marvel" },
+  {
+    text: "But a thing isn't beautiful because it lasts. It's a privilege to be among them.",
+    author: "Vision, Marvel",
+  },
+  {
+    text: "I'm with you 'til the end of the line.",
+    author: "Steve Rogers, Marvel",
+  },
+  {
+    text: "That's my secret, Captain. I'm always angry.",
+    author: "Bruce Banner, Marvel",
+  },
+  { text: "Dormammu, I've come to bargain.", author: "Doctor Strange, Marvel" },
+  {
+    text: "You could not live with your own failure. Where did that bring you? Back to me.",
+    author: "Thanos, Marvel",
+  },
+  {
+    text: "Perfectly balanced, as all things should be.",
+    author: "Thanos, Marvel",
+  },
+  {
+    text: "It's not about how much we lost. It's about how much we have left.",
+    author: "Tony Stark, Marvel",
+  },
+  { text: "I am inevitable.", author: "Thanos, Marvel" },
+  {
+    text: "Vengeance has consumed you. It's consuming them. I'm done letting it consume me.",
+    author: "T'Challa, Marvel",
+  },
+  {
+    text: "The price of freedom is high, it always has been. And it's a price I'm willing to pay.",
+    author: "Steve Rogers, Marvel",
+  },
+  {
+    text: "He may have been your father, boy, but he wasn't your daddy.",
+    author: "Yondu, Marvel",
+  },
+
+  // Harry Potter
+  {
+    text: "It is not our abilities that show what we truly are. It is our choices.",
+    author: "Albus Dumbledore, Harry Potter",
+  },
+  {
+    text: "Happiness can be found even in the darkest of times, if one only remembers to turn on the light.",
+    author: "Albus Dumbledore, Harry Potter",
+  },
+  {
+    text: "We've all got both light and dark inside us. What matters is the part we choose to act on. That's who we really are.",
+    author: "Sirius Black, Harry Potter",
+  },
+  {
+    text: "Things we lose have a way of coming back to us in the end, if not always in the way we expect.",
+    author: "Luna Lovegood, Harry Potter",
+  },
+
+  // The Shawshank Redemption
+  {
+    text: "Hope is a good thing, maybe the best of things, and no good thing ever dies.",
+    author: "The Shawshank Redemption",
+  },
+  {
+    text: "Get busy living, or get busy dying.",
+    author: "The Shawshank Redemption",
+  },
+  {
+    text: "Fear can hold you prisoner. Hope can set you free.",
+    author: "The Shawshank Redemption",
+  },
+
+  // Batman Movies
+  {
+    text: "Why do we fall? So that we can learn to pick ourselves up.",
+    author: "Thomas Wayne, Batman Begins",
+  },
+  {
+    text: "It's not who I am underneath, but what I do that defines me.",
+    author: "Batman, Batman Begins",
+  },
+  {
+    text: "A hero can be anyone. Even a man doing something as simple and reassuring as putting a coat around a young boy's shoulders.",
+    author: "Batman, The Dark Knight Rises",
+  },
+  {
+    text: "The night is darkest just before the dawn. And I promise you, the dawn is coming.",
+    author: "Harvey Dent, The Dark Knight",
+  },
+  {
+    text: "You either die a hero, or you live long enough to see yourself become the villain.",
+    author: "Harvey Dent, The Dark Knight",
+  },
+  {
+    text: "Some men aren't looking for anything logical, like money... Some men just want to watch the world burn.",
+    author: "Alfred Pennyworth, The Dark Knight",
+  },
+  {
+    text: "If you're good at something, never do it for free.",
+    author: "The Joker, The Dark Knight",
+  },
+  { text: "Why so serious?", author: "The Joker, The Dark Knight" },
+
+  // Inception
+  {
+    text: "An idea is like a virus. Resilient. Highly contagious.",
+    author: "Cobb, Inception",
+  },
+  {
+    text: "Dreams feel real while we're in them. It's only when we wake up that we realize something was actually strange.",
+    author: "Cobb, Inception",
+  },
+  {
+    text: "You mustn't be afraid to dream a little bigger, darling.",
+    author: "Eames, Inception",
+  },
+
+  // The Matrix
+  {
+    text: "There is a difference between knowing the path and walking the path.",
+    author: "Morpheus, The Matrix",
+  },
+  {
+    text: "I can only show you the door. You're the one that has to walk through it.",
+    author: "Morpheus, The Matrix",
+  },
+  {
+    text: "Choice is an illusion, created between those with power, and those without.",
+    author: "Merovingian, The Matrix",
+  },
+
+  // Shree Krishna (Bhagavad Gita)
+  {
+    text: "You have the right to work, but never to the fruit of work.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "Man is made by his belief. As he believes, so he is.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "It is better to live your own destiny imperfectly than to live an imitation of somebody else's life with perfection.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "For him who has conquered the mind, the mind is the best of friends; but for one who has failed to do so, his mind will remain the greatest enemy.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "There is neither this world, nor the world beyond, nor happiness for the one who doubts.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "We are kept from our goal not by obstacles, but by a clear path to a lesser goal.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "Hell has three gates: lust, anger, and greed.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "A man's own self is his friend. A man's own self is his foe.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "Whatever happened, happened for the good. Whatever is happening, is happening for the good. Whatever will happen, will also happen for the good.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "Perform your obligatory duty, because action is indeed better than inaction.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "You came empty-handed, and you will leave empty-handed.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "Change is the law of the universe. You can be a millionaire, or a pauper in an instant.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "The soul is neither born, and nor does it die.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+  {
+    text: "He who has no attachments can really love others, for his love is pure and divine.",
+    author: "Shree Krishna, Bhagavad Gita",
+  },
+
+  // Other GOATed movies
+  {
+    text: "We used to look up at the sky and wonder at our place in the stars. Now we just look down, and worry about our place in the dirt.",
+    author: "Cooper, Interstellar",
+  },
+  {
+    text: "Love is the one thing we're capable of perceiving that transcends dimensions of time and space.",
+    author: "Brand, Interstellar",
+  },
+  {
+    text: "I'm gonna make him an offer he can't refuse.",
+    author: "Don Corleone, The Godfather",
+  },
+  {
+    text: "Great men are not born great, they grow great.",
+    author: "Mario Puzo, The Godfather",
+  },
+  {
+    text: "The things you own end up owning you.",
+    author: "Tyler Durden, Fight Club",
+  },
+  {
+    text: "It's only after we've lost everything that we're free to do anything.",
+    author: "Tyler Durden, Fight Club",
+  },
+  {
+    text: "Life is like a box of chocolates. You never know what you're gonna get.",
+    author: "Forrest Gump",
+  },
+  {
+    text: "It ain't about how hard you hit. It's about how hard you can get hit and keep moving forward.",
+    author: "Rocky Balboa",
+  },
+  {
+    text: "What we do in life echoes in eternity.",
+    author: "Maximus, Gladiator",
+  },
+  {
+    text: "All we have to decide is what to do with the time that is given us.",
+    author: "Gandalf, The Lord of the Rings",
+  },
+  {
+    text: "Even the smallest person can change the course of the future.",
+    author: "Galadriel, The Lord of the Rings",
+  },
+  {
+    text: "I can't carry it for you, but I can carry you.",
+    author: "Samwise Gamgee, The Lord of the Rings",
+  },
+  {
+    text: "Some people can't believe in themselves until someone else believes in them first.",
+    author: "Sean Maguire, Good Will Hunting",
+  },
+  { text: "May the Force be with you.", author: "Star Wars" },
+];

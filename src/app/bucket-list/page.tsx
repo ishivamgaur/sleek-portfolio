@@ -88,7 +88,7 @@ export default function BucketListPage() {
                       : "text-foreground/90 font-medium"
                   }`}
                 >
-                  {item.title}
+                  {idx + 1}. {item.title}
                 </span>
               </div>
             </motion.div>

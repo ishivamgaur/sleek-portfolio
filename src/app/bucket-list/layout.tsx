@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "100 List | Shivam Gaur",
+  title: "100 List",
   description: `The 100 List - A bucket list of things ${siteConfig.name} wants to do, learn, and achieve in a lifetime.`,
   keywords: [
     "100 List",
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
     canonical: `${siteConfig.url}/bucket-list`,
   },
   openGraph: {
-    title: "100 List | Shivam Gaur",
+    title: "100 List",
     description: `A curated bucket list of things ${siteConfig.name} wants to accomplish.`,
     url: `${siteConfig.url}/bucket-list`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "100 List | Shivam Gaur",
+    title: "100 List",
     description: `A curated bucket list of things ${siteConfig.name} wants to accomplish.`,
   },
 };
