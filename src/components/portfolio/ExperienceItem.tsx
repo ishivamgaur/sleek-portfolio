@@ -22,9 +22,9 @@ export function ExperienceItem({
   story,
   index,
   showTech = true,
-  defaultExpanded,
+  defaultExpanded = false,
 }: ExperienceItemProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const allBullets = story.content.split("\n").filter((line) => line.trim());
 
   return (
@@ -53,7 +53,9 @@ export function ExperienceItem({
             <span className="text-[11px] md:text-[14px] text-muted-foreground/80 font-medium mt-0.5">
               <span className="inline sm:hidden">
                 {formatDateShort(story.startDate)} —{" "}
-                {story.date === "Current" ? "Current" : formatDateShort(story.date)}
+                {story.date === "Current"
+                  ? "Current"
+                  : formatDateShort(story.date)}
               </span>
               <span className="hidden sm:inline">
                 {formatDate(story.startDate)} —{" "}
@@ -76,27 +78,28 @@ export function ExperienceItem({
         </div>
       </FadeIn>
 
-      {/* Expandable Content Section */}
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            initial={defaultExpanded ? false : { height: 0 }}
+            animate={{ height: "auto" }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             className="overflow-hidden"
           >
             <div className="pt-2 pb-5 flex flex-col space-y-6">
               {/* Tech Stack */}
               {showTech && story.tech && story.tech.length > 0 && (
-                <FadeIn className="space-y-2">
-                  <h4 className="text-[13px] font-bold text-foreground/80">
-                    Technologies & Tools
-                  </h4>
+                <div className="space-y-2">
+                  <FadeIn>
+                    <h4 className="text-[13px] font-bold text-foreground/80">
+                      Technologies & Tools
+                    </h4>
+                  </FadeIn>
                   <div className="pt-0.5 pb-0.5">
                     <TechDock tech={story.tech} />
                   </div>
-                </FadeIn>
+                </div>
               )}
 
               {/* Achievements */}
@@ -108,7 +111,7 @@ export function ExperienceItem({
                   {allBullets.map((bullet, i) => (
                     <FadeIn
                       key={i}
-                      delay={i * 0.05}
+                      delay={i * 0.03}
                       className="flex gap-2 text-muted-foreground leading-normal text-[14px]"
                     >
                       <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0" />
@@ -126,7 +129,8 @@ export function ExperienceItem({
 }
 
 // Devicon Integration
-const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
+const DEVICON_BASE =
+  "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
 const DEVICON_SLUGS: Record<string, [string, string]> = {
   react: ["react", "original"],
   "node.js": ["nodejs", "original"],
@@ -157,48 +161,61 @@ function TechDock({ tech }: { tech: string[] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div
-      className="flex flex-wrap gap-2.5 items-center"
+    <motion.div
+      layout
+      className="flex flex-wrap gap-2 items-center min-h-[34px]"
       onMouseLeave={() => setHoveredIndex(null)}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
     >
       {tech.map((t, i) => {
         const isHovered = hoveredIndex === i;
-        const isSomethingHovered = hoveredIndex !== null;
         const iconUrl = getIconUrl(t);
 
         return (
-          <div
-            key={i}
-            onMouseEnter={() => setHoveredIndex(i)}
-            className="relative flex items-center justify-center"
-          >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <motion.div
-                  className="h-[24px] w-[24px] md:h-[28px] md:w-[28px] p-[5px] cursor-pointer flex items-center justify-center rounded-md bg-secondary/5 border border-dashed border-border"
-                  animate={{
-                    scale: isHovered ? 1.25 : 1,
-                    opacity: isSomethingHovered && !isHovered ? 0.4 : 1,
-                    y: isHovered ? -2 : 0,
+          <FadeIn key={i} delay={i * 0.03} direction="up" layout={true}>
+            <motion.div
+              layout
+              onMouseEnter={() => setHoveredIndex(i)}
+              className="relative flex items-center h-[26px] sm:h-[30px] rounded-lg border border-dashed border-border cursor-pointer bg-secondary/5 overflow-hidden px-1.5"
+              animate={{
+                backgroundColor: isHovered
+                  ? "rgba(var(--secondary), 0.1)"
+                  : "rgba(var(--secondary), 0.05)",
+              }}
+              transition={{
+                layout: { duration: 0.4, ease: [0.23, 1, 0.32, 1] },
+              }}
+            >
+              <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center shrink-0">
+                <img
+                  src={iconUrl}
+                  alt={t}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t)}&background=333&color=fff&size=48&rounded=true&font-size=0.4&bold=true`;
                   }}
-                  transition={{ type: "tween", ease: "easeInOut", duration: 0.2 }}
-                >
-                  <img
-                    src={iconUrl}
-                    alt={t}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t)}&background=333&color=fff&size=48&rounded=true&font-size=0.4&bold=true`;
-                    }}
-                  />
-                </motion.div>
-              </TooltipTrigger>
-              <TooltipContent sideOffset={8}>{t}</TooltipContent>
-            </Tooltip>
-          </div>
+                />
+              </div>
+
+              <motion.div
+                initial={false}
+                animate={{
+                  width: isHovered ? "auto" : 0,
+                  opacity: isHovered ? 1 : 0,
+                  marginLeft: isHovered ? 8 : 0,
+                }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                className="overflow-hidden flex items-center"
+              >
+                <span className="text-[11px] sm:text-[13px] font-bold tracking-tight whitespace-nowrap text-foreground/80">
+                  {t}
+                </span>
+              </motion.div>
+            </motion.div>
+          </FadeIn>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
 

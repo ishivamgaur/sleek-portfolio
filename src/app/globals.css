@@ -121,11 +121,14 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    scroll-behavior: auto !important;
+    overflow-anchor: none;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overscroll-behavior-y: none;
   }
   button {
     @apply cursor-pointer;

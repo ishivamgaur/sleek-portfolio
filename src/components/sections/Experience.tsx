@@ -19,7 +19,9 @@ export default function Experience() {
   return (
     <section className="px-4">
       <FadeIn direction="up">
-        <h2 className="text-2xl font-bold tracking-tight mb-6">Work Experience</h2>
+        <h2 className="text-2xl font-bold tracking-tight mb-6">
+          Work Experience
+        </h2>
       </FadeIn>
 
       <div className="space-y-6">
@@ -28,6 +30,7 @@ export default function Experience() {
             key={exp._id || String(idx)}
             story={exp}
             index={idx}
+            defaultExpanded={idx === 0}
           />
         ))}
       </div>

@@ -104,7 +104,7 @@ export function ProjectCard({
                   const cleanLine = line.replace(/^[•◦-]\s*/, "").trim();
                   if (!cleanLine) return null;
                   return (
-                    <FadeIn key={i} delay={idx * 0.05 + i * 0.04} direction="up">
+                    <FadeIn key={i} delay={idx * 0.03 + i * 0.03} direction="up">
                       <span className="flex gap-2">
                         {showBullets && (
                           <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0" />
@@ -121,7 +121,7 @@ export function ProjectCard({
               {project.tags.slice(0, 3).map((tag, tIdx) => (
                 <FadeIn
                   key={tag}
-                  delay={idx * 0.05 + 0.1 + tIdx * 0.03}
+                  delay={idx * 0.03 + 0.05 + tIdx * 0.03}
                   direction="up"
                 >
                   <Badge
@@ -133,7 +133,7 @@ export function ProjectCard({
                 </FadeIn>
               ))}
               {project.tags.length > 3 && (
-                <FadeIn delay={idx * 0.05 + 0.2} direction="up">
+                <FadeIn delay={idx * 0.03 + 0.1} direction="up">
                   <Badge
                     variant="outline"
                     className="text-[11px] rounded-md px-2 py-0.5"

@@ -11,11 +11,9 @@ export default function Home() {
   return (
     <div className="flex flex-col pb-12">
       {sections.map((Section, i) => (
-        <FadeIn key={i} delay={i * 0.1}>
-          <div className="mb-14">
-            <Section />
-          </div>
-        </FadeIn>
+        <div key={i} className="mb-14">
+          <Section />
+        </div>
       ))}
     </div>
   );

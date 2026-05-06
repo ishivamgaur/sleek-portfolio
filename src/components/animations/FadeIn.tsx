@@ -10,6 +10,7 @@ interface FadeInProps {
   fullWidth?: boolean;
   className?: string;
   margin?: string;
+  layout?: boolean;
 }
 
 export default function FadeIn({
@@ -19,6 +20,7 @@ export default function FadeIn({
   fullWidth = false,
   className = "",
   margin = "-20px",
+  layout = false,
 }: FadeInProps) {
   const directions = {
     up: { y: 15 },
@@ -30,6 +32,7 @@ export default function FadeIn({
 
   return (
     <motion.div
+      layout={layout}
       initial={{
         opacity: 0,
         ...directions[direction],
