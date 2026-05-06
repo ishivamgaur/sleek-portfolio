@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, X, Play, Pause } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,6 +29,7 @@ export default function Hero() {
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [mediaLoaded, setMediaLoaded] = useState(false);
   const [bannerError, setBannerError] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
   const dispatch = useDispatch();
@@ -114,6 +115,15 @@ export default function Hero() {
     setStoriesSeen(allSeen);
   }, [stories]);
 
+  // Find the first unseen story index
+  const getFirstUnseenIdx = () => {
+    const seenIds = JSON.parse(
+      localStorage.getItem("stories_seen") || "[]",
+    ) as string[];
+    const idx = stories.findIndex((s) => s._id && !seenIds.includes(s._id));
+    return idx >= 0 ? idx : 0;
+  };
+
   const markStoriesSeen = () => {
     const seenKey = "stories_seen";
     const allStoryIds = stories.map((s) => s._id).filter(Boolean) as string[];
@@ -123,9 +133,34 @@ export default function Hero() {
 
   const showGradient = hasStories && !storiesSeen;
 
+  // Navigation handlers — declared before effects that use them
+  const handleNext = useCallback(
+    (isAuto = false) => {
+      setActiveStoryIdx((prev) => {
+        if (prev === null) return null;
+        if (prev < stories.length - 1) {
+          return prev + 1;
+        } else if (isAuto) {
+          markStoriesSeen();
+          return null;
+        }
+        return prev;
+      });
+    },
+    [stories.length],
+  );
+
+  const handlePrev = useCallback(() => {
+    setActiveStoryIdx((prev) => {
+      if (prev !== null && prev > 0) return prev - 1;
+      return prev;
+    });
+  }, []);
+
+  // Timer: only ticks when story is active, not paused, and media is loaded
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (activeStoryIdx !== null && !isPaused) {
+    if (activeStoryIdx !== null && !isPaused && mediaLoaded) {
       interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
@@ -137,15 +172,38 @@ export default function Hero() {
       }, 50);
     }
     return () => clearInterval(interval);
-  }, [activeStoryIdx, isPaused]);
+  }, [activeStoryIdx, isPaused, mediaLoaded, handleNext]);
 
+  // Reset state and preload media when story changes
   useEffect(() => {
-    if (activeStoryIdx !== null) {
-      setProgress(0);
-      setIsPaused(false);
+    if (activeStoryIdx === null) return;
+
+    setProgress(0);
+    setIsPaused(false);
+    setMediaLoaded(false);
+
+    // Preload image for current story
+    const story = stories[activeStoryIdx];
+    if (story?.imageUrl && story.mediaType !== "video") {
+      const img = new window.Image();
+      img.onload = () => setMediaLoaded(true);
+      img.onerror = () => setMediaLoaded(true);
+      img.src = story.imageUrl.includes(".gif")
+        ? story.imageUrl.replace("f_auto,", "")
+        : story.imageUrl;
+
+      // Cleanup: abort stale image loads on rapid tapping
+      return () => {
+        img.onload = null;
+        img.onerror = null;
+        img.src = "";
+      };
     }
+    // Videos handle their own loading via onCanPlay
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStoryIdx]);
 
+  // Sync video playback with pause state
   useEffect(() => {
     if (videoRef.current) {
       if (isPaused) {
@@ -156,22 +214,17 @@ export default function Hero() {
     }
   }, [isPaused]);
 
-  const handleNext = (isAuto = false) => {
+  // Lock body scroll when story modal is open
+  useEffect(() => {
     if (activeStoryIdx !== null) {
-      if (activeStoryIdx < stories.length - 1) {
-        setActiveStoryIdx(activeStoryIdx + 1);
-      } else if (isAuto) {
-        markStoriesSeen();
-        setActiveStoryIdx(null);
-      }
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
-  };
-
-  const handlePrev = () => {
-    if (activeStoryIdx !== null && activeStoryIdx > 0) {
-      setActiveStoryIdx(activeStoryIdx - 1);
-    }
-  };
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeStoryIdx]);
 
   return (
     <section className="relative w-full overflow-hidden pb-0">
@@ -201,7 +254,7 @@ export default function Hero() {
             }`}
             onClick={() => {
               if (hasStories) {
-                setActiveStoryIdx(0);
+                setActiveStoryIdx(getFirstUnseenIdx());
               }
             }}
           >
@@ -338,7 +391,7 @@ export default function Hero() {
               )}
             </div>
           </div>
-          
+
           <FadeIn delay={0.4} direction="up">
             <SpotifyNowPlaying />
           </FadeIn>
@@ -442,6 +495,12 @@ export default function Hero() {
 
               {/* Story Content */}
               <div className="relative h-full w-full flex items-center justify-center">
+                {/* Loading spinner while media loads */}
+                {!mediaLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  </div>
+                )}
                 {currentStory && (
                   <>
                     {currentStory.mediaType === "video" ? (
@@ -451,8 +510,9 @@ export default function Hero() {
                         autoPlay
                         muted
                         playsInline
-                        className="h-full w-full object-contain"
+                        className={`h-full w-full object-contain transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
                         onEnded={() => handleNext(true)}
+                        onCanPlay={() => setMediaLoaded(true)}
                       />
                     ) : (
                       <img
@@ -462,23 +522,31 @@ export default function Hero() {
                             : currentStory.imageUrl
                         }
                         alt="Story"
-                        className="h-full w-full object-contain select-none pointer-events-none"
+                        className={`h-full w-full object-contain select-none pointer-events-none transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
+                        onLoad={() => setMediaLoaded(true)}
                       />
                     )}
                   </>
                 )}
 
-                {/* Tap to Navigate Areas */}
+                {/* Tap zones: Left = prev, Center = pause/play, Right = next */}
                 <div className="absolute inset-0 flex z-10">
                   <div
-                    className="w-1/3 h-full cursor-pointer"
+                    className="w-1/4 h-full cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePrev();
                     }}
                   />
                   <div
-                    className="w-2/3 h-full cursor-pointer"
+                    className="w-2/4 h-full cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsPaused((p) => !p);
+                    }}
+                  />
+                  <div
+                    className="w-1/4 h-full cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleNext();

@@ -41,7 +41,7 @@ export default function Quotes() {
   return (
     <div className="w-full flex flex-col items-center">
       <FadeIn className="w-full">
-        <div className="flex items-start gap-4 p-5 pb-9 rounded-2xl bg-secondary/5 hover:bg-secondary/10 transition-colors border border-dashed border-border relative overflow-hidden">
+        <div className="flex items-start gap-4 p-5 pb-10 rounded-2xl bg-secondary/5 hover:bg-secondary/10 transition-colors border border-dashed border-border relative overflow-hidden">
           {/* Stylish Text-based Quote Watermark */}
           <div className="absolute -top-10 -left-0 text-[280px] leading-none font-serif text-primary/10 select-none pointer-events-none">
             &ldquo;
@@ -52,9 +52,9 @@ export default function Quotes() {
             </p>
           </div>
 
-          <div className="absolute bottom-4 right-5 flex items-center gap-2 opacity-60">
+          <div className="absolute bottom-3 right-5 flex items-center gap-2 opacity-60">
             <div className="w-5 h-px bg-primary/40" />
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+            <span className="text-[12px] font-bold text-muted-foreground tracking-[0.2em]">
               {currentQuote.author}
             </span>
           </div>
