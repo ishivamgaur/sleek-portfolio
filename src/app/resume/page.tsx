@@ -7,7 +7,7 @@ import { siteConfig } from "@/config/site";
 export const revalidate = 60; // Cache the page for 60 seconds to make navigations instant
 
 export const metadata = {
-  title: "Resume | Shivam Gaur",
+  title: "Resume",
   description: `View and download the professional resume of ${siteConfig.name}, Software Developer based in NOIDA.`,
   keywords: [
     "Shivam Gaur Resume",
@@ -19,14 +19,14 @@ export const metadata = {
     canonical: `${siteConfig.url}/resume`,
   },
   openGraph: {
-    title: "Resume | Shivam Gaur",
+    title: "Resume",
     description: `View and download the professional resume of ${siteConfig.name}.`,
     url: `${siteConfig.url}/resume`,
     type: "profile",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Resume | Shivam Gaur",
+    title: "Resume",
     description: `View and download the professional resume of ${siteConfig.name}.`,
   },
 };

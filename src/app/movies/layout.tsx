@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Favorite Movies | Shivam Gaur",
+  title: "Favorite Movies",
   description: `A curated list of ${siteConfig.name}'s favorite movies that inspire and entertain.`,
   keywords: [
     "Favorite Movies",
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
     canonical: `${siteConfig.url}/movies`,
   },
   openGraph: {
-    title: "Favorite Movies | Shivam Gaur",
+    title: "Favorite Movies",
     description: `A curated list of ${siteConfig.name}'s favorite movies.`,
     url: `${siteConfig.url}/movies`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Favorite Movies | Shivam Gaur",
+    title: "Favorite Movies",
     description: `A curated list of ${siteConfig.name}'s favorite movies.`,
   },
 };

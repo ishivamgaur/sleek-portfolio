@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Experience | Shivam Gaur",
+  title: "Experience",
   description: `Detailed Work Experience and work history of ${siteConfig.name}, showcasing skills and roles in software development.`,
   keywords: [
     "Shivam Gaur Experience",
@@ -14,14 +14,14 @@ export const metadata: Metadata = {
     canonical: `${siteConfig.url}/experience`,
   },
   openGraph: {
-    title: "Experience | Shivam Gaur",
+    title: "Experience",
     description: `Work Experience and work history of ${siteConfig.name}.`,
     url: `${siteConfig.url}/experience`,
     type: "profile",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Experience | Shivam Gaur",
+    title: "Experience",
     description: `Work Experience and work history of ${siteConfig.name}.`,
   },
 };
