@@ -1,0 +1,22 @@
+{
+  "name": "Shivam Gaur — Full Stack Developer Portfolio",
+  "short_name": "Shivam Gaur",
+  "description": "Shivam Gaur is a Full Stack Developer specializing in React, Next.js, Node.js, and MongoDB. Based in NOIDA, India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/profile-pic.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

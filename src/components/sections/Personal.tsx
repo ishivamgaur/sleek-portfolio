@@ -13,7 +13,7 @@ export default function Personal() {
 
       <div className="flex flex-col gap-3">
         {/* 100 List Card */}
-        <Link href="/bucket-list">
+        <Link href="/100-list">
           <FadeIn delay={0.1} direction="up">
             <div className="group flex items-center justify-between p-5 rounded-xl border border-dashed border-border bg-secondary/5 hover:bg-secondary/10 transition-all cursor-pointer w-full">
               <div className="flex items-center gap-4">
@@ -25,7 +25,7 @@ export default function Personal() {
                   </FadeIn>
                   <FadeIn delay={0.15} direction="up">
                     <p className="text-[13px] text-muted-foreground leading-snug hidden sm:block">
-                      My bucket list of life goals and experiences.
+                      My 100 list of life goals and experiences.
                     </p>
                   </FadeIn>
                 </div>

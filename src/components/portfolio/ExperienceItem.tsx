@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Tooltip,
@@ -25,6 +25,12 @@ export function ExperienceItem({
   defaultExpanded = false,
 }: ExperienceItemProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [hasMounted, setHasMounted] = useState(false);
+  
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   const allBullets = story.content.split("\n").filter((line) => line.trim());
 
   return (
@@ -32,21 +38,23 @@ export function ExperienceItem({
       {/* Header Section */}
       <FadeIn margin="-50px" className="flex flex-col space-y-0.5">
         <div className="flex items-start justify-between gap-2">
-          <div
-            className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            <h3 className="text-[16px] md:text-[17px] font-bold tracking-tight text-foreground leading-tight truncate group-hover/toggle:text-primary transition-colors">
-              {story.company}
-            </h3>
-            <div className="p-0.5 rounded-md bg-secondary/5 border border-border/30 text-muted-foreground group-hover/toggle:text-primary group-hover/toggle:bg-primary/5 group-hover/toggle:border-primary/20 transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover/toggle:opacity-100 shrink-0">
-              <motion.div
-                animate={{ rotate: isExpanded ? 90 : 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="flex items-center justify-center"
-              >
-                <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
-              </motion.div>
+          <div className="flex items-center min-w-0 flex-1">
+            <div
+              className="flex items-center gap-2 cursor-pointer max-w-full"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <h3 className="text-[16px] md:text-[17px] font-bold tracking-tight text-foreground leading-tight truncate group-hover/toggle:text-primary transition-colors">
+                {story.company}
+              </h3>
+              <div className="p-0.5 rounded-md bg-secondary/5 border border-border/30 text-muted-foreground group-hover/toggle:text-primary group-hover/toggle:bg-primary/5 group-hover/toggle:border-primary/20 transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover/toggle:opacity-100 shrink-0">
+                <motion.div
+                  animate={{ rotate: isExpanded ? 90 : 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="flex items-center justify-center"
+                >
+                  <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
+                </motion.div>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -81,9 +89,12 @@ export function ExperienceItem({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={defaultExpanded ? false : { height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
+            initial={{ 
+              height: !hasMounted && defaultExpanded ? "auto" : 0, 
+              opacity: !hasMounted && defaultExpanded ? 1 : 0 
+            }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="overflow-hidden"
           >
@@ -131,6 +142,22 @@ export function ExperienceItem({
 // Devicon Integration
 const DEVICON_BASE =
   "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
+
+const CUSTOM_ICONS: Record<string, { url: string; invertInDarkMode?: boolean }> = {
+  "shadcn ui": {
+    url: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/shadcnui.svg",
+    invertInDarkMode: true,
+  },
+  "framer motion": {
+    url: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/framer.svg",
+    invertInDarkMode: true,
+  },
+  "aceternity ui": {
+    url: "https://ui.aceternity.com/apple-icon.png",
+    invertInDarkMode: true,
+  },
+};
+
 const DEVICON_SLUGS: Record<string, [string, string]> = {
   react: ["react", "original"],
   "node.js": ["nodejs", "original"],
@@ -146,15 +173,28 @@ const DEVICON_SLUGS: Record<string, [string, string]> = {
   html5: ["html5", "original"],
   css3: ["css3", "original"],
   git: ["git", "original"],
+  github: ["github", "original"],
   mongoose: ["mongoose", "original"],
   websockets: ["socketio", "original"],
+  "next.js": ["nextjs", "original"],
+  aws: ["amazonwebservices", "original-wordmark"],
+  nginx: ["nginx", "original"],
 };
 
-const getIconUrl = (name: string) => {
-  const entry = DEVICON_SLUGS[name.toLowerCase()];
-  if (entry) return `${DEVICON_BASE}/${entry[0]}/${entry[0]}-${entry[1]}.svg`;
-  const slug = name.toLowerCase().replace(/[.\s]/g, "");
-  return `${DEVICON_BASE}/${slug}/${slug}-original.svg`;
+const getIconData = (name: string) => {
+  const lowerName = name.toLowerCase();
+  
+  if (CUSTOM_ICONS[lowerName]) {
+    return CUSTOM_ICONS[lowerName];
+  }
+
+  const entry = DEVICON_SLUGS[lowerName];
+  if (entry) {
+    return { url: `${DEVICON_BASE}/${entry[0]}/${entry[0]}-${entry[1]}.svg` };
+  }
+
+  const slug = lowerName.replace(/[.\s]/g, "");
+  return { url: `${DEVICON_BASE}/${slug}/${slug}-original.svg` };
 };
 
 function TechDock({ tech }: { tech: string[] }) {
@@ -169,7 +209,7 @@ function TechDock({ tech }: { tech: string[] }) {
     >
       {tech.map((t, i) => {
         const isHovered = hoveredIndex === i;
-        const iconUrl = getIconUrl(t);
+        const iconData = getIconData(t);
 
         return (
           <FadeIn key={i} delay={i * 0.03} direction="up" layout={true}>
@@ -188,9 +228,9 @@ function TechDock({ tech }: { tech: string[] }) {
             >
               <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center shrink-0">
                 <img
-                  src={iconUrl}
+                  src={iconData.url}
                   alt={t}
-                  className="w-full h-full object-contain"
+                  className={`w-full h-full object-contain ${iconData.invertInDarkMode ? "dark:invert" : ""}`}
                   onError={(e) => {
                     e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(t)}&background=333&color=fff&size=48&rounded=true&font-size=0.4&bold=true`;
                   }}

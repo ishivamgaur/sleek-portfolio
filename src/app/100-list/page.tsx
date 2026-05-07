@@ -21,7 +21,7 @@ export default function BucketListPage() {
         </FadeIn>
         <FadeIn delay={0.2} direction="up">
           <p className="text-muted-foreground text-[15px]">
-            Not exactly 100, but a continuously growing bucket list of things I
+            Not exactly 100, but a continuously growing list of things I
             want to build, experience, and achieve in my lifetime.
           </p>
         </FadeIn>

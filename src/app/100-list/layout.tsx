@@ -3,7 +3,7 @@ import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "100 List",
-  description: `The 100 List - A bucket list of things ${siteConfig.name} wants to do, learn, and achieve in a lifetime.`,
+  description: `The 100 List - Things ${siteConfig.name} wants to do, learn, and achieve in a lifetime.`,
   keywords: [
     "100 List",
     "Bucket List",
@@ -12,22 +12,22 @@ export const metadata: Metadata = {
     "Personal Development",
   ],
   alternates: {
-    canonical: `${siteConfig.url}/bucket-list`,
+    canonical: `${siteConfig.url}/100-list`,
   },
   openGraph: {
     title: "100 List",
-    description: `A curated bucket list of things ${siteConfig.name} wants to accomplish.`,
-    url: `${siteConfig.url}/bucket-list`,
+    description: `A curated 100 list of things ${siteConfig.name} wants to accomplish.`,
+    url: `${siteConfig.url}/100-list`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "100 List",
-    description: `A curated bucket list of things ${siteConfig.name} wants to accomplish.`,
+    description: `A curated 100 list of things ${siteConfig.name} wants to accomplish.`,
   },
 };
 
-export default function BucketListLayout({
+export default function OneHundredListLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ export default function BucketListLayout({
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Shivam Gaur's 100 List",
-    description: "A personal bucket list of goals and achievements.",
+    description: "A personal 100 list of goals and achievements.",
     itemListElement: [
       {
         "@type": "ListItem",

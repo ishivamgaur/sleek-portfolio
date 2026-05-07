@@ -68,10 +68,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
+  const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": `${siteConfig.url}/#person`,
     name: siteConfig.name,
+    alternateName: ["ishivamgaur", "Shivam Gaur", "shivamgaur"],
     url: siteConfig.url,
     image: siteConfig.ogImage,
     sameAs: [
@@ -80,20 +82,130 @@ export default function RootLayout({
       siteConfig.links.twitter,
       siteConfig.links.instagram,
     ],
-    jobTitle: "Software Developer",
+    jobTitle: [
+      "Full Stack Developer",
+      "Frontend Developer",
+      "Backend Developer",
+      "MERN Stack Developer",
+      "Software Engineer",
+      "Software Developer",
+      "Web Developer",
+    ],
+    description: siteConfig.description,
+    knowsAbout: [
+      "React",
+      "Next.js",
+      "Node.js",
+      "MongoDB",
+      "TypeScript",
+      "JavaScript",
+      "Express.js",
+      "Tailwind CSS",
+      "Redux",
+      "AWS",
+      "MERN Stack",
+      "Full Stack Development",
+    ],
     worksFor: {
       "@type": "Organization",
       name: "Bitmax Technology Pvt. Ltd.",
     },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "NOIDA",
+      addressRegion: "Uttar Pradesh",
+      addressCountry: "IN",
+    },
+  };
+
+  // WebSite schema — enables Google Sitelinks Searchbox
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    name: `${siteConfig.name} — Portfolio`,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    publisher: { "@id": `${siteConfig.url}/#person` },
+    inLanguage: "en-US",
+  };
+
+  // BreadcrumbList — helps Google understand site hierarchy
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Projects",
+        item: `${siteConfig.url}/projects`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Experience",
+        item: `${siteConfig.url}/experience`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: "Resume",
+        item: `${siteConfig.url}/resume`,
+      },
+      {
+        "@type": "ListItem",
+        position: 5,
+        name: "100 List",
+        item: `${siteConfig.url}/100-list`,
+      },
+      {
+        "@type": "ListItem",
+        position: 6,
+        name: "Favorite Movies",
+        item: `${siteConfig.url}/movies`,
+      },
+    ],
   };
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Structured Data — Person, WebSite, Breadcrumbs */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        />
+
+        {/* Bing Webmaster Tools verification (covers Edge, DuckDuckGo) */}
+        {process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION && (
+          <meta
+            name="msvalidate.01"
+            content={process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION}
+          />
+        )}
+
+        {/* Yandex Webmaster verification */}
+        {process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION && (
+          <meta
+            name="yandex-verification"
+            content={process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION}
+          />
+        )}
+
+        {/* Web App Manifest */}
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Umami Analytics */}
         {process.env.NEXT_PUBLIC_UMAMI_URL &&
           process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
             <Script

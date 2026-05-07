@@ -6,9 +6,12 @@ export const metadata: Metadata = {
   description: `Detailed Work Experience and work history of ${siteConfig.name}, showcasing skills and roles in software development.`,
   keywords: [
     "Shivam Gaur Experience",
-    "Software Developer Work History",
-    "Shivam Gaur NOIDA",
-    "Frontend Engineer Experience",
+    "Shivam Gaur Work History",
+    "Full Stack Developer Experience",
+    "MERN Stack Developer",
+    "Software Developer NOIDA",
+    "Bitmax Technology",
+    "Digivity",
   ],
   alternates: {
     canonical: `${siteConfig.url}/experience`,
@@ -37,8 +40,20 @@ export default function ExperienceLayout({
     mainEntity: {
       "@type": "Person",
       name: "Shivam Gaur",
-      jobTitle: "Software Developer",
+      jobTitle: "Full Stack Developer",
       url: siteConfig.url,
+      worksFor: [
+        {
+          "@type": "Organization",
+          name: "Bitmax Technology Pvt. Ltd.",
+          address: "Greater Noida, Section 90",
+        },
+        {
+          "@type": "Organization",
+          name: "Digivity",
+          address: "Knowledge Park III, Greater Noida",
+        },
+      ],
     },
   };
 

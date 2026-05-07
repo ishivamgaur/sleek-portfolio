@@ -43,10 +43,10 @@ export default function Footer() {
             Resume
           </Link>
           <Link
-            href="/bucket-list"
+            href="/100-list"
             className="hover:text-foreground transition-colors"
           >
-            Bucket List
+            100-List
           </Link>
           <Link
             href="/movies"
@@ -121,9 +121,6 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-1 text-center">
           <p className="text-[12px] font-medium text-muted-foreground">
             © {new Date().getFullYear()} {siteConfig.name}
-          </p>
-          <p className="text-[11px] text-muted-foreground/50 mt-0.5 tracking-widest uppercase font-bold opacity-60">
-            built different · shipped fast
           </p>
         </div>
       </FadeIn>
