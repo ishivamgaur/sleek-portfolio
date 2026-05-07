@@ -25,8 +25,6 @@ export interface Story {
 interface PortfolioState {
   projects: Project[];
   stories: Story[];
-  bannerImage: string;
-  profileImage: string;
 
   // Persisted API Data
   instagramStories: any[];
@@ -41,8 +39,6 @@ interface PortfolioState {
 }
 
 const initialState: PortfolioState = {
-  bannerImage: "/banner.jpg",
-  profileImage: "https://github.com/ishivamgaur.png?size=200",
   projects: [
     {
       id: "1",
@@ -79,12 +75,6 @@ const portfolioSlice = createSlice({
     removeStory: (state, action: PayloadAction<string>) => {
       state.stories = state.stories.filter((s) => s.id !== action.payload);
     },
-    updateBannerImage: (state, action: PayloadAction<string>) => {
-      state.bannerImage = action.payload;
-    },
-    updateProfileImage: (state, action: PayloadAction<string>) => {
-      state.profileImage = action.payload;
-    },
 
     // API Persistence Reducers
     setInstagramStories: (state, action: PayloadAction<any[]>) => {
@@ -110,8 +100,6 @@ export const {
   removeProject,
   addStory,
   removeStory,
-  updateBannerImage,
-  updateProfileImage,
   setInstagramStories,
   setGithubStats,
   setSpotifyData,

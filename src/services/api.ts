@@ -97,13 +97,6 @@ export async function checkAuth(): Promise<boolean> {
 }
 
 export interface SiteSettings {
-  bannerImage: string;
-  profileImage: string;
-  publicId?: string;
-  deleteBanner?: string;
-  deleteProfile?: string;
-  previousBanners?: Array<{ url: string; publicId?: string }>;
-  previousProfiles?: Array<{ url: string; publicId?: string }>;
   resumeUrl?: string;
 }
 

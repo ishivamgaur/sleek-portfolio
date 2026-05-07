@@ -1,12 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import {
-  updateBannerImage,
-  updateProfileImage,
-} from "@/store/slices/portfolioSlice";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import FileUpload from "@/components/widgets/FileUpload";
+import StoryViewer from "@/components/widgets/StoryViewer";
 import {
   checkAuth,
   login,
@@ -32,16 +27,8 @@ import {
   SiteSettings,
   AnalyticsStats,
 } from "@/services/api";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Play,
-  Pause,
-  X,
-  Users,
-  Eye,
-  CalendarDays,
-  BarChart3,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const adminCardClass =
@@ -89,8 +76,6 @@ function StoriesSkeleton() {
 }
 
 export default function AdminPage() {
-  const dispatch = useDispatch();
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
@@ -104,10 +89,6 @@ export default function AdminPage() {
   const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null);
 
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
-  const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   const getErrorMessage = (err: unknown) =>
     err instanceof Error ? err.message : "";
 
@@ -124,64 +105,7 @@ export default function AdminPage() {
       .then((data) => setAnalytics(data))
       .catch(() => {});
   };
-
-  const handleNext = (isAuto = false) => {
-    if (activeStoryIdx !== null) {
-      if (activeStoryIdx < stories.length - 1) {
-        setActiveStoryIdx(activeStoryIdx + 1);
-      } else if (isAuto) {
-        setActiveStoryIdx(null);
-      }
-    }
-  };
-
-  const handlePrev = () => {
-    if (activeStoryIdx !== null && activeStoryIdx > 0) {
-      setActiveStoryIdx(activeStoryIdx - 1);
-    }
-  };
-
-  const formatTimeAgo = (dateString?: string) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInMins = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-
-    if (diffInMins < 1) return "just now";
-    if (diffInMins < 60) return `${diffInMins}m`;
-    if (diffInHours < 24) return `${diffInHours}h`;
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays}d`;
-  };
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (activeStoryIdx !== null && !isPaused) {
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            handleNext(true);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 50);
-    }
-    return () => clearInterval(interval);
-  }, [activeStoryIdx, isPaused]);
-
-  // Sync video play/pause state
-  useEffect(() => {
-    if (videoRef.current) {
-      if (isPaused) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {});
-      }
-    }
-  }, [isPaused]);
+  // Removed local story navigation logic as it's now handled by StoryViewer
 
   // Check auth + fetch current settings on mount
   useEffect(() => {
@@ -214,6 +138,7 @@ export default function AdminPage() {
     imageUrl: "",
     mediaType: "photo" as "photo" | "video",
   });
+  const [isAddingStory, setIsAddingStory] = useState(false);
   const handleAddStory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!storyData.imageUrl) {
@@ -221,6 +146,7 @@ export default function AdminPage() {
       return;
     }
 
+    setIsAddingStory(true);
     try {
       await createStory({
         imageUrl: storyData.imageUrl,
@@ -231,6 +157,8 @@ export default function AdminPage() {
       loadStories();
     } catch (err: unknown) {
       alert(getErrorMessage(err) || "Failed to add story");
+    } finally {
+      setIsAddingStory(false);
     }
   };
 
@@ -321,9 +249,12 @@ export default function AdminPage() {
                   <p className="text-sm text-destructive">{loginError}</p>
                 )}
               </div>
-              <Button type="submit" className="w-full">
+              <button
+                type="submit"
+                className="flex items-center justify-center w-full gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer"
+              >
                 Login
-              </Button>
+              </button>
             </form>
           </CardContent>
         </Card>
@@ -345,13 +276,12 @@ export default function AdminPage() {
             Manage your portfolio projects and Work Experience.
           </p>
         </div>
-        <Button
-          variant="outline"
+        <button
           onClick={handleLogout}
-          className="w-full sm:w-auto"
+          className="flex items-center justify-center w-full sm:w-auto gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer"
         >
           Logout
-        </Button>
+        </button>
       </motion.div>
 
       <Card className={`${adminCardClass} mb-4`}>
@@ -373,29 +303,37 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
-                  <Users className="size-4 text-muted-foreground mb-2" />
-                  <p className="text-2xl font-bold">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10 flex flex-col items-start gap-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Unique users
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight">
                     {analytics.uniqueVisitors}
                   </p>
-                  <p className="text-xs text-muted-foreground">Unique users</p>
                 </div>
-                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
-                  <Eye className="size-4 text-muted-foreground mb-2" />
-                  <p className="text-2xl font-bold">{analytics.totalVisits}</p>
-                  <p className="text-xs text-muted-foreground">Total visits</p>
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10 flex flex-col items-start gap-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Total visits
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight">
+                    {analytics.totalVisits}
+                  </p>
                 </div>
-                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
-                  <CalendarDays className="size-4 text-muted-foreground mb-2" />
-                  <p className="text-2xl font-bold">
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10 flex flex-col items-start gap-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Users today
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight">
                     {analytics.todayUniqueVisitors}
                   </p>
-                  <p className="text-xs text-muted-foreground">Users today</p>
                 </div>
-                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
-                  <BarChart3 className="size-4 text-muted-foreground mb-2" />
-                  <p className="text-2xl font-bold">{analytics.todayVisits}</p>
-                  <p className="text-xs text-muted-foreground">Visits today</p>
+                <div className="rounded-xl border border-dashed border-border bg-secondary/5 p-4 transition-colors hover:bg-secondary/10 flex flex-col items-start gap-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Visits today
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight">
+                    {analytics.todayVisits}
+                  </p>
                 </div>
               </div>
 
@@ -461,14 +399,13 @@ export default function AdminPage() {
                   />
                 </div>
               </div>
-
-              <Button
+              <button
                 type="submit"
                 disabled={resumeUrl === originalResumeUrl}
-                className="w-full md:w-auto font-bold mt-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center justify-center w-full md:w-auto mt-2 gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Update Resume
-              </Button>
+              </button>
             </form>
           </CardContent>
         </Card>
@@ -512,9 +449,20 @@ export default function AdminPage() {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full font-bold">
-                Add Story
-              </Button>
+              <button
+                type="submit"
+                disabled={!storyData.imageUrl || isAddingStory}
+                className="flex items-center justify-center w-full gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isAddingStory ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
+                    <span>Adding...</span>
+                  </div>
+                ) : (
+                  "Add Story"
+                )}
+              </button>
             </form>
           </CardContent>
         </Card>
@@ -544,8 +492,6 @@ export default function AdminPage() {
                   >
                     <div
                       onClick={() => {
-                        setProgress(0);
-                        setIsPaused(false);
                         setActiveStoryIdx(idx);
                       }}
                       className="relative w-20 h-20 shrink-0 rounded-full border-2 border-primary/50 p-0.5 bg-background shadow-sm cursor-pointer active:scale-95 transition-transform"
@@ -591,153 +537,11 @@ export default function AdminPage() {
         </Card>
       </div>
 
-      {/* Story Viewer Modal */}
-      <AnimatePresence>
-        {activeStoryIdx !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-lg flex items-center justify-center cursor-pointer"
-            onClick={() => {
-              setActiveStoryIdx(null);
-              setProgress(0);
-              setIsPaused(false);
-            }}
-          >
-            <div
-              className="relative bg-black md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
-              style={{
-                aspectRatio: "9 / 16",
-                width: "min(100vw, calc(90dvh * 9 / 16), 420px)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Progress Bar & Header Overlay */}
-              <div className="absolute top-0 inset-x-0 pt-4 pb-12 z-20 pointer-events-none">
-                <div className="px-4 flex gap-1 mb-3">
-                  {stories.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden"
-                    >
-                      <div
-                        className="h-full bg-white transition-all duration-50 linear"
-                        style={{
-                          width:
-                            idx < activeStoryIdx
-                              ? "100%"
-                              : idx === activeStoryIdx
-                                ? `${progress}%`
-                                : "0%",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="px-4 flex items-center justify-between text-white pointer-events-auto">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="w-8 h-8 border border-white/20">
-                      <AvatarImage src={"/profile-pic.jpg"} />
-                      <AvatarFallback>SG</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-[13px] md:text-sm font-bold shadow-sm">
-                          Shivam Gaur
-                        </p>
-                        {stories[activeStoryIdx]?.createdAt && (
-                          <>
-                            <div className="w-1 h-1 rounded-full bg-white/40" />
-                            <span className="text-white/70 text-[10px] md:text-xs font-normal tracking-wide">
-                              {formatTimeAgo(stories[activeStoryIdx].createdAt)}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsPaused(!isPaused);
-                      }}
-                    >
-                      {isPaused ? (
-                        <Play className="w-5 h-5 fill-white" />
-                      ) : (
-                        <Pause className="w-5 h-5 fill-white" />
-                      )}
-                    </button>
-                    <button
-                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveStoryIdx(null);
-                      }}
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Story Content */}
-              <div className="relative h-full w-full flex items-center justify-center">
-                {stories[activeStoryIdx] && (
-                  <>
-                    {stories[activeStoryIdx].mediaType === "video" ? (
-                      <video
-                        ref={videoRef}
-                        src={stories[activeStoryIdx].imageUrl}
-                        autoPlay
-                        muted
-                        playsInline
-                        className="h-full w-full object-contain"
-                        onEnded={() => handleNext(true)}
-                      />
-                    ) : (
-                      <img
-                        src={
-                          stories[activeStoryIdx].imageUrl.includes(".gif")
-                            ? stories[activeStoryIdx].imageUrl.replace(
-                                "f_auto,",
-                                "",
-                              )
-                            : stories[activeStoryIdx].imageUrl
-                        }
-                        alt="Story"
-                        className="h-full w-full object-contain select-none pointer-events-none"
-                      />
-                    )}
-                  </>
-                )}
-
-                {/* Tap to Navigate Areas */}
-                <div className="absolute inset-0 flex z-10">
-                  <div
-                    className="w-1/3 h-full cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrev();
-                    }}
-                  />
-                  <div
-                    className="w-2/3 h-full cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <StoryViewer
+        stories={stories}
+        activeIndex={activeStoryIdx}
+        onIndexChange={setActiveStoryIdx}
+      />
     </div>
   );
 }

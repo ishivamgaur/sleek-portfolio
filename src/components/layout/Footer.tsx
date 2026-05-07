@@ -122,8 +122,8 @@ export default function Footer() {
           <p className="text-[12px] font-medium text-muted-foreground">
             © {new Date().getFullYear()} {siteConfig.name}
           </p>
-          <p className="text-[11px] text-muted-foreground/50 mt-0.5">
-            Designed & Crafted with ❤️ using Next.js & Framer Motion
+          <p className="text-[11px] text-muted-foreground/50 mt-0.5 tracking-widest uppercase font-bold opacity-60">
+            built different · shipped fast
           </p>
         </div>
       </FadeIn>

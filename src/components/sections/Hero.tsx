@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Gift, X, Play, Pause } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import StoryViewer from "@/components/widgets/StoryViewer";
 import {
   Tooltip,
   TooltipContent,
@@ -27,9 +28,6 @@ import FadeIn from "@/components/animations/FadeIn";
 
 export default function Hero() {
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
-  const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [mediaLoaded, setMediaLoaded] = useState(false);
   const [bannerError, setBannerError] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
   const dispatch = useDispatch();
@@ -47,7 +45,6 @@ export default function Hero() {
   const hasFetchedGithub = useSelector(
     (state: RootState) => state.portfolio.hasFetchedGithub,
   );
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const bannerImage = "/banner.jpg";
   const profileImage = "/profile-pic.jpg";
@@ -100,7 +97,6 @@ export default function Hero() {
   };
 
   const hasStories = stories.length > 0;
-  const currentStory = activeStoryIdx !== null ? stories[activeStoryIdx] : null;
 
   const [storiesSeen, setStoriesSeen] = useState(true);
 
@@ -134,97 +130,7 @@ export default function Hero() {
   const showGradient = hasStories && !storiesSeen;
 
   // Navigation handlers — declared before effects that use them
-  const handleNext = useCallback(
-    (isAuto = false) => {
-      setActiveStoryIdx((prev) => {
-        if (prev === null) return null;
-        if (prev < stories.length - 1) {
-          return prev + 1;
-        } else if (isAuto) {
-          markStoriesSeen();
-          return null;
-        }
-        return prev;
-      });
-    },
-    [stories.length],
-  );
-
-  const handlePrev = useCallback(() => {
-    setActiveStoryIdx((prev) => {
-      if (prev !== null && prev > 0) return prev - 1;
-      return prev;
-    });
-  }, []);
-
-  // Timer: only ticks when story is active, not paused, and media is loaded
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (activeStoryIdx !== null && !isPaused && mediaLoaded) {
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            handleNext(true);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 50);
-    }
-    return () => clearInterval(interval);
-  }, [activeStoryIdx, isPaused, mediaLoaded, handleNext]);
-
-  // Reset state and preload media when story changes
-  useEffect(() => {
-    if (activeStoryIdx === null) return;
-
-    setProgress(0);
-    setIsPaused(false);
-    setMediaLoaded(false);
-
-    // Preload image for current story
-    const story = stories[activeStoryIdx];
-    if (story?.imageUrl && story.mediaType !== "video") {
-      const img = new window.Image();
-      img.onload = () => setMediaLoaded(true);
-      img.onerror = () => setMediaLoaded(true);
-      img.src = story.imageUrl.includes(".gif")
-        ? story.imageUrl.replace("f_auto,", "")
-        : story.imageUrl;
-
-      // Cleanup: abort stale image loads on rapid tapping
-      return () => {
-        img.onload = null;
-        img.onerror = null;
-        img.src = "";
-      };
-    }
-    // Videos handle their own loading via onCanPlay
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeStoryIdx]);
-
-  // Sync video playback with pause state
-  useEffect(() => {
-    if (videoRef.current) {
-      if (isPaused) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {});
-      }
-    }
-  }, [isPaused]);
-
-  // Lock body scroll when story modal is open
-  useEffect(() => {
-    if (activeStoryIdx !== null) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [activeStoryIdx]);
+  // Navigation handlers — declared before effects that use them
 
   return (
     <section className="relative w-full overflow-hidden pb-0">
@@ -398,166 +304,13 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Story Viewer Modal */}
-      <AnimatePresence>
-        {activeStoryIdx !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-lg flex items-center justify-center cursor-pointer"
-            onClick={() => {
-              markStoriesSeen();
-              setActiveStoryIdx(null);
-            }}
-          >
-            <div
-              className="relative bg-black md:rounded-2xl overflow-hidden shadow-2xl flex flex-col cursor-default"
-              style={{
-                aspectRatio: "9 / 16",
-                width: "min(100vw, calc(90dvh * 9 / 16), 420px)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Progress Bar & Header Overlay */}
-              <div className="absolute top-0 inset-x-0 pt-4 pb-12 z-20 pointer-events-none">
-                <div className="px-4 flex gap-1 mb-3">
-                  {stories.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden"
-                    >
-                      <div
-                        className="h-full bg-white transition-all duration-50 linear"
-                        style={{
-                          width:
-                            idx < activeStoryIdx
-                              ? "100%"
-                              : idx === activeStoryIdx
-                                ? `${progress}%`
-                                : "0%",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="px-4 flex items-center justify-between text-white pointer-events-auto">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="w-8 h-8 border border-white/20">
-                      <AvatarImage src={profileImage || "/profile-pic.jpg"} />
-                      <AvatarFallback>SG</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-[13px] md:text-sm font-bold shadow-sm">
-                          Shivam Gaur
-                        </p>
-                        {currentStory?.createdAt && (
-                          <>
-                            <div className="w-1 h-1 rounded-full bg-white/40" />
-                            <span className="text-white/70 text-[10px] md:text-xs font-normal tracking-wide">
-                              {formatTimeAgo(currentStory.createdAt)}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <button
-                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsPaused(!isPaused);
-                      }}
-                    >
-                      {isPaused ? (
-                        <Play className="w-5 h-5 fill-white" />
-                      ) : (
-                        <Pause className="w-5 h-5 fill-white" />
-                      )}
-                    </button>
-                    <button
-                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        markStoriesSeen();
-                        setActiveStoryIdx(null);
-                      }}
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Story Content */}
-              <div className="relative h-full w-full flex items-center justify-center">
-                {/* Loading spinner while media loads */}
-                {!mediaLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  </div>
-                )}
-                {currentStory && (
-                  <>
-                    {currentStory.mediaType === "video" ? (
-                      <video
-                        ref={videoRef}
-                        src={currentStory.imageUrl}
-                        autoPlay
-                        muted
-                        playsInline
-                        className={`h-full w-full object-contain transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
-                        onEnded={() => handleNext(true)}
-                        onCanPlay={() => setMediaLoaded(true)}
-                      />
-                    ) : (
-                      <img
-                        src={
-                          currentStory.imageUrl.includes(".gif")
-                            ? currentStory.imageUrl.replace("f_auto,", "")
-                            : currentStory.imageUrl
-                        }
-                        alt="Story"
-                        className={`h-full w-full object-contain select-none pointer-events-none transition-opacity duration-200 ${mediaLoaded ? "opacity-100" : "opacity-0"}`}
-                        onLoad={() => setMediaLoaded(true)}
-                      />
-                    )}
-                  </>
-                )}
-
-                {/* Tap zones: Left = prev, Center = pause/play, Right = next */}
-                <div className="absolute inset-0 flex z-10">
-                  <div
-                    className="w-1/4 h-full cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrev();
-                    }}
-                  />
-                  <div
-                    className="w-2/4 h-full cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsPaused((p) => !p);
-                    }}
-                  />
-                  <div
-                    className="w-1/4 h-full cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <StoryViewer
+        stories={stories}
+        activeIndex={activeStoryIdx}
+        onIndexChange={setActiveStoryIdx}
+        profileImage={profileImage}
+        onAllStoriesSeen={markStoriesSeen}
+      />
     </section>
   );
 }

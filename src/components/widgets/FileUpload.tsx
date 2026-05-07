@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
 import { Upload, Loader2, CheckCircle2, X } from "lucide-react";
 import Cropper, { type Area } from "react-easy-crop";
 
@@ -222,13 +221,11 @@ export default function FileUpload({
           onChange={handleFileChange}
           className="hidden"
         />
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="sm"
           disabled={uploading && !imageSrc}
           onClick={() => inputRef.current?.click()}
-          className="gap-2"
+          className="flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[13px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
         >
           {uploading && !imageSrc ? (
             <>
@@ -246,7 +243,7 @@ export default function FileUpload({
               {label}
             </>
           )}
-        </Button>
+        </button>
       </div>
 
       {/* Cropper Modal Overlay */}
@@ -288,12 +285,16 @@ export default function FileUpload({
                   className="w-full"
                 />
               </div>
-              <Button onClick={handleCropSave} disabled={uploading}>
+              <button
+                onClick={handleCropSave}
+                disabled={uploading}
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 {uploading ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 ) : null}
                 Save & Upload
-              </Button>
+              </button>
             </div>
           </div>
         </div>
