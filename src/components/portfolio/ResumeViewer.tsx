@@ -22,12 +22,15 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
   // Overleaf page: 8.5in × 11.5in
   const RESUME_ASPECT = "8.5/11.5";
 
+  // Render at 2x for crisp text quality
+  const QUALITY_SCALE = 2;
+
   // Dynamically import react-pdf on client only (avoids SSR DOMMatrix crash)
   useEffect(() => {
     Promise.all([
       import("react-pdf"),
-      import("react-pdf/dist/Page/AnnotationLayer.css"),
       import("react-pdf/dist/Page/TextLayer.css"),
+      import("react-pdf/dist/Page/AnnotationLayer.css"),
     ]).then(([mod]) => {
       mod.pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${mod.pdfjs.version}/build/pdf.worker.min.mjs`;
       setPdfComponents({ Document: mod.Document, Page: mod.Page });
@@ -98,7 +101,7 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
       <FadeIn delay={0.3} direction="up" fullWidth>
         <div
           ref={containerRef}
-          className="w-full relative rounded-xl border border-border overflow-hidden"
+          className="w-full relative rounded-xl border border-dashed border-border overflow-hidden"
         >
           {/* Universal container — always matches Overleaf 8.5×11.5in */}
           <div
@@ -119,14 +122,29 @@ export default function ResumeViewer({ resumeUrl }: ResumeViewerProps) {
                 loading={null}
                 className="flex flex-col items-center bg-white [&_.react-pdf__Page]:!bg-transparent h-full"
               >
-                <PdfComponents.Page
-                  pageNumber={1}
-                  width={containerWidth}
-                  renderTextLayer={true}
-                  renderAnnotationLayer={true}
-                  className="!bg-white [&_canvas]:!bg-white"
-                  loading={null}
-                />
+                {/* Wrapper scales the entire page (canvas + text + annotations) uniformly */}
+                <div
+                  style={{
+                    width: containerWidth,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      transform: `scale(${1 / QUALITY_SCALE})`,
+                      transformOrigin: "top left",
+                    }}
+                  >
+                    <PdfComponents.Page
+                      pageNumber={1}
+                      width={containerWidth * QUALITY_SCALE}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={true}
+                      className="!bg-white"
+                      loading={null}
+                    />
+                  </div>
+                </div>
               </PdfComponents.Document>
             )}
 

@@ -133,6 +133,36 @@
   button {
     @apply cursor-pointer;
   }
+  /* Global selection color — subtle, theme-matching */
+  ::selection {
+    background: oklch(0.7 0 0 / 30%);
+  }
+  .dark ::selection {
+    background: oklch(0.7 0 0 / 25%);
+  }
+
+  /* react-pdf TextLayer: keep text invisible but selectable */
+  .react-pdf__Page__textContent span {
+    color: transparent !important;
+    opacity: 1 !important;
+  }
+  .react-pdf__Page__textContent span::selection {
+    background: oklch(0.7 0 0 / 30%);
+    color: transparent;
+  }
+  .react-pdf__Page__textContent span::-moz-selection {
+    background: oklch(0.7 0 0 / 30%);
+    color: transparent;
+  }
+
+  /* react-pdf AnnotationLayer: keep links clickable without visual noise */
+  .react-pdf__Page__annotations a {
+    cursor: pointer;
+  }
+  .react-pdf__Page__annotations section {
+    background: transparent !important;
+    border: none !important;
+  }
 }
 
 @layer utilities {
