@@ -11,9 +11,18 @@ export const metadata = {
   description: `View and download the professional resume of ${siteConfig.name}, Software Developer based in NOIDA.`,
   keywords: [
     "Shivam Gaur Resume",
+    "ishivamgaur resume",
+    "ishivamgaur cv",
     "Shivam Gaur CV",
+    "Shivam Gaur Resume Download",
     "Software Developer Resume",
+    "Full Stack Developer Resume",
+    "MERN Stack Developer Resume",
+    "React Developer Resume",
     "Shivam Gaur NOIDA",
+    "developer resume India",
+    "fresher developer resume",
+    "web developer CV",
   ],
   alternates: {
     canonical: `${siteConfig.url}/resume`,
@@ -81,11 +90,33 @@ export default async function ResumePage() {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Resume",
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="pt-24 pb-12 w-full px-4">
         <ResumeHeader />

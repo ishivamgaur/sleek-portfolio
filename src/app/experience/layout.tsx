@@ -6,12 +6,21 @@ export const metadata: Metadata = {
   description: `Detailed Work Experience and work history of ${siteConfig.name}, showcasing skills and roles in software development.`,
   keywords: [
     "Shivam Gaur Experience",
+    "ishivamgaur experience",
+    "ishivamgaur work history",
     "Shivam Gaur Work History",
+    "Shivam Gaur Work Experience",
+    "Shivam Gaur Career",
     "Full Stack Developer Experience",
-    "MERN Stack Developer",
+    "Software Developer Experience",
+    "MERN Stack Developer Experience",
+    "React Developer Experience",
     "Software Developer NOIDA",
     "Bitmax Technology",
     "Digivity",
+    "QSpiders MERN Stack",
+    "developer internship India",
+    "full stack developer work history",
   ],
   alternates: {
     canonical: `${siteConfig.url}/experience`,
@@ -57,11 +66,33 @@ export default function ExperienceLayout({
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Experience",
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {children}
     </>

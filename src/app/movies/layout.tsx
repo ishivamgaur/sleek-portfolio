@@ -9,7 +9,13 @@ export const metadata: Metadata = {
     "Film Recommendations",
     "Top Movies",
     "Cinema",
+    "ishivamgaur movies",
+    "ishivamgaur favorite films",
     "Shivam Gaur Movies",
+    "Shivam Gaur Favorite Films",
+    "best movies list",
+    "movie recommendations developer",
+    "must watch movies",
   ],
   alternates: {
     canonical: `${siteConfig.url}/movies`,
@@ -51,11 +57,33 @@ export default function MoviesLayout({
     ],
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Favorite Movies",
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {children}
     </>

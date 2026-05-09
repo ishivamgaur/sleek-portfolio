@@ -73,7 +73,13 @@ export default function RootLayout({
     "@type": "Person",
     "@id": `${siteConfig.url}/#person`,
     name: siteConfig.name,
-    alternateName: ["ishivamgaur", "Shivam Gaur", "shivamgaur"],
+    alternateName: [
+      "ishivamgaur",
+      "Shivam Gaur",
+      "shivamgaur",
+      "shivam developer",
+      "shivam gaur developer",
+    ],
     url: siteConfig.url,
     image: siteConfig.ogImage,
     sameAs: [
@@ -124,47 +130,37 @@ export default function RootLayout({
     "@type": "WebSite",
     "@id": `${siteConfig.url}/#website`,
     name: `${siteConfig.name} — Portfolio`,
+    alternateName: [
+      "ishivamgaur portfolio",
+      "shivam gaur portfolio",
+      "shivam developer portfolio",
+      "ishivamgaur.space",
+    ],
     url: siteConfig.url,
     description: siteConfig.description,
     publisher: { "@id": `${siteConfig.url}/#person` },
     inLanguage: "en-US",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteConfig.url}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
-  // BreadcrumbList — helps Google understand site hierarchy
+  // BreadcrumbList — homepage only gets a single-item breadcrumb
+  // Each subpage defines its own 2-level breadcrumb (Home → Page)
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
       {
         "@type": "ListItem",
-        position: 2,
-        name: "Projects",
-        item: `${siteConfig.url}/projects`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Experience",
-        item: `${siteConfig.url}/experience`,
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: "Resume",
-        item: `${siteConfig.url}/resume`,
-      },
-      {
-        "@type": "ListItem",
-        position: 5,
-        name: "100 List",
-        item: `${siteConfig.url}/100-list`,
-      },
-      {
-        "@type": "ListItem",
-        position: 6,
-        name: "Favorite Movies",
-        item: `${siteConfig.url}/movies`,
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
       },
     ],
   };

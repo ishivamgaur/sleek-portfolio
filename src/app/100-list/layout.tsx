@@ -8,8 +8,14 @@ export const metadata: Metadata = {
     "100 List",
     "Bucket List",
     "Life Goals",
+    "ishivamgaur bucket list",
+    "ishivamgaur goals",
     "Shivam Gaur Goals",
+    "Shivam Gaur Bucket List",
     "Personal Development",
+    "100 things to do",
+    "developer life goals",
+    "personal growth list",
   ],
   alternates: {
     canonical: `${siteConfig.url}/100-list`,
@@ -51,11 +57,33 @@ export default function OneHundredListLayout({
     ],
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "100 List",
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {children}
     </>
