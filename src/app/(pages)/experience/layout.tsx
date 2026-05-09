@@ -84,6 +84,7 @@ export default function ExperienceLayout({
         "@type": "ListItem",
         position: 2,
         name: "Experience",
+        item: `${siteConfig.url}/experience`,
       },
     ],
   };

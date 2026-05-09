@@ -108,6 +108,7 @@ export default async function ResumePage() {
         "@type": "ListItem",
         position: 2,
         name: "Resume",
+        item: `${siteConfig.url}/resume`,
       },
     ],
   };
