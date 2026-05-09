@@ -46,6 +46,10 @@ export default function ExperienceLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
+    "@id": `${siteConfig.url}/experience/#webpage`,
+    url: `${siteConfig.url}/experience`,
+    name: "Shivam Gaur Work Experience",
+    description: `Detailed work history and career progression of ${siteConfig.name}.`,
     mainEntity: {
       "@type": "Person",
       name: "Shivam Gaur",

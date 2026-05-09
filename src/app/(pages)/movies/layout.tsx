@@ -41,6 +41,8 @@ export default function MoviesLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
+    "@id": `${siteConfig.url}/movies/#webpage`,
+    url: `${siteConfig.url}/movies`,
     name: "Shivam Gaur's Favorite Movies",
     description: "A curated list of movies that inspire.",
     itemListElement: [

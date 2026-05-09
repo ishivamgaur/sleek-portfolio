@@ -82,6 +82,10 @@ export default async function ResumePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
+    "@id": `${siteConfig.url}/resume/#webpage`,
+    url: `${siteConfig.url}/resume`,
+    name: "Shivam Gaur Resume & CV",
+    description: `Professional resume and curriculum vitae of ${siteConfig.name}.`,
     mainEntity: {
       "@type": "Person",
       name: "Shivam Gaur",

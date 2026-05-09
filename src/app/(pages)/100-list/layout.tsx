@@ -41,7 +41,9 @@ export default function OneHundredListLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Shivam Gaur's 100 List",
+    "@id": `${siteConfig.url}/100-list/#webpage`,
+    url: `${siteConfig.url}/100-list`,
+    name: "Shivam Gaur's 100 List & Bucket List",
     description: "A personal 100 list of goals and achievements.",
     itemListElement: [
       {

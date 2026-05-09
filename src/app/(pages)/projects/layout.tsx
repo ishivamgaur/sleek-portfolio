@@ -42,6 +42,15 @@ export default function ProjectsLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${siteConfig.url}/projects/#webpage`,
+    url: `${siteConfig.url}/projects`,
+    name: "Shivam Gaur Software Projects & Portfolio",
+    description: `Explore the software development projects, open-source contributions, and technical experiments built by ${siteConfig.name}.`,
+  };
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -62,6 +71,10 @@ export default function ProjectsLayout({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
