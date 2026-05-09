@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="flex flex-col pb-12">
       {sections.map((Section, i) => (
-        <div key={i} className="mb-14">
+        <div key={i} className="mb-8 md:mb-10 lg:mb-12">
           <Section />
         </div>
       ))}

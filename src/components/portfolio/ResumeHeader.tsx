@@ -6,7 +6,7 @@ export default function ResumeHeader() {
   return (
     <div className="mb-10 space-y-1">
       <FadeIn delay={0.1} direction="up">
-        <h2 className="text-2xl font-bold tracking-tight">Resume</h2>
+        <h1 className="text-2xl font-bold tracking-tight">Resume</h1>
       </FadeIn>
       <FadeIn delay={0.2} direction="up">
         <p className="text-muted-foreground text-[15px]">

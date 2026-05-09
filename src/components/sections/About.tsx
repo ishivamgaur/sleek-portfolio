@@ -5,15 +5,15 @@ import FadeIn from "@/components/animations/FadeIn";
 const highlights = [
   {
     title: "What I build",
-    text: "Full-stack web apps with clean interfaces, practical APIs, and database-backed features that feel simple to use.",
+    text: "Building scalable architectures, intuitive interfaces, and high-impact MVPs.",
   },
   {
     title: "How I think",
-    text: "I like breaking messy problems into small systems, shipping the useful version first, then improving the details.",
+    text: "Solving real problems by breaking complex systems into simple, efficient flows.",
   },
   {
     title: "What I care about",
-    text: "Readable code, fast pages, secure auth, smooth interactions, and products that stay easy to maintain.",
+    text: "Clean code, high performance, and building products that are built to last.",
   },
 ];
 
@@ -27,8 +27,8 @@ export default function About() {
       <div className="space-y-5">
         <div className="flex flex-col space-y-3">
           {[
-            "I am a full-stack developer focused on building useful, polished web experiences with React, Next.js, Node.js, and MongoDB.",
-            "I enjoy working across the whole product layer, from shaping the UI to designing the API and making sure the data flow stays reliable.",
+            "Hi, I'm Shivam. I bridge the gap between complex backend engineering and intuitive user design to build products that scale and endure.",
+            "I am an engineer who solves problems first. I specialize in architecting high-performance systems and shipping lean MVPs that turn ambitious ideas into reality.",
           ].map((sentence, i) => (
             <FadeIn key={i} delay={0.1 + i * 0.1} direction="up">
               <p className="text-[15px] leading-relaxed text-muted-foreground">
