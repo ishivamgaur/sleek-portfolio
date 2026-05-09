@@ -23,12 +23,13 @@ import {
   fetchStories,
   deleteStory,
   fetchAnalytics,
+  changePassword,
   StoryData,
   SiteSettings,
   AnalyticsStats,
 } from "@/services/api";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const adminCardClass =
@@ -87,6 +88,17 @@ export default function AdminPage() {
   const [originalResumeUrl, setOriginalResumeUrl] = useState("");
   const [stories, setStories] = useState<StoryData[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsStats | null>(null);
+
+  // Change password state
+  const [cpCurrentPassword, setCpCurrentPassword] = useState("");
+  const [cpNewPassword, setCpNewPassword] = useState("");
+  const [cpMessage, setCpMessage] = useState("");
+  const [cpError, setCpError] = useState("");
+  const [cpLoading, setCpLoading] = useState(false);
+
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showCpCurrentPassword, setShowCpCurrentPassword] = useState(false);
+  const [showCpNewPassword, setShowCpNewPassword] = useState(false);
 
   const [activeStoryIdx, setActiveStoryIdx] = useState<number | null>(null);
   const getErrorMessage = (err: unknown) =>
@@ -203,6 +215,29 @@ export default function AdminPage() {
     }
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCpError("");
+    setCpMessage("");
+    setCpLoading(true);
+    try {
+      // Need an email, but we don't have it natively stored on frontend easily unless we fetch profile.
+      // Wait, we used `email` in login, but if it reloads, it's empty. Let's ask user for email or use admin's email.
+      // Actually we can add an email field in the Change Password form, or just pass `email` state if it's there.
+      // Better to have user input their email in Change Password form to confirm, or we update the API to use the JWT token's email if we decode it.
+      // We didn't put email in JWT token in auth.ts...
+      // Let's just ask for email in the change password form.
+      const res = await changePassword(email, cpCurrentPassword, cpNewPassword);
+      setCpMessage(res.message);
+      setCpCurrentPassword("");
+      setCpNewPassword("");
+    } catch (err: unknown) {
+      setCpError(getErrorMessage(err) || "Failed to change password");
+    } finally {
+      setCpLoading(false);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     setIsLoggedIn(false);
@@ -223,7 +258,7 @@ export default function AdminPage() {
           <CardHeader>
             <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
             <CardDescription className="text-center">
-              Enter your password to access the dashboard.
+              Enter your credentials to access the dashboard.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -238,13 +273,26 @@ export default function AdminPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    type={showLoginPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    required
+                    className="pr-10"
+                  />
+                  {password && (
+                    <button
+                      type="button"
+                      onClick={() => setShowLoginPassword(!showLoginPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-opacity"
+                      aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                    >
+                      {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  )}
+                </div>
                 {loginError && (
                   <p className="text-sm text-destructive">{loginError}</p>
                 )}
@@ -405,6 +453,88 @@ export default function AdminPage() {
                 className="flex items-center justify-center w-full md:w-auto mt-2 gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Update Resume
+              </button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card className={adminCardClass}>
+          <CardHeader>
+            <CardTitle className={adminCardTitleClass}>
+              Change Password
+            </CardTitle>
+            <CardDescription className={adminCardDescriptionClass}>
+              Update your administrator password.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex gap-2 flex-col sm:flex-row">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                    required
+                  />
+                  <div className="relative w-full">
+                    <Input
+                      type={showCpCurrentPassword ? "text" : "password"}
+                      value={cpCurrentPassword}
+                      onChange={(e) => setCpCurrentPassword(e.target.value)}
+                      placeholder="Current Password"
+                      required
+                      className="pr-10"
+                    />
+                    {cpCurrentPassword && (
+                      <button
+                        type="button"
+                        onClick={() => setShowCpCurrentPassword(!showCpCurrentPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-opacity"
+                        aria-label={showCpCurrentPassword ? "Hide password" : "Show password"}
+                      >
+                        {showCpCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative w-full">
+                    <Input
+                      type={showCpNewPassword ? "text" : "password"}
+                      value={cpNewPassword}
+                      onChange={(e) => setCpNewPassword(e.target.value)}
+                      placeholder="New Password (min 8 chars)"
+                      required
+                      minLength={8}
+                      className="pr-10"
+                    />
+                    {cpNewPassword && (
+                      <button
+                        type="button"
+                        onClick={() => setShowCpNewPassword(!showCpNewPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-opacity"
+                        aria-label={showCpNewPassword ? "Hide password" : "Show password"}
+                      >
+                        {showCpNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {cpError && (
+                  <p className="text-sm text-destructive">{cpError}</p>
+                )}
+                {cpMessage && (
+                  <p className="text-sm text-emerald-500">{cpMessage}</p>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={
+                  cpLoading || !cpCurrentPassword || !cpNewPassword || !email
+                }
+                className="flex items-center justify-center w-full md:w-auto mt-2 gap-2 px-5 py-2.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-[14px] font-bold tracking-tight active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {cpLoading ? "Updating..." : "Change Password"}
               </button>
             </form>
           </CardContent>

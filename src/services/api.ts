@@ -91,6 +91,13 @@ export async function logout() {
   });
 }
 
+export async function changePassword(email: string, currentPassword: string, newPassword: string) {
+  return apiRequest<{ success: boolean; message: string }>("/api/auth/change-password", {
+    method: "POST",
+    body: { email, currentPassword, newPassword },
+  });
+}
+
 export async function checkAuth(): Promise<boolean> {
   const data = await apiRequest<{ authenticated: boolean }>("/api/auth/check");
   return data.authenticated;
