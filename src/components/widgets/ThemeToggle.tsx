@@ -12,18 +12,19 @@ import {
 } from "@/components/ui/tooltip";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const currentTheme = resolvedTheme ?? "dark";
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "x") {
         e.preventDefault();
-        setTheme(theme === "light" ? "dark" : "light");
+        setTheme(currentTheme === "light" ? "dark" : "light");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [theme, setTheme]);
+  }, [currentTheme, setTheme]);
 
   return (
     <Tooltip>
@@ -32,14 +33,16 @@ export function ThemeToggle() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            onClick={() =>
+              setTheme(currentTheme === "light" ? "dark" : "light")
+            }
             className="rounded-full hover:bg-transparent dark:hover:bg-transparent cursor-pointer h-7 w-7 md:h-8 md:w-8 relative overflow-hidden"
           />
         }
       >
         <div className="relative h-[1.2rem] w-[1.2rem] flex items-center justify-center">
           <AnimatePresence initial={false}>
-            {theme === "light" ? (
+            {currentTheme === "light" ? (
               <motion.div
                 key="sun"
                 initial={{ scale: 0.5, opacity: 0, rotate: -45 }}

@@ -29,11 +29,20 @@ export const metadata: Metadata = {
     description: `Software development projects and open-source work by ${siteConfig.name}.`,
     url: `${siteConfig.url}/projects`,
     type: "website",
+    images: [
+      {
+        url: siteConfig.ogImages.projects,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} projects`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Projects",
     description: `Software development projects by ${siteConfig.name}.`,
+    images: [siteConfig.ogImages.projects],
   },
 };
 
@@ -49,6 +58,10 @@ export default function ProjectsLayout({
     url: `${siteConfig.url}/projects`,
     name: "Shivam Gaur Software Projects & Portfolio",
     description: `Explore the software development projects, open-source contributions, and technical experiments built by ${siteConfig.name}.`,
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+    },
   };
 
   return (

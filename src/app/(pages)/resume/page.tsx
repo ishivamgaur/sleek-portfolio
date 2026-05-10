@@ -34,11 +34,20 @@ export const metadata = {
     description: `View and download the professional resume of ${siteConfig.name}.`,
     url: `${siteConfig.url}/resume`,
     type: "profile",
+    images: [
+      {
+        url: siteConfig.ogImages.resume,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} resume`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `Shivam Gaur Resume | Full Stack Developer | CV`,
     description: `View and download the professional resume of ${siteConfig.name}.`,
+    images: [siteConfig.ogImages.resume],
   },
 };
 

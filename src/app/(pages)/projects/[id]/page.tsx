@@ -9,9 +9,11 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import FadeIn from "@/components/animations/FadeIn";
+import { portfolioData } from "@/data/portfolio";
 
 export default function ProjectDetailsPage({
   params,
@@ -43,34 +45,35 @@ export default function ProjectDetailsPage({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const project = {
-    _id: params.id,
-    title: "Portfolio Website",
-    description:
-      "A sleek, modern portfolio website built with Next.js, Tailwind CSS, and Framer Motion for ultra-smooth animations.",
-    content:
-      "This project was built to challenge the standard 'card grid' portfolio layouts by introducing a more editorial, minimal aesthetic. The goal was to create a highly performant, accessible, and visually striking platform to showcase professional work without relying on cluttered UI elements.\n\nThe technical implementation utilizes the brand new Next.js App Router for optimal performance, Framer Motion for scroll-triggered entrance animations, and Tailwind CSS for rapid styling.",
-    features: [
-      "Designed and developed a custom design system with CSS Variables and Tailwind.",
-      "Implemented a resilient fallback system for missing media assets with premium visuals.",
-      "Integrated Framer Motion for buttery-smooth scroll and layout animations.",
-      "Optimized Next.js App Router for exceptional 100/100 Lighthouse performance scores.",
-    ],
-    tags: [
-      "Next.js",
-      "React",
-      "Tailwind",
-      "Framer Motion",
-      "TypeScript",
-      "Vercel",
-    ],
-    link: "https://portfolio.shivamgaur.com",
-    github: "https://github.com/ishivamgaur",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1507238692062-8e0ec06eadec?q=80&w=1200&auto=format&fit=crop",
-    videoUrl:
-      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2FjcW12cm1oN2w3bWZlaDN0cWRzYWw3ZG5qamJpMmtwd2Rla2RkMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif",
-  };
+  const project = portfolioData.projects.find((item) => item._id === params.id);
+
+  if (!project) {
+    return (
+      <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-6">
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors group w-fit"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to projects
+        </Link>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Project not found
+          </h2>
+          <p className="text-muted-foreground mt-2 text-[15px]">
+            This project is not available anymore.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const projectContent = project.content || project.description;
+  const projectFeatures = project.features || [];
+  const githubUrl =
+    project.github ||
+    (project.link?.includes("github.com") ? project.link : undefined);
 
   return (
     <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
@@ -114,9 +117,9 @@ export default function ProjectDetailsPage({
 
           <FadeIn delay={0.4} direction="up">
             <div className="flex items-center gap-6 text-[13px]">
-              {project.github && (
+              {githubUrl && (
                 <a
-                  href={project.github}
+                  href={githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
@@ -124,7 +127,7 @@ export default function ProjectDetailsPage({
                   <GitBranch className="w-4 h-4 text-primary/60" /> Source
                 </a>
               )}
-              {project.link && (
+              {project.link && project.link !== githubUrl && (
                 <a
                   href={project.link}
                   target="_blank"
@@ -151,10 +154,11 @@ export default function ProjectDetailsPage({
               className="w-full h-full object-cover"
             />
           ) : project.thumbnailUrl && !imgError ? (
-            <img
-              ref={thumbRef}
+            <Image
               src={project.thumbnailUrl}
               alt={project.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
               onError={() => setImgError(true)}
               className="w-full h-full object-cover"
             />
@@ -173,7 +177,7 @@ export default function ProjectDetailsPage({
 
       <div className="w-full space-y-10 pt-4">
         <div className="flex flex-col space-y-4">
-          {project.content.split("\n\n").map((paragraph, i) => (
+          {projectContent.split("\n\n").map((paragraph, i) => (
             <FadeIn key={i} delay={0.6 + i * 0.1} direction="up">
               <div className="text-[16px] text-foreground/90 leading-relaxed">
                 {paragraph}
@@ -182,7 +186,7 @@ export default function ProjectDetailsPage({
           ))}
         </div>
 
-        {project.features && project.features.length > 0 && (
+        {projectFeatures.length > 0 && (
           <div className="space-y-4">
             <FadeIn delay={0.7} direction="up">
               <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground/50">
@@ -190,7 +194,7 @@ export default function ProjectDetailsPage({
               </h3>
             </FadeIn>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {project.features.map((feature, idx) => (
+              {projectFeatures.map((feature, idx) => (
                 <FadeIn key={idx} delay={0.75 + idx * 0.05} direction="up">
                   <li className="flex items-start bg-secondary/5 p-4 rounded-xl border border-dashed border-border h-full">
                     <div className="w-1 h-1 rounded-full bg-foreground/30 mt-[0.65em] shrink-0 mr-3" />
@@ -219,4 +223,3 @@ export default function ProjectDetailsPage({
     </div>
   );
 }
-

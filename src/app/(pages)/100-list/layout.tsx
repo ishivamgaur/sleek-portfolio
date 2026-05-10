@@ -25,11 +25,20 @@ export const metadata: Metadata = {
     description: `A curated 100 list of things ${siteConfig.name} wants to accomplish.`,
     url: `${siteConfig.url}/100-list`,
     type: "website",
+    images: [
+      {
+        url: siteConfig.ogImages.oneHundredList,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} 100 list`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "100 List",
     description: `A curated 100 list of things ${siteConfig.name} wants to accomplish.`,
+    images: [siteConfig.ogImages.oneHundredList],
   },
 };
 

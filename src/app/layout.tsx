@@ -112,6 +112,20 @@ export default function RootLayout({
       "MERN Stack",
       "Full Stack Development",
     ],
+    hasOccupation: {
+      "@type": "Occupation",
+      name: "Full Stack Developer",
+      skills:
+        "React, Next.js, Node.js, MongoDB, TypeScript, JavaScript, Express.js, Tailwind CSS, Redux, AWS",
+      occupationLocation: {
+        "@type": "City",
+        name: "Noida, India",
+      },
+    },
+    knowsLanguage: ["en", "hi"],
+    ...(process.env.NEXT_PUBLIC_CONTACT_EMAIL
+      ? { email: process.env.NEXT_PUBLIC_CONTACT_EMAIL }
+      : {}),
     worksFor: {
       "@type": "Organization",
       name: "Bitmax Technology Pvt. Ltd.",
@@ -124,7 +138,16 @@ export default function RootLayout({
     },
   };
 
-  // WebSite schema — enables Google Sitelinks Searchbox
+  const mainNavigation = [
+    { name: "Home", url: siteConfig.url },
+    { name: "Projects", url: `${siteConfig.url}/projects` },
+    { name: "Experience", url: `${siteConfig.url}/experience` },
+    { name: "Resume", url: `${siteConfig.url}/resume` },
+    { name: "100 List", url: `${siteConfig.url}/100-list` },
+    { name: "Favorite Movies", url: `${siteConfig.url}/movies` },
+  ];
+
+  // WebSite schema — helps search engines understand the site identity.
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -140,35 +163,20 @@ export default function RootLayout({
     description: siteConfig.description,
     publisher: { "@id": `${siteConfig.url}/#person` },
     inLanguage: "en-US",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${siteConfig.url}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 
-  // BreadcrumbList — homepage only gets a single-item breadcrumb
-  // Each subpage defines its own 2-level breadcrumb (Home → Page)
-  const breadcrumbJsonLd = {
+  const navigationJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: siteConfig.url,
-      },
-    ],
+    "@type": "SiteNavigationElement",
+    "@id": `${siteConfig.url}/#site-navigation`,
+    name: mainNavigation.map((item) => item.name),
+    url: mainNavigation.map((item) => item.url),
   };
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Structured Data — Person, WebSite, Breadcrumbs */}
+        {/* Structured Data — Person, WebSite, Navigation, Breadcrumbs */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
@@ -179,7 +187,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
         />
 
         {/* Bing Webmaster Tools verification (covers Edge, DuckDuckGo) */}
@@ -195,6 +203,14 @@ export default function RootLayout({
           <meta
             name="yandex-verification"
             content={process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION}
+          />
+        )}
+
+        {/* Google Search Console verification */}
+        {process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && (
+          <meta
+            name="google-site-verification"
+            content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION}
           />
         )}
 
@@ -218,6 +234,7 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
+          storageKey="theme"
           disableTransitionOnChange
         >
           <AnalyticsTracker />

@@ -4,7 +4,15 @@ export const siteConfig = {
   description:
     "Shivam Gaur is a Full Stack Developer specializing in React, Next.js, Node.js, and MongoDB. Based in NOIDA, India. Explore projects, experience, and resume.",
   url: process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space",
-  ogImage: "https://shivamgaur.space/profile-pic.jpg",
+  ogImage: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-home.png`,
+  ogImages: {
+    home: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-home.png`,
+    resume: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-resume.png`,
+    experience: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-experience.png`,
+    projects: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-projects.png`,
+    oneHundredList: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-100-list.png`,
+    movies: `${process.env.NEXT_PUBLIC_BASE_URL || "https://shivamgaur.space"}/og-movies.png`,
+  },
   links: {
     twitter: "https://twitter.com/ishivamgaur",
     github: "https://github.com/ishivamgaur",

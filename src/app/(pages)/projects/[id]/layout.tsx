@@ -5,9 +5,10 @@ import { siteConfig } from "@/config/site";
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const project = portfolioData.projects.find((p) => p._id === params.id);
+  const { id } = await params;
+  const project = portfolioData.projects.find((p) => p._id === id);
 
   if (!project) {
     return {
@@ -19,6 +20,9 @@ export async function generateMetadata({
     title: project.title,
     description: project.description,
     keywords: project.tags,
+    alternates: {
+      canonical: `${siteConfig.url}/projects/${project._id}`,
+    },
     openGraph: {
       title: project.title,
       description: project.description,
@@ -42,10 +46,44 @@ export async function generateMetadata({
   };
 }
 
-export default function ProjectLayout({
+export default async function ProjectLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ id: string }>;
 }) {
-  return <>{children}</>;
+  const { id } = await params;
+  const project = portfolioData.projects.find((p) => p._id === id);
+
+  if (!project) {
+    return <>{children}</>;
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "@id": `${siteConfig.url}/projects/${project._id}/#software`,
+    name: project.title,
+    description: project.description,
+    url: `${siteConfig.url}/projects/${project._id}`,
+    image: project.thumbnailUrl || siteConfig.ogImage,
+    codeRepository: project.link,
+    programmingLanguage: project.tags,
+    author: {
+      "@type": "Person",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

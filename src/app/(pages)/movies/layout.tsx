@@ -25,11 +25,20 @@ export const metadata: Metadata = {
     description: `A curated list of ${siteConfig.name}'s favorite movies.`,
     url: `${siteConfig.url}/movies`,
     type: "website",
+    images: [
+      {
+        url: siteConfig.ogImages.movies,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} favorite movies`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Favorite Movies",
     description: `A curated list of ${siteConfig.name}'s favorite movies.`,
+    images: [siteConfig.ogImages.movies],
   },
 };
 

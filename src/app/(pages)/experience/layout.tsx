@@ -30,11 +30,20 @@ export const metadata: Metadata = {
     description: `Work Experience and work history of ${siteConfig.name}.`,
     url: `${siteConfig.url}/experience`,
     type: "profile",
+    images: [
+      {
+        url: siteConfig.ogImages.experience,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} experience`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Experience",
     description: `Work Experience and work history of ${siteConfig.name}.`,
+    images: [siteConfig.ogImages.experience],
   },
 };
 

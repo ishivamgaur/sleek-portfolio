@@ -10,10 +10,19 @@ export const portfolioData = {
         "A sleek, modern portfolio website built with Next.js, Tailwind CSS, and Framer Motion for ultra-smooth animations.",
       tags: ["Next.js", "React", "Tailwind", "Framer Motion"],
       link: "https://github.com/ishivamgaur",
+      github: "https://github.com/ishivamgaur",
       thumbnailUrl:
         "https://images.unsplash.com/photo-1507238692062-8e0ec06eadec?q=80&w=600&auto=format&fit=crop",
       videoUrl:
         "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2FjcW12cm1oN2w3bWZlaDN0cWRzYWw3ZG5qamJpMmtwd2Rla2RkMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif",
+      content:
+        "A modern portfolio built with the Next.js App Router, Tailwind CSS, and Framer Motion. The goal is to keep the experience fast, minimal, and focused while still showing personality through stories, media, analytics, and polished details.",
+      features: [
+        "Responsive portfolio sections for profile, experience, projects, resume, and personal pages.",
+        "SEO foundations including metadata, sitemap, robots, Open Graph images, and structured data.",
+        "Admin tools for stories, resume settings, analytics, and password management.",
+        "Dark mode, page transitions, and optimized image handling for a refined user experience.",
+      ],
     },
     {
       _id: "2",
@@ -25,6 +34,14 @@ export const portfolioData = {
         "https://images.unsplash.com/photo-1557821552-17105176677c?q=80&w=600&auto=format&fit=crop",
       videoUrl:
         "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbm9sZnV6aXk0a2E2YzEwZWh3OTI3YzEwaHRrZWV5NWE4ZWY0YzMwaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jIGsO4/giphy.gif",
+      content:
+        "A MERN stack e-commerce platform concept covering product browsing, cart workflows, checkout integration, state management, and administrative controls.",
+      features: [
+        "Product listing and detail flows designed for fast browsing.",
+        "Cart and checkout architecture with Redux-based state management.",
+        "Admin dashboard patterns for managing products and orders.",
+        "Backend API structure using Node.js, Express, and MongoDB.",
+      ],
     },
     {
       _id: "3",
@@ -34,6 +51,14 @@ export const portfolioData = {
       tags: ["OpenAI", "Socket.io", "React", "Node.js"],
       thumbnailUrl:
         "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&auto=format&fit=crop",
+      content:
+        "A real-time chat application concept focused on responsive messaging, AI-assisted replies, and WebSocket-powered interaction patterns.",
+      features: [
+        "Realtime message transport with Socket.io-style event flows.",
+        "AI-assisted conversation experience designed around quick feedback.",
+        "React interface patterns for chat history, loading states, and message input.",
+        "Node.js backend structure for API orchestration and realtime sessions.",
+      ],
     },
   ] as Project[],
 

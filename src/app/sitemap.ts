@@ -1,11 +1,12 @@
 import { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
+import { portfolioData } from "@/data/portfolio";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url;
   const now = new Date();
 
-  return [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
       lastModified: now,
@@ -43,4 +44,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
   ];
+
+  const projectRoutes: MetadataRoute.Sitemap = portfolioData.projects.map(
+    (project) => ({
+      url: `${baseUrl}/projects/${project._id}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }),
+  );
+
+  return [...staticRoutes, ...projectRoutes];
 }

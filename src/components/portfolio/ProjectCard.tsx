@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, MonitorPlay } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import FadeIn from "@/components/animations/FadeIn";
 
 export interface Project {
@@ -12,9 +13,11 @@ export interface Project {
   description: string;
   tags: string[];
   link?: string;
+  github?: string;
   thumbnailUrl?: string;
   videoUrl?: string;
-  content?: string; // For the detailed description page
+  content?: string;
+  features?: string[];
 }
 
 export function ProjectCard({
@@ -29,17 +32,6 @@ export function ProjectCard({
   showBullets?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    if (
-      imgRef.current &&
-      imgRef.current.complete &&
-      imgRef.current.naturalWidth === 0
-    ) {
-      setImgError(true);
-    }
-  }, []);
 
   return (
     <Link href={`/projects/${project._id}`} className="block">
@@ -57,10 +49,11 @@ export function ProjectCard({
                 </span>
               </div>
             ) : (
-              <img
-                ref={imgRef}
+              <Image
                 src={project.thumbnailUrl}
                 alt={project.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
                 onError={() => setImgError(true)}
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
               />
