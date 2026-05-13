@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="client/public/og-home.png" alt="Shivam Gaur Portfolio" width="800" />
+  <img src="public/og-home.png" alt="Shivam Gaur Portfolio" width="800" />
 </p>
 
 <h1 align="center">Shivam Gaur — Portfolio</h1>
