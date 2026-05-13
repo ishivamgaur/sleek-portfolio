@@ -111,6 +111,10 @@ export default function RootLayout({
       "AWS",
       "MERN Stack",
       "Full Stack Development",
+      "REST API Development",
+      "AI Chatbot Development",
+      "CRM Development",
+      "Server Deployment",
     ],
     hasOccupation: {
       "@type": "Occupation",
@@ -123,12 +127,34 @@ export default function RootLayout({
       },
     },
     knowsLanguage: ["en", "hi"],
+    nationality: {
+      "@type": "Country",
+      name: "India",
+    },
+    gender: "Male",
     ...(process.env.NEXT_PUBLIC_CONTACT_EMAIL
       ? { email: process.env.NEXT_PUBLIC_CONTACT_EMAIL }
       : {}),
     worksFor: {
       "@type": "Organization",
       name: "Bitmax Technology Pvt. Ltd.",
+      url: "https://bitmaxtech.com",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Greater Noida",
+        addressRegion: "Uttar Pradesh",
+        addressCountry: "IN",
+      },
+    },
+    alumniOf: {
+      "@type": "EducationalOrganization",
+      name: "QSpiders",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Noida",
+        addressRegion: "Uttar Pradesh",
+        addressCountry: "IN",
+      },
     },
     address: {
       "@type": "PostalAddress",
@@ -136,6 +162,24 @@ export default function RootLayout({
       addressRegion: "Uttar Pradesh",
       addressCountry: "IN",
     },
+    // AEO: potentialAction — enables "hire" and "contact" actions in AI results
+    potentialAction: [
+      {
+        "@type": "ViewAction",
+        name: "View Resume",
+        target: `${siteConfig.url}/resume`,
+      },
+      {
+        "@type": "ViewAction",
+        name: "View Projects",
+        target: `${siteConfig.url}/projects`,
+      },
+      {
+        "@type": "CommunicateAction",
+        name: "Contact Shivam Gaur",
+        target: `mailto:ishivamgaur@gmail.com`,
+      },
+    ],
   };
 
   const mainNavigation = [
@@ -173,10 +217,80 @@ export default function RootLayout({
     url: mainNavigation.map((item) => item.url),
   };
 
+  // AEO: FAQPage schema — AI assistants (ChatGPT, Google AI, Perplexity) pull these directly
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${siteConfig.url}/#faq`,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Who is Shivam Gaur?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Shivam Gaur (also known as @ishivamgaur) is a Full Stack Developer from NOIDA, India. He specializes in React, Next.js, Node.js, and MongoDB, and has professional experience building AI chatbots, CRM platforms, School ERP systems, and e-commerce applications. He currently works at Bitmax Technology Pvt. Ltd.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What technologies does Shivam Gaur work with?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Shivam works primarily with the MERN stack: MongoDB, Express.js, React, and Node.js. He also uses Next.js, TypeScript, Tailwind CSS, Redux Toolkit, AWS (EC2), Nginx, Framer Motion, and Shadcn UI. He has experience deploying production applications on VPS environments with Nginx reverse proxies.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Where does Shivam Gaur currently work?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Shivam currently works as a Full Stack Developer at Bitmax Technology Pvt. Ltd. in Greater Noida, India. He builds AI chatbots using the Groq API and develops CRM platforms with Role-Based Access Control (RBAC).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How can I hire or contact Shivam Gaur?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `You can reach Shivam through his portfolio at ${siteConfig.url}, via email at ishivamgaur@gmail.com, or connect with him on LinkedIn at ${siteConfig.links.linkedin}. His resume is available at ${siteConfig.url}/resume.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What projects has Shivam Gaur built?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Shivam has built several full-stack projects including a modern portfolio website with Next.js, a complete MERN stack e-commerce platform with Stripe integration, an AI chat application with real-time WebSocket communication, an intelligent AI chatbot using the Groq API, and a comprehensive CRM platform with RBAC. View all projects at " + siteConfig.url + "/projects.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is Shivam Gaur's work experience?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Shivam has worked as a Full Stack Developer at Bitmax Technology (2025–Present) and Digivity (2025), and completed a MERN Stack Developer Internship at QSpiders, Noida (2024). He has deployed multiple production applications on AWS and Hostinger VPS environments.",
+        },
+      },
+    ],
+  };
+
+  // AEO: Speakable schema — helps voice assistants (Google Assistant, Alexa, Siri) read key content
+  const speakableJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${siteConfig.url}/#speakable`,
+    name: siteConfig.title,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".about-text", ".hero-bio"],
+    },
+    url: siteConfig.url,
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Structured Data — Person, WebSite, Navigation, Breadcrumbs */}
+        {/* Structured Data — Person, WebSite, Navigation, FAQ, Speakable */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
@@ -188,6 +302,14 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableJsonLd) }}
         />
 
         {/* Bing Webmaster Tools verification (covers Edge, DuckDuckGo) */}
@@ -216,6 +338,19 @@ export default function RootLayout({
 
         {/* Web App Manifest */}
         <link rel="manifest" href="/manifest.json" />
+
+        {/* GEO: llms.txt — machine-readable summary for AI crawlers */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-friendly site summary" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM full site content" />
+
+        {/* AI training & usage preferences */}
+        <link rel="alternate" type="text/plain" href="/ai.txt" title="AI usage preferences" />
+
+        {/* RSS Feed — for content aggregators and AI crawlers */}
+        <link rel="alternate" type="application/rss+xml" href="/feed.xml" title={`${siteConfig.name} RSS Feed`} />
+
+        {/* humans.txt — credits */}
+        <link rel="author" type="text/plain" href="/humans.txt" />
 
         {/* Umami Analytics */}
         {process.env.NEXT_PUBLIC_UMAMI_URL &&

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { portfolioData } from "@/data/portfolio";
 
 export const metadata: Metadata = {
   title: "100 List",
@@ -47,23 +48,39 @@ export default function OneHundredListLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // GEO: Complete ItemList schema with ALL items — AI engines can cite the full list
+  const bucketList = portfolioData.bucketList || [];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "@id": `${siteConfig.url}/100-list/#webpage`,
     url: `${siteConfig.url}/100-list`,
     name: "Shivam Gaur's 100 List & Bucket List",
-    description: "A personal 100 list of goals and achievements.",
+    description: `A personal list of ${bucketList.length} goals and life ambitions by ${siteConfig.name}.`,
+    numberOfItems: bucketList.length,
+    itemListElement: bucketList.map((item, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: item.title,
+      ...(item.completed ? { description: "Completed ✓" } : {}),
+    })),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: [
       {
         "@type": "ListItem",
         position: 1,
-        name: "Build a tech startup",
+        name: "Home",
+        item: siteConfig.url,
       },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Travel to Japan",
+        name: "100 List",
+        item: `${siteConfig.url}/100-list`,
       },
     ],
   };
@@ -73,6 +90,10 @@ export default function OneHundredListLayout({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {children}
     </>

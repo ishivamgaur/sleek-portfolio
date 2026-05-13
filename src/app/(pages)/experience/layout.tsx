@@ -61,19 +61,42 @@ export default function ExperienceLayout({
     description: `Detailed work history and career progression of ${siteConfig.name}.`,
     mainEntity: {
       "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
       name: "Shivam Gaur",
       jobTitle: "Full Stack Developer",
       url: siteConfig.url,
+      // AEO: Complete work history with dates — AI engines use this for timeline queries
       worksFor: [
         {
           "@type": "Organization",
           name: "Bitmax Technology Pvt. Ltd.",
           address: "Greater Noida, Section 90",
         },
+      ],
+      hasCredential: [
         {
-          "@type": "Organization",
-          name: "Digivity",
-          address: "Knowledge Park III, Greater Noida",
+          "@type": "EducationalOccupationalCredential",
+          credentialCategory: "Professional Experience",
+          name: "Full Stack Developer at Bitmax Technology",
+          description:
+            "Developed AI chatbots using Groq API, built CRM platforms with RBAC, deployed applications on AWS EC2 with Nginx reverse proxies.",
+          dateCreated: "2025-09-01",
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          credentialCategory: "Professional Experience",
+          name: "Full Stack Developer at Digivity",
+          description:
+            "Built School ERP system using MERN stack, developed ETAB ERP marketing website with Next.js, optimized frontend performance with lazy loading and code splitting.",
+          dateCreated: "2025-05-01",
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          credentialCategory: "Internship",
+          name: "MERN Stack Developer Intern at QSpiders",
+          description:
+            "Completed intensive MERN stack training. Achieved 2nd position in Project War competition by building a full-stack Book Store application.",
+          dateCreated: "2024-06-01",
         },
       ],
     },

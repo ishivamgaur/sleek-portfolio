@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { portfolioData } from "@/data/portfolio";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -51,6 +52,8 @@ export default function ProjectsLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // GEO: CollectionPage + complete project list with SoftwareApplication types
+  const projects = portfolioData.projects || [];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -62,6 +65,52 @@ export default function ProjectsLayout({
       "@type": "WebSite",
       "@id": `${siteConfig.url}/#website`,
     },
+    // AEO: ItemList with SoftwareApplication entities — AI engines can cite specific projects
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: projects.length,
+      itemListElement: projects.map((project, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        item: {
+          "@type": "SoftwareApplication",
+          name: project.title,
+          description: project.description,
+          applicationCategory: "WebApplication",
+          operatingSystem: "Web",
+          author: {
+            "@type": "Person",
+            "@id": `${siteConfig.url}/#person`,
+          },
+          ...(project.link ? { url: project.link } : {}),
+          ...(project.github
+            ? { codeRepository: project.github }
+            : {}),
+          ...(project.tags
+            ? { keywords: project.tags.join(", ") }
+            : {}),
+        },
+      })),
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Projects",
+        item: `${siteConfig.url}/projects`,
+      },
+    ],
   };
 
   return (
@@ -69,6 +118,10 @@ export default function ProjectsLayout({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {children}
     </>
