@@ -227,7 +227,7 @@ export default function Hero() {
                     <a
                       href={social.href}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="me noopener noreferrer"
                       className="p-1.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-colors text-foreground/80 hover:text-foreground flex items-center justify-center"
                     >
                       {social.icon}

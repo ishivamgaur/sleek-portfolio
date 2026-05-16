@@ -102,7 +102,7 @@ export default function Footer() {
                   <a
                     href={social.href}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="me noopener noreferrer"
                     className="p-1.5 rounded-md border border-dashed border-border bg-secondary/5 hover:bg-muted/50 transition-all duration-300 text-foreground/80 hover:text-foreground hover:scale-105 active:scale-95"
                     aria-label={social.name}
                   >
