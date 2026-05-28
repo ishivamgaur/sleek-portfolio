@@ -70,7 +70,7 @@ export default function ExperienceLayout({
         {
           "@type": "Organization",
           name: "Bitmax Technology Pvt. Ltd.",
-          address: "Greater Noida, Section 90",
+          address: "Greater Noida, Sector 90",
         },
       ],
       hasCredential: [

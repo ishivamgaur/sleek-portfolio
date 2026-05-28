@@ -69,7 +69,7 @@ export const portfolioData = {
       company: "Bitmax Technology",
       startDate: "2025-09-01",
       date: "Current",
-      location: "Greater Noida, Section 90",
+      location: "Greater Noida, Sector 90",
       shortLocation: "Gr. Noida, Sec 90",
       type: "On-site",
       tech: [

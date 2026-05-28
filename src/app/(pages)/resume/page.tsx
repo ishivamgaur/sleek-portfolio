@@ -134,7 +134,7 @@ export default async function ResumePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <div className="pt-24 pb-12 w-full px-4">
+      <div className="pt-10 pb-12 w-full px-4">
         <ResumeHeader />
         <ResumeViewer resumeUrl={resumeUrl} />
       </div>

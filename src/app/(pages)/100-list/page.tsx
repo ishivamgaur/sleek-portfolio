@@ -13,7 +13,7 @@ export default function BucketListPage() {
     list.length > 0 ? Math.round((completedCount / list.length) * 100) : 0;
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full">
+    <div className="px-4 pt-10 pb-12 w-full">
       {/* Header section */}
       <div className="mb-10 space-y-1">
         <FadeIn delay={0.1} direction="up">

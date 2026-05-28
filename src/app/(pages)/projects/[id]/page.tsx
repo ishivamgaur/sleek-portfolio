@@ -49,7 +49,7 @@ export default function ProjectDetailsPage({
 
   if (!project) {
     return (
-      <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-6">
+      <div className="px-4 pt-10 pb-12 w-full flex flex-col space-y-6">
         <Link
           href="/projects"
           className="inline-flex items-center gap-2 text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors group w-fit"
@@ -76,7 +76,7 @@ export default function ProjectDetailsPage({
     (project.link?.includes("github.com") ? project.link : undefined);
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full flex flex-col space-y-8">
+    <div className="px-4 pt-10 pb-12 w-full flex flex-col space-y-8">
       <FadeIn delay={0.1} direction="up">
         <Link
           href="/projects"

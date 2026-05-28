@@ -7,7 +7,7 @@ export default function MoviesPage() {
   const movies = portfolioData.favoriteMovies || [];
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full">
+    <div className="px-4 pt-10 pb-12 w-full">
       {/* Header section */}
       <div className="mb-10 space-y-1">
         <FadeIn delay={0.1} direction="up">

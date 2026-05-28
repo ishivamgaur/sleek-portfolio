@@ -12,7 +12,7 @@ export default function ExperiencePage() {
   });
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full">
+    <div className="px-4 pt-10 pb-12 w-full">
       <FadeIn delay={0.1}>
         <div className="mb-10">
           <h2 className="text-2xl font-bold tracking-tight">Work Experience</h2>

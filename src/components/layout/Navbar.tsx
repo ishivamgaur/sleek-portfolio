@@ -25,7 +25,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
+    <header className="sticky top-0 w-full z-50">
       {/* Permanent frosted glass background layer */}
       <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-md" />
 

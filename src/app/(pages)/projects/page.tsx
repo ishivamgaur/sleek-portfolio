@@ -13,7 +13,7 @@ export default function AllProjectsPage() {
   };
 
   return (
-    <div className="px-4 pt-24 pb-12 w-full">
+    <div className="px-4 pt-10 pb-12 w-full">
       {/* Header section */}
       <FadeIn direction="up">
         <div className="mb-10">
